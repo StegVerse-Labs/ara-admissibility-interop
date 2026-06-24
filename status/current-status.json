@@ -1,0 +1,13 @@
+{
+  "repo": "StegVerse-Labs/ara-admissibility-interop",
+  "status_version": "0.1.0",
+  "state": "active-build",
+  "goal_activation_percent": 75,
+  "full_build_percent": 60,
+  "handoff_ready": false,
+  "next_required_steps": [
+    "Run tools/assess_repo.py locally or in CI",
+    "Add schema validation command",
+    "Add task-runner or CI handoff"
+  ]
+}
