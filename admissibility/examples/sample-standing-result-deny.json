@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "result_id": "standing-result-deny-001",
+  "candidate_id": "candidate-ara-demo-001",
+  "decision": "DENY",
+  "standing_valid": false,
+  "checks": {
+    "authority_valid": false,
+    "policy_valid": true,
+    "delegation_valid": false,
+    "evidence_admissible": true,
+    "scope_valid": false,
+    "context_valid": true,
+    "recoverability_valid": true
+  },
+  "commit_time": "2026-06-24T00:00:00Z",
+  "reasons": [
+    {
+      "code": "DENY_SCOPE_EXCEEDED",
+      "message": "The candidate was presented for citation-only use, but the requested downstream use exceeded the declared scope.",
+      "field": "scope"
+    },
+    {
+      "code": "DENY_AUTHORITY_NOT_ESTABLISHED",
+      "message": "No current authority was established for the expanded downstream use.",
+      "field": "actor"
+    }
+  ]
+}
