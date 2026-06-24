@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1.0",
+  "candidate_id": "candidate-ara-demo-001",
+  "transition_id": "transition-citation-review-001",
+  "artifact_reference": {
+    "artifact_id": "ara-demo-artifact-001",
+    "artifact_type": "ara-style-artifact",
+    "uri": "examples/ara-demo-artifact-001",
+    "digest": "sha256-placeholder",
+    "digest_algorithm": "sha256"
+  },
+  "requested_action": {
+    "action_type": "cite",
+    "description": "Use the referenced ARA-style artifact as a cited reconstruction package for a narrow interoperability discussion."
+  },
+  "actor": {
+    "actor_id": "stegverse-labs",
+    "actor_type": "organization",
+    "display_name": "StegVerse-Labs"
+  },
+  "target": {
+    "target_id": "ara-admissibility-interop-readme",
+    "target_type": "repository",
+    "description": "Repository documentation discussing ARA-style artifacts and commit-time admissibility."
+  },
+  "scope": {
+    "scope_id": "citation-only-demo",
+    "description": "Citation and interoperability discussion only. No execution, certification, endorsement, or upstream compatibility claim is requested.",
+    "limitations": [
+      "No claim of endorsement by ARA authors.",
+      "No claim of certification of the artifact.",
+      "No execution authority is requested."
+    ]
+  },
+  "claim_boundary": {
+    "claims": [
+      "The artifact can be referenced as an example input to a commitment-candidate flow.",
+      "The requested action is limited to citation and discussion."
+    ],
+    "non_claims": [
+      "This candidate does not claim ARA author endorsement.",
+      "This candidate does not claim compatibility acceptance by an upstream ARA project.",
+      "This candidate does not claim execution authority."
+    ]
+  },
+  "policy_reference": {
+    "policy_id": "interop-non-claims-policy-001",
+    "uri": "../non-claims.md",
+    "digest": "sha256-placeholder",
+    "digest_algorithm": "sha256"
+  },
+  "delegation_reference": null,
+  "evidence_references": [
+    {
+      "evidence_id": "evidence-non-claims-001",
+      "evidence_type": "summary",
+      "uri": "../non-claims.md",
+      "digest": "sha256-placeholder",
+      "digest_algorithm": "sha256"
+    },
+    {
+      "evidence_id": "evidence-map-001",
+      "evidence_type": "summary",
+      "uri": "../ara-to-standing-map.md",
+      "digest": "sha256-placeholder",
+      "digest_algorithm": "sha256"
+    }
+  ],
+  "execution_context": {
+    "context_id": "demo-context-001",
+    "evaluated_at": "2026-06-24T00:00:00Z"
+  },
+  "validity_window": {
+    "not_before": "2026-06-24T00:00:00Z",
+    "not_after": "2026-12-31T23:59:59Z"
+  },
+  "recoverability_profile": {
+    "recoverability_class": "reversible",
+    "description": "Citation-only use can be corrected, removed, or amended if the boundary is later found to be inaccurate."
+  }
+}
