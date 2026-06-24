@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARA Admissibility Standing Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "result_id",
+    "candidate_id",
+    "decision",
+    "standing_valid",
+    "checks",
+    "commit_time",
+    "reasons"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1.0" },
+    "result_id": { "type": "string", "minLength": 1 },
+    "candidate_id": { "type": "string", "minLength": 1 },
+    "decision": { "type": "string", "enum": ["ALLOW", "DENY", "FAIL-CLOSED"] },
+    "standing_valid": { "type": "boolean" },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_valid",
+        "policy_valid",
+        "delegation_valid",
+        "evidence_admissible",
+        "scope_valid",
+        "context_valid",
+        "recoverability_valid"
+      ],
+      "properties": {
+        "authority_valid": { "type": ["boolean", "null"] },
+        "policy_valid": { "type": ["boolean", "null"] },
+        "delegation_valid": { "type": ["boolean", "null"] },
+        "evidence_admissible": { "type": ["boolean", "null"] },
+        "scope_valid": { "type": ["boolean", "null"] },
+        "context_valid": { "type": ["boolean", "null"] },
+        "recoverability_valid": { "type": ["boolean", "null"] }
+      }
+    },
+    "commit_time": { "type": "string", "format": "date-time" },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "field": { "type": "string" }
+        }
+      }
+    }
+  }
+}
