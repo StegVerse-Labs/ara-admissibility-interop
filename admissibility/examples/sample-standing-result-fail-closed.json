@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "result_id": "standing-result-fail-closed-001",
+  "candidate_id": "candidate-ara-demo-001",
+  "decision": "FAIL-CLOSED",
+  "standing_valid": false,
+  "checks": {
+    "authority_valid": null,
+    "policy_valid": true,
+    "delegation_valid": null,
+    "evidence_admissible": null,
+    "scope_valid": true,
+    "context_valid": false,
+    "recoverability_valid": true
+  },
+  "commit_time": "2026-06-24T00:00:00Z",
+  "reasons": [
+    {
+      "code": "FAIL_CLOSED_CONTEXT_INDETERMINATE",
+      "message": "The candidate could not be safely evaluated because the commit-time context was incomplete or indeterminate.",
+      "field": "execution_context"
+    },
+    {
+      "code": "FAIL_CLOSED_EVIDENCE_UNVERIFIED",
+      "message": "One or more evidence references could not be verified for the requested use.",
+      "field": "evidence_references"
+    }
+  ]
+}
