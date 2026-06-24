@@ -24,6 +24,18 @@ This repository begins with a narrow interoperability hypothesis:
 
 > ARA-style research artifacts can be treated as inputs to a standing and admissibility layer without replacing the ARA artifact model.
 
+## Current goal
+
+Continue building without manual actions needed through completion, or until task handoff and task completion can be handled by the ecosystem's own management.
+
+For this repository, that means the repo must become capable of:
+
+1. describing its own boundary and non-claims;
+2. validating its commitment-candidate and standing-result examples;
+3. running a deterministic evaluator stub;
+4. reporting build state in a machine-readable status file;
+5. identifying the next handoff target when local repo management is no longer sufficient.
+
 ## Layer distinction
 
 | Layer | Primary question |
@@ -32,17 +44,42 @@ This repository begins with a narrow interoperability hypothesis:
 | Commitment candidate | What action is now being requested based on the artifact? |
 | Standing determination | Does the candidate have authority, valid policy, admissible evidence, and commit-time standing now? |
 
-## Initial build path
+## Repository structure
 
-1. Define non-claims and boundaries.
-2. Map ARA-style artifact components to standing fields.
-3. Define a commitment-candidate schema.
-4. Define a standing-result schema.
-5. Add examples for ALLOW, DENY, and FAIL-CLOSED outcomes.
+```text
+admissibility/
+  README.md
+  non-claims.md
+  glossary.md
+  ara-to-standing-map.md
+  commitment-candidate.schema.json
+  standing-result.schema.json
+  evaluator_stub.py
+  evaluator-usage.md
+  examples/
+    sample-commitment-candidate.json
+    sample-standing-result-allow.json
+    sample-standing-result-deny.json
+    sample-standing-result-fail-closed.json
+management/
+  goal-activation.md
+  repo-status.json
+  assess_repo.py
+```
+
+## Build path to goal activation
+
+1. Define non-claims and boundaries. Complete.
+2. Map ARA-style artifact components to standing fields. Complete.
+3. Define commitment-candidate and standing-result schemas. Complete.
+4. Add examples for ALLOW, DENY, and FAIL-CLOSED outcomes. Complete.
+5. Add evaluator stub and usage notes. Complete.
+6. Add repo management assessment and status reporting. In progress.
+7. Add CI or task-runner handoff once repo-local management is stable. Pending.
 
 ## Status
 
-Foundation draft. The first files establish scope, non-claims, and the initial admissibility boundary.
+Foundation draft with active goal activation path.
 
 ## Relationship to StegVerse
 
