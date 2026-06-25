@@ -17,11 +17,5 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Assess repository files
-        run: python3 tools/assess_repo.py
-
-      - name: Validate example JSON files
-        run: python3 tools/validate_examples.py
-
-      - name: Run evaluator stub
-        run: python3 admissibility/evaluator_stub.py admissibility/examples/sample-commitment-candidate.json
+      - name: Generate status
+        run: python3 tools/generate_status.py
