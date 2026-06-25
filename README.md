@@ -26,17 +26,19 @@ This repository begins with a narrow interoperability hypothesis:
 
 ## Current goal
 
-Validation hardening.
+Release readiness.
 
-For this repository, that means the repo must be able to:
+The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), and assessed in [`docs/release-readiness.md`](docs/release-readiness.md).
 
-1. describe its own boundary and non-claims;
-2. validate commitment-candidate and standing-result examples;
-3. reject invalid fixtures for expected reasons;
-4. prove evaluator behavior for ALLOW, DENY, and FAIL-CLOSED;
-5. generate machine-readable status;
-6. generate human-readable validation reporting;
-7. keep canonical and iOS-safe workflow paths aligned.
+For this repository, release readiness means the repo must be reviewable without chat history and must expose:
+
+1. boundary and non-claims;
+2. schemas and examples;
+3. validation commands;
+4. validation report interpretation;
+5. workflow status;
+6. release criteria;
+7. next-version candidates.
 
 ## Run validation
 
@@ -85,6 +87,7 @@ admissibility/
     invalid-missing-claim-boundary.json
     invalid-standing-result-decision.json
 docs/
+  release-readiness.md
   validation-report-guide.md
   workflow-artifact-retention.md
 tools/
@@ -98,6 +101,8 @@ tools/
   generate_validation_report.py
 status/
   current-status.json
+VERSION
+CHANGELOG.md
 ```
 
 ## Workflow paths
@@ -120,11 +125,11 @@ Both workflow paths run:
 python3 tools/generate_validation_report.py
 ```
 
-Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs/workflow-artifact-retention.md). The live workflow upload step is the remaining hardening item.
+Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs/workflow-artifact-retention.md). The live workflow upload step is optional future hardening.
 
 ## Status
 
-Validation-hardening build in progress.
+`0.1.0-release-candidate` release-readiness build in progress.
 
 ## Relationship to StegVerse
 
