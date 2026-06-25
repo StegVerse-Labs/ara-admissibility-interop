@@ -1,0 +1,14 @@
+{
+  "decision": "FAIL-CLOSED",
+  "standing_valid": false,
+  "required_checks": {
+    "authority_valid": null,
+    "policy_valid": true,
+    "delegation_valid": null,
+    "evidence_admissible": null,
+    "scope_valid": false,
+    "context_valid": true,
+    "recoverability_valid": true
+  },
+  "required_reason_code": "FAIL_CLOSED_CLAIM_BOUNDARY_INCOMPLETE"
+}
