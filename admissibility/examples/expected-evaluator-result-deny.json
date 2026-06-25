@@ -1,0 +1,14 @@
+{
+  "decision": "DENY",
+  "standing_valid": false,
+  "required_checks": {
+    "authority_valid": false,
+    "policy_valid": true,
+    "delegation_valid": false,
+    "evidence_admissible": true,
+    "scope_valid": false,
+    "context_valid": true,
+    "recoverability_valid": true
+  },
+  "required_reason_code": "DENY_EXECUTION_SCOPE_NOT_SUPPORTED_BY_STUB"
+}
