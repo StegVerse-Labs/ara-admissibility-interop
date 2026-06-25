@@ -13,24 +13,17 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+COMMITMENT_SCHEMA = ROOT / "admissibility" / "commitment-candidate.schema.json"
+STANDING_SCHEMA = ROOT / "admissibility" / "standing-result.schema.json"
+EXAMPLES = ROOT / "admissibility" / "examples"
 
 PAIRS = [
-    (
-        ROOT / "admissibility" / "commitment-candidate.schema.json",
-        ROOT / "admissibility" / "examples" / "sample-commitment-candidate.json",
-    ),
-    (
-        ROOT / "admissibility" / "standing-result.schema.json",
-        ROOT / "admissibility" / "examples" / "sample-standing-result-allow.json",
-    ),
-    (
-        ROOT / "admissibility" / "standing-result.schema.json",
-        ROOT / "admissibility" / "examples" / "sample-standing-result-deny.json",
-    ),
-    (
-        ROOT / "admissibility" / "standing-result.schema.json",
-        ROOT / "admissibility" / "examples" / "sample-standing-result-fail-closed.json",
-    ),
+    (COMMITMENT_SCHEMA, EXAMPLES / "sample-commitment-candidate.json"),
+    (COMMITMENT_SCHEMA, EXAMPLES / "deny-execution-candidate.json"),
+    (COMMITMENT_SCHEMA, EXAMPLES / "fail-closed-incomplete-boundary-candidate.json"),
+    (STANDING_SCHEMA, EXAMPLES / "sample-standing-result-allow.json"),
+    (STANDING_SCHEMA, EXAMPLES / "sample-standing-result-deny.json"),
+    (STANDING_SCHEMA, EXAMPLES / "sample-standing-result-fail-closed.json"),
 ]
 
 
