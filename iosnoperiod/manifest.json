@@ -1,12 +1,13 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "purpose": "Map iOS-safe no-period paths to canonical repository paths.",
   "entries": [
     {
       "ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
       "canonical_path": ".github/workflows/repo-check.yml",
       "activation": "copy-or-move",
-      "status": "ready-for-promotion"
+      "status": "aligned-with-canonical",
+      "runs": "python3 tools/generate_validation_report.py"
     }
   ]
 }
