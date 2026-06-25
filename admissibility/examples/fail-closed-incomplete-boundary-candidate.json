@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "candidate_id": "candidate-fail-closed-boundary-001",
+  "transition_id": "transition-fail-closed-001",
+  "artifact_reference": {
+    "artifact_id": "ara-demo-artifact-001",
+    "artifact_type": "ara-style-artifact",
+    "uri": "examples/ara-demo-artifact-001"
+  },
+  "requested_action": {
+    "action_type": "cite",
+    "description": "Citation request with incomplete claim boundary, which the evaluator stub must fail closed."
+  },
+  "actor": {
+    "actor_id": "stegverse-labs",
+    "actor_type": "organization"
+  },
+  "target": {
+    "target_id": "fail-closed-target-demo",
+    "target_type": "repository"
+  },
+  "scope": {
+    "scope_id": "fail-closed-demo",
+    "description": "Incomplete boundary fixture."
+  },
+  "claim_boundary": {
+    "claims": [
+      "This fixture demonstrates FAIL-CLOSED behavior."
+    ],
+    "non_claims": []
+  },
+  "policy_reference": {
+    "policy_id": "interop-non-claims-policy-001",
+    "uri": "../non-claims.md"
+  },
+  "delegation_reference": null,
+  "evidence_references": [
+    {
+      "evidence_id": "evidence-fail-closed-demo-001",
+      "evidence_type": "summary",
+      "uri": "../non-claims.md"
+    }
+  ],
+  "execution_context": {
+    "context_id": "fail-closed-demo-context-001",
+    "evaluated_at": "2026-06-24T00:00:00Z"
+  },
+  "validity_window": {
+    "not_before": "2026-06-24T00:00:00Z",
+    "not_after": "2026-12-31T23:59:59Z"
+  },
+  "recoverability_profile": {
+    "recoverability_class": "reversible",
+    "description": "The candidate should fail closed before any citation reliance occurs."
+  }
+}
