@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "result_id": "invalid-standing-result-decision",
+  "candidate_id": "candidate-ara-demo-001",
+  "decision": "MAYBE",
+  "standing_valid": true,
+  "checks": {
+    "authority_valid": true,
+    "policy_valid": true,
+    "delegation_valid": true,
+    "evidence_admissible": true,
+    "scope_valid": true,
+    "context_valid": true,
+    "recoverability_valid": true
+  },
+  "commit_time": "2026-06-24T00:00:00Z",
+  "reasons": [
+    {
+      "code": "INVALID_DECISION",
+      "message": "Invalid fixture with unsupported decision value."
+    }
+  ]
+}
