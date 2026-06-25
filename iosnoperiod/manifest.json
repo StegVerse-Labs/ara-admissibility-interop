@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Map iOS-safe no-period paths to canonical repository paths.",
+  "entries": [
+    {
+      "ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
+      "canonical_path": ".github/workflows/repo-check.yml",
+      "activation": "copy-or-move",
+      "status": "ready-for-promotion"
+    }
+  ]
+}
