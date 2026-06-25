@@ -1,0 +1,14 @@
+{
+  "decision": "ALLOW",
+  "standing_valid": true,
+  "required_checks": {
+    "authority_valid": true,
+    "policy_valid": true,
+    "delegation_valid": true,
+    "evidence_admissible": true,
+    "scope_valid": true,
+    "context_valid": true,
+    "recoverability_valid": true
+  },
+  "required_reason_code": "ALLOW_CITATION_STYLE_CANDIDATE"
+}
