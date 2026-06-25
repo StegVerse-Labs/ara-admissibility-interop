@@ -14,6 +14,7 @@ OUTPUT = ROOT / "status" / "generated-status.json"
 
 CHECKS = [
     [sys.executable, "tools/assess_repo.py"],
+    [sys.executable, "tools/validate_schema_files.py"],
     [sys.executable, "tools/validate_examples.py"],
     [sys.executable, "tools/check_evaluator_fixture.py"],
 ]
@@ -41,15 +42,14 @@ def main() -> int:
     passed = all(result["passed"] for result in results)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "status_version": "0.2.0",
+        "status_version": "0.3.0",
         "state": "self-check-pass" if passed else "self-check-fail",
-        "goal_activation_percent": 98 if passed else 94,
-        "full_build_percent": 90 if passed else 86,
+        "goal_activation_percent": 99 if passed else 95,
+        "full_build_percent": 94 if passed else 88,
         "handoff_ready": passed,
         "checks": results,
         "remaining": [
-            "Promote iosnoperiod/github/workflows/repo-check.yml to the canonical workflow path when leading-period writes are available.",
-            "Add stronger JSON Schema validation when dependency policy is selected."
+            "Promote iosnoperiod/github/workflows/repo-check.yml to the canonical workflow path when leading-period writes are available."
         ],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
