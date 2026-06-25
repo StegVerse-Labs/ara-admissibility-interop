@@ -21,10 +21,17 @@ REQUIRED = [
     "admissibility/examples/sample-standing-result-allow.json",
     "admissibility/examples/sample-standing-result-deny.json",
     "admissibility/examples/sample-standing-result-fail-closed.json",
+    "admissibility/examples/expected-evaluator-result.json",
     "admissibility/evaluator_stub.py",
     "admissibility/evaluator-usage.md",
     "management/goal-activation.md",
     "tools/assess_repo.py",
+    "tools/validate_examples.py",
+    "tools/check_evaluator_fixture.py",
+    "iosnoperiod/github/workflows/repo-check.yml",
+    "iosnoperiod/manifest.json",
+    "iosnoperiod.md",
+    "HANDOFF.md",
 ]
 
 
@@ -34,7 +41,7 @@ def main() -> int:
     percent = round((present / len(REQUIRED)) * 100, 2)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "assessment_version": "0.1.0",
+        "assessment_version": "0.2.0",
         "present": present,
         "required": len(REQUIRED),
         "percent": percent,
