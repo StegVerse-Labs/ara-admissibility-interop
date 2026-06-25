@@ -86,6 +86,7 @@ admissibility/
     invalid-standing-result-decision.json
 docs/
   validation-report-guide.md
+  workflow-artifact-retention.md
 tools/
   assess_repo.py
   validate_schema_files.py
@@ -118,6 +119,8 @@ Both workflow paths run:
 ```bash
 python3 tools/generate_validation_report.py
 ```
+
+Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs/workflow-artifact-retention.md). The live workflow upload step is the remaining hardening item.
 
 ## Status
 
