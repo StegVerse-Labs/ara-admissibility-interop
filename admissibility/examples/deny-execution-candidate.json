@@ -1,0 +1,61 @@
+{
+  "schema_version": "0.1.0",
+  "candidate_id": "candidate-deny-execution-001",
+  "transition_id": "transition-execution-deny-001",
+  "artifact_reference": {
+    "artifact_id": "ara-demo-artifact-001",
+    "artifact_type": "ara-style-artifact",
+    "uri": "examples/ara-demo-artifact-001"
+  },
+  "requested_action": {
+    "action_type": "execute",
+    "description": "Request execution using an ARA-style artifact, which the evaluator stub must deny."
+  },
+  "actor": {
+    "actor_id": "stegverse-labs",
+    "actor_type": "organization"
+  },
+  "target": {
+    "target_id": "execution-target-demo",
+    "target_type": "execution-environment"
+  },
+  "scope": {
+    "scope_id": "execution-deny-demo",
+    "description": "Execution request used to demonstrate DENY behavior.",
+    "limitations": [
+      "Execution authority is not granted by the evaluator stub."
+    ]
+  },
+  "claim_boundary": {
+    "claims": [
+      "This fixture demonstrates evaluator DENY behavior."
+    ],
+    "non_claims": [
+      "This fixture does not request or establish real execution authority."
+    ]
+  },
+  "policy_reference": {
+    "policy_id": "interop-non-claims-policy-001",
+    "uri": "../non-claims.md"
+  },
+  "delegation_reference": null,
+  "evidence_references": [
+    {
+      "evidence_id": "evidence-deny-demo-001",
+      "evidence_type": "summary",
+      "uri": "../non-claims.md"
+    }
+  ],
+  "execution_context": {
+    "context_id": "deny-demo-context-001",
+    "evaluated_at": "2026-06-24T00:00:00Z"
+  },
+  "validity_window": {
+    "not_before": "2026-06-24T00:00:00Z",
+    "not_after": "2026-12-31T23:59:59Z"
+  },
+  "recoverability_profile": {
+    "recoverability_class": "quarantineable",
+    "description": "The request can be denied before any execution occurs."
+  }
+}
