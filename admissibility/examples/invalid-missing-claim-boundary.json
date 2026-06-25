@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1.0",
+  "candidate_id": "invalid-candidate-missing-claim-boundary",
+  "transition_id": "transition-invalid-001",
+  "artifact_reference": {
+    "artifact_id": "ara-demo-artifact-001",
+    "artifact_type": "ara-style-artifact",
+    "uri": "examples/ara-demo-artifact-001"
+  },
+  "requested_action": {
+    "action_type": "cite",
+    "description": "Invalid candidate missing claim_boundary."
+  },
+  "actor": {
+    "actor_id": "stegverse-labs",
+    "actor_type": "organization"
+  },
+  "target": {
+    "target_id": "invalid-target",
+    "target_type": "repository"
+  },
+  "scope": {
+    "scope_id": "invalid-scope",
+    "description": "Invalid fixture."
+  },
+  "policy_reference": {
+    "policy_id": "interop-non-claims-policy-001",
+    "uri": "../non-claims.md"
+  },
+  "evidence_references": [
+    {
+      "evidence_id": "evidence-invalid-001",
+      "evidence_type": "summary",
+      "uri": "../non-claims.md"
+    }
+  ],
+  "execution_context": {
+    "context_id": "invalid-context-001",
+    "evaluated_at": "2026-06-24T00:00:00Z"
+  },
+  "validity_window": {
+    "not_before": "2026-06-24T00:00:00Z",
+    "not_after": "2026-12-31T23:59:59Z"
+  },
+  "recoverability_profile": {
+    "recoverability_class": "reversible",
+    "description": "Invalid fixture."
+  }
+}
