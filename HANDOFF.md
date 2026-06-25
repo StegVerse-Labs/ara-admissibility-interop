@@ -19,8 +19,10 @@ The repository now contains:
 - standing-result schema;
 - sample commitment candidate;
 - ALLOW, DENY, and FAIL-CLOSED result examples;
+- expected evaluator result fixture;
 - evaluator stub;
 - example validation helper;
+- evaluator fixture checker;
 - repo assessment helper;
 - iOS-safe workflow mirror;
 - iOS-safe mirror manifest.
@@ -51,8 +53,9 @@ After promotion, the workflow should run:
 python3 tools/assess_repo.py
 python3 tools/validate_examples.py
 python3 admissibility/evaluator_stub.py admissibility/examples/sample-commitment-candidate.json
+python3 tools/check_evaluator_fixture.py
 ```
 
 ## Next build target after activation
 
-After workflow activation, the next target is stronger schema validation and an evaluator result fixture check.
+After workflow activation, the next target is stronger schema validation and status artifact generation from CI output.
