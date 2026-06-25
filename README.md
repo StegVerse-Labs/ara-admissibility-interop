@@ -26,15 +26,34 @@ This repository begins with a narrow interoperability hypothesis:
 
 ## Current goal
 
-Continue building without manual actions needed through completion, or until task handoff and task completion can be handled by the ecosystem's own management.
+Validation hardening.
 
-For this repository, that means the repo must become capable of:
+For this repository, that means the repo must be able to:
 
-1. describing its own boundary and non-claims;
-2. validating its commitment-candidate and standing-result examples;
-3. running a deterministic evaluator stub;
-4. reporting build state in a machine-readable status file;
-5. identifying the next handoff target when local repo management is no longer sufficient.
+1. describe its own boundary and non-claims;
+2. validate commitment-candidate and standing-result examples;
+3. reject invalid fixtures for expected reasons;
+4. prove evaluator behavior for ALLOW, DENY, and FAIL-CLOSED;
+5. generate machine-readable status;
+6. generate human-readable validation reporting;
+7. keep canonical and iOS-safe workflow paths aligned.
+
+## Run validation
+
+From the repository root:
+
+```bash
+python3 tools/generate_validation_report.py
+```
+
+This generates:
+
+```text
+status/generated-status.json
+status/validation-report.md
+```
+
+See [`docs/validation-report-guide.md`](docs/validation-report-guide.md) for how to interpret these outputs.
 
 ## Layer distinction
 
@@ -58,28 +77,51 @@ admissibility/
   evaluator-usage.md
   examples/
     sample-commitment-candidate.json
+    deny-execution-candidate.json
+    fail-closed-incomplete-boundary-candidate.json
     sample-standing-result-allow.json
     sample-standing-result-deny.json
     sample-standing-result-fail-closed.json
-management/
-  goal-activation.md
-  repo-status.json
+    invalid-missing-claim-boundary.json
+    invalid-standing-result-decision.json
+docs/
+  validation-report-guide.md
+tools/
   assess_repo.py
+  validate_schema_files.py
+  validate_examples.py
+  validate_by_schema_subset.py
+  validate_negative_fixtures.py
+  check_evaluator_fixture.py
+  generate_status.py
+  generate_validation_report.py
+status/
+  current-status.json
 ```
 
-## Build path to goal activation
+## Workflow paths
 
-1. Define non-claims and boundaries. Complete.
-2. Map ARA-style artifact components to standing fields. Complete.
-3. Define commitment-candidate and standing-result schemas. Complete.
-4. Add examples for ALLOW, DENY, and FAIL-CLOSED outcomes. Complete.
-5. Add evaluator stub and usage notes. Complete.
-6. Add repo management assessment and status reporting. In progress.
-7. Add CI or task-runner handoff once repo-local management is stable. Pending.
+The canonical GitHub Actions workflow path begins with a leading period:
+
+```text
+.github/workflows/repo-check.yml
+```
+
+For iOS-safe handling, the same workflow is mirrored without the leading period at:
+
+```text
+iosnoperiod/github/workflows/repo-check.yml
+```
+
+Both workflow paths run:
+
+```bash
+python3 tools/generate_validation_report.py
+```
 
 ## Status
 
-Foundation draft with active goal activation path.
+Validation-hardening build in progress.
 
 ## Relationship to StegVerse
 
