@@ -6,7 +6,7 @@
 
 ## Current goal
 
-Continue building until the repository can complete its own checks or hand off remaining work to ecosystem management.
+Validation hardening: strengthen repository-local verification so both humans and automation can determine whether ARA-style commitment-candidate examples, standing-result examples, evaluator behavior, negative fixtures, and workflow reporting remain coherent.
 
 ## Current state
 
@@ -17,17 +17,24 @@ The repository now contains:
 - glossary;
 - commitment-candidate schema;
 - standing-result schema;
-- sample commitment candidate;
-- ALLOW, DENY, and FAIL-CLOSED result examples;
-- expected evaluator result fixture;
+- commitment-candidate examples for ALLOW, DENY, and FAIL-CLOSED evaluator behavior;
+- standing-result examples for ALLOW, DENY, and FAIL-CLOSED;
+- invalid negative fixtures that must be rejected;
+- evaluator expected-result fixtures for ALLOW, DENY, and FAIL-CLOSED;
 - evaluator stub;
-- example validation helper;
+- schema-file validator;
+- example validator;
+- dependency-free schema-subset validator;
+- negative-fixture validator;
 - evaluator fixture checker;
 - repo assessment helper;
+- status generator;
+- validation report generator;
+- canonical GitHub Actions workflow;
 - iOS-safe workflow mirror;
 - iOS-safe mirror manifest.
 
-## Remaining activation step
+## Workflow status
 
 The canonical workflow path begins with a leading period:
 
@@ -35,27 +42,32 @@ The canonical workflow path begins with a leading period:
 .github/workflows/repo-check.yml
 ```
 
-For iOS-safe handling, this path is mirrored without the leading period at:
+For iOS-safe handling, the same workflow is mirrored without the leading period at:
 
 ```text
 iosnoperiod/github/workflows/repo-check.yml
 ```
 
-Promote the mirrored workflow to the canonical path when the repository is ready to activate GitHub Actions.
+Both workflow paths now run:
+
+```text
+python3 tools/generate_validation_report.py
+```
+
+That command generates both:
+
+```text
+status/generated-status.json
+status/validation-report.md
+```
 
 ## Handoff readiness
 
-The repository is handoff-ready for the next system that can perform file promotion into the canonical leading-period path.
+The repository is handoff-ready for ecosystem management. It can run its own validation report path through GitHub Actions or local execution.
 
-After promotion, the workflow should run:
+## Remaining hardening path
 
-```text
-python3 tools/assess_repo.py
-python3 tools/validate_examples.py
-python3 admissibility/evaluator_stub.py admissibility/examples/sample-commitment-candidate.json
-python3 tools/check_evaluator_fixture.py
-```
-
-## Next build target after activation
-
-After workflow activation, the next target is stronger schema validation and status artifact generation from CI output.
+1. Decide whether dependency-free schema-subset validation is sufficient for this interop prototype.
+2. If dependency policy permits, add full JSON Schema validation as an optional stricter path.
+3. Add published documentation for interpreting the validation report.
+4. Add artifact upload for generated status/report outputs if the workflow should retain them in GitHub Actions.
