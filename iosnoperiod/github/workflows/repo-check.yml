@@ -17,5 +17,5 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Generate status
-        run: python3 tools/generate_status.py
+      - name: Generate validation report
+        run: python3 tools/generate_validation_report.py
