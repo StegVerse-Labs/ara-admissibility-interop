@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check evaluator output against the expected fixture."""
+"""Check evaluator output against expected ALLOW, DENY, and FAIL-CLOSED fixtures."""
 
 from __future__ import annotations
 
@@ -9,9 +9,21 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-CANDIDATE = ROOT / "admissibility" / "examples" / "sample-commitment-candidate.json"
-EXPECTED = ROOT / "admissibility" / "examples" / "expected-evaluator-result.json"
 EVALUATOR = ROOT / "admissibility" / "evaluator_stub.py"
+CASES = [
+    {
+        "candidate": ROOT / "admissibility" / "examples" / "sample-commitment-candidate.json",
+        "expected": ROOT / "admissibility" / "examples" / "expected-evaluator-result.json",
+    },
+    {
+        "candidate": ROOT / "admissibility" / "examples" / "deny-execution-candidate.json",
+        "expected": ROOT / "admissibility" / "examples" / "expected-evaluator-result-deny.json",
+    },
+    {
+        "candidate": ROOT / "admissibility" / "examples" / "fail-closed-incomplete-boundary-candidate.json",
+        "expected": ROOT / "admissibility" / "examples" / "expected-evaluator-result-fail-closed.json",
+    },
+]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -31,12 +43,10 @@ def load_evaluator():
     return module
 
 
-def main() -> int:
-    evaluator = load_evaluator()
-    candidate = load_json(CANDIDATE)
-    expected = load_json(EXPECTED)
+def check_case(evaluator: Any, candidate_path: Path, expected_path: Path) -> list[str]:
+    candidate = load_json(candidate_path)
+    expected = load_json(expected_path)
     actual = evaluator.evaluate(candidate)
-
     problems: list[str] = []
 
     if actual.get("decision") != expected.get("decision"):
@@ -53,9 +63,22 @@ def main() -> int:
     if expected.get("required_reason_code") not in reason_codes:
         problems.append("required_reason_code")
 
+    return [f"{candidate_path.relative_to(ROOT)}:{problem}" for problem in problems]
+
+
+def main() -> int:
+    evaluator = load_evaluator()
+    problems: list[str] = []
+    checked: list[str] = []
+
+    for case in CASES:
+        candidate_path = case["candidate"]
+        expected_path = case["expected"]
+        checked.append(str(candidate_path.relative_to(ROOT)))
+        problems.extend(check_case(evaluator, candidate_path, expected_path))
+
     result = {
-        "fixture": str(EXPECTED.relative_to(ROOT)),
-        "candidate": str(CANDIDATE.relative_to(ROOT)),
+        "checked": checked,
         "problem_count": len(problems),
         "problems": problems,
         "result": "pass" if not problems else "fail",
