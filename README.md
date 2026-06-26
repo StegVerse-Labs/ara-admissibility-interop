@@ -26,19 +26,9 @@ This repository begins with a narrow interoperability hypothesis:
 
 ## Current goal
 
-Release readiness.
+Optional strict validation.
 
-The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), assessed in [`docs/release-readiness.md`](docs/release-readiness.md), checked with [`docs/release-checklist.md`](docs/release-checklist.md), condensed in [`docs/release-note-0.1.0-rc.md`](docs/release-note-0.1.0-rc.md), and described for tools in [`release-manifest.json`](release-manifest.json).
-
-For this repository, release readiness means the repo must be reviewable without chat history and must expose:
-
-1. boundary and non-claims;
-2. schemas and examples;
-3. validation commands;
-4. validation report interpretation;
-5. workflow status;
-6. release criteria;
-7. next-version candidates.
+The dependency-free validation path remains the default. Optional full JSON Schema validation is documented in [`docs/optional-strict-validation.md`](docs/optional-strict-validation.md) and surfaced through [`release-manifest.json`](release-manifest.json).
 
 ## Run validation
 
@@ -56,6 +46,12 @@ status/validation-report.md
 ```
 
 See [`docs/validation-report-guide.md`](docs/validation-report-guide.md) for how to interpret these outputs.
+
+For optional strict validation with `jsonschema` when installed, run:
+
+```bash
+python3 tools/validate_with_jsonschema_optional.py
+```
 
 ## Layer distinction
 
@@ -90,6 +86,7 @@ docs/
   release-readiness.md
   release-checklist.md
   release-note-0.1.0-rc.md
+  optional-strict-validation.md
   validation-report-guide.md
   workflow-artifact-retention.md
 tools/
@@ -97,6 +94,7 @@ tools/
   validate_schema_files.py
   validate_examples.py
   validate_by_schema_subset.py
+  validate_with_jsonschema_optional.py
   validate_negative_fixtures.py
   check_evaluator_fixture.py
   generate_status.py
@@ -132,7 +130,7 @@ Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs
 
 ## Status
 
-`0.1.0-release-candidate` release-readiness build in progress.
+Optional strict validation build in progress.
 
 ## Relationship to StegVerse
 
