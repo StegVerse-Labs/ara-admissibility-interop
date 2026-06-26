@@ -4,6 +4,8 @@
 
 Version: `0.1.0-release-candidate`
 
+Release manifest: [`../release-manifest.json`](../release-manifest.json)
+
 Release checklist: [`release-checklist.md`](release-checklist.md)
 
 Release note: [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
