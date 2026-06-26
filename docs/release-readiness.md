@@ -4,6 +4,8 @@
 
 Version: `0.1.0-release-candidate`
 
+Release note: [`docs/release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
+
 ## Purpose
 
 This release candidate captures the first complete public shape of the ARA admissibility interoperability prototype.
@@ -62,6 +64,8 @@ This release candidate does not claim:
 - execution authority for any external system.
 
 ## Suggested release note
+
+Use [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md) for short public or reviewer-facing summaries.
 
 `0.1.0-release-candidate` establishes a dependency-free interoperability prototype for presenting ARA-style artifacts as commitment candidates and evaluating them through ALLOW, DENY, and FAIL-CLOSED standing-result examples.
 
