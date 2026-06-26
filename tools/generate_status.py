@@ -17,6 +17,7 @@ CHECKS = [
     [sys.executable, "tools/validate_schema_files.py"],
     [sys.executable, "tools/validate_examples.py"],
     [sys.executable, "tools/validate_by_schema_subset.py"],
+    [sys.executable, "tools/validate_with_jsonschema_optional.py"],
     [sys.executable, "tools/validate_negative_fixtures.py"],
     [sys.executable, "tools/check_evaluator_fixture.py"],
 ]
@@ -44,14 +45,15 @@ def main() -> int:
     passed = all(result["passed"] for result in results)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "status_version": "0.5.0",
+        "status_version": "0.6.0",
         "state": "self-check-pass" if passed else "self-check-fail",
         "goal_activation_percent": 100,
-        "full_build_percent": 97 if passed else 91,
+        "full_build_percent": 98 if passed else 92,
         "handoff_ready": passed,
         "checks": results,
         "remaining": [
-            "Future hardening: replace dependency-free schema subset checks with full JSON Schema validation if dependency policy permits."
+            "Future hardening: make full JSON Schema validation required only if dependency policy changes.",
+            "Future hardening: add artifact upload retention in the live workflow if platform/tooling permits."
         ],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
