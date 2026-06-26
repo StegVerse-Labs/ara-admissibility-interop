@@ -10,6 +10,8 @@ Release checklist: [`release-checklist.md`](release-checklist.md)
 
 Release note: [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
 
+Optional strict validation: [`optional-strict-validation.md`](optional-strict-validation.md)
+
 ## Purpose
 
 This release candidate captures the first complete public shape of the ARA admissibility interoperability prototype.
@@ -33,6 +35,7 @@ A release candidate is ready when the repository can demonstrate:
 | Human-readable validation report can be generated | Ready |
 | Canonical workflow runs validation reporting | Ready |
 | iOS-safe workflow mirror is aligned | Ready |
+| Optional strict JSON Schema validation is visible in generated status | Ready |
 | Artifact upload retention exists | Optional future hardening |
 
 ## Required release check
@@ -56,6 +59,16 @@ Expected state:
 self-check-pass
 ```
 
+## Optional strict check
+
+The optional strict path is:
+
+```bash
+python3 tools/validate_with_jsonschema_optional.py
+```
+
+This check is optional. If `jsonschema` is absent, it reports `skip` with exit code `0`. If `jsonschema` is installed, it performs stricter schema validation and fails on violations.
+
 ## Non-release claims
 
 This release candidate does not claim:
@@ -64,7 +77,7 @@ This release candidate does not claim:
 - certification of external ARA artifacts;
 - journal, conference, lab, or platform acceptance;
 - production Standing Proof Engine behavior;
-- full JSON Schema conformance beyond the dependency-free subset validator;
+- required full JSON Schema conformance when the optional dependency is absent;
 - execution authority for any external system.
 
 ## Suggested release note
@@ -77,7 +90,7 @@ Use [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md) for short public or r
 
 The next candidate after this release should be `0.2.0` if the repository adds one or more of:
 
-- optional full JSON Schema validation;
+- make full JSON Schema validation required if dependency policy changes;
 - external example package with explicit permission;
 - richer evaluator semantics beyond the current stub;
 - artifact upload retention in the live workflow;
