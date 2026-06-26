@@ -26,7 +26,20 @@ python3 tools/generate_validation_report.py
 - [ ] `status/generated-status.json` is generated.
 - [ ] `status/validation-report.md` is generated.
 - [ ] Generated state is `self-check-pass`.
-- [ ] Validation report shows zero problems for all checks.
+- [ ] Validation report shows zero problems for required checks.
+- [ ] Optional strict validation is visible in generated status.
+- [ ] If `jsonschema` is absent, optional strict validation reports `skip` with exit code `0`.
+- [ ] If `jsonschema` is installed, optional strict validation reports `pass` or `fail` according to full schema validation.
+
+## Optional strict validation
+
+Optional strict validation can be run directly:
+
+```bash
+python3 tools/validate_with_jsonschema_optional.py
+```
+
+This check is not a required dependency gate unless project dependency policy changes.
 
 ## Workflow
 
@@ -52,6 +65,7 @@ python3 tools/generate_validation_report.py
 
 ## Release-readiness review
 
+- [ ] `docs/optional-strict-validation.md` explains optional strict validation.
 - [ ] `docs/validation-report-guide.md` explains validation outputs.
 - [ ] `docs/workflow-artifact-retention.md` explains optional artifact retention.
 - [ ] `docs/release-readiness.md` lists criteria and non-release claims.
@@ -70,7 +84,7 @@ Avoid claiming:
 - production Standing Proof Engine behavior;
 - journal, conference, lab, or platform acceptance;
 - execution authority;
-- full JSON Schema conformance beyond the current validator scope.
+- required full JSON Schema conformance when the optional dependency is absent.
 
 ## Release outcome
 
