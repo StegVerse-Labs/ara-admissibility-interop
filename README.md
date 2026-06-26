@@ -28,7 +28,7 @@ This repository begins with a narrow interoperability hypothesis:
 
 Release readiness.
 
-The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), and assessed in [`docs/release-readiness.md`](docs/release-readiness.md).
+The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), assessed in [`docs/release-readiness.md`](docs/release-readiness.md), and condensed in [`docs/release-note-0.1.0-rc.md`](docs/release-note-0.1.0-rc.md).
 
 For this repository, release readiness means the repo must be reviewable without chat history and must expose:
 
@@ -88,6 +88,7 @@ admissibility/
     invalid-standing-result-decision.json
 docs/
   release-readiness.md
+  release-note-0.1.0-rc.md
   validation-report-guide.md
   workflow-artifact-retention.md
 tools/
