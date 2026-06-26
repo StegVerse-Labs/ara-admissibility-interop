@@ -28,7 +28,7 @@ This repository begins with a narrow interoperability hypothesis:
 
 Release readiness.
 
-The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), assessed in [`docs/release-readiness.md`](docs/release-readiness.md), checked with [`docs/release-checklist.md`](docs/release-checklist.md), and condensed in [`docs/release-note-0.1.0-rc.md`](docs/release-note-0.1.0-rc.md).
+The current candidate is recorded in [`VERSION`](VERSION), summarized in [`CHANGELOG.md`](CHANGELOG.md), assessed in [`docs/release-readiness.md`](docs/release-readiness.md), checked with [`docs/release-checklist.md`](docs/release-checklist.md), condensed in [`docs/release-note-0.1.0-rc.md`](docs/release-note-0.1.0-rc.md), and described for tools in [`release-manifest.json`](release-manifest.json).
 
 For this repository, release readiness means the repo must be reviewable without chat history and must expose:
 
@@ -105,6 +105,7 @@ status/
   current-status.json
 VERSION
 CHANGELOG.md
+release-manifest.json
 ```
 
 ## Workflow paths
