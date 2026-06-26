@@ -4,7 +4,9 @@
 
 Version: `0.1.0-release-candidate`
 
-Release note: [`docs/release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
+Release checklist: [`release-checklist.md`](release-checklist.md)
+
+Release note: [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
 
 ## Purpose
 
