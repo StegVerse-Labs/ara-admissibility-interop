@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1.0",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "candidate": "0.1.0-release-candidate",
+  "status": "release-readiness-build",
+  "primary_docs": {
+    "version": "VERSION",
+    "changelog": "CHANGELOG.md",
+    "readiness": "docs/release-readiness.md",
+    "checklist": "docs/release-checklist.md",
+    "release_note": "docs/release-note-0.1.0-rc.md",
+    "validation_guide": "docs/validation-report-guide.md",
+    "artifact_retention": "docs/workflow-artifact-retention.md"
+  },
+  "validation": {
+    "command": "python3 tools/generate_validation_report.py",
+    "machine_readable_output": "status/generated-status.json",
+    "human_readable_output": "status/validation-report.md",
+    "expected_state": "self-check-pass"
+  },
+  "workflows": {
+    "canonical_path": ".github/workflows/repo-check.yml",
+    "ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
+    "summary_output": true,
+    "artifact_upload": "optional-future-hardening"
+  },
+  "claims": [
+    "Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates.",
+    "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
+    "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
+  ],
+  "non_claims": [
+    "No upstream ARA endorsement is claimed.",
+    "No certification of external artifacts is claimed.",
+    "No production Standing Proof Engine behavior is claimed.",
+    "No journal, conference, lab, platform, or repository acceptance is claimed.",
+    "No execution authority for external systems is claimed.",
+    "No full JSON Schema conformance beyond the documented dependency-free subset is claimed."
+  ],
+  "next_version_candidates": [
+    "optional full JSON Schema validation",
+    "external example package with explicit permission",
+    "richer evaluator semantics beyond the current stub",
+    "artifact upload retention in the live workflow",
+    "generated docs site integration"
+  ]
+}
