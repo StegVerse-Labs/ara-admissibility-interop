@@ -24,9 +24,13 @@ This repository begins with a narrow interoperability hypothesis:
 
 > ARA-style research artifacts can be treated as inputs to a standing and admissibility layer without replacing the ARA artifact model.
 
+## Docs
+
+Static-site documentation starts at [`docs/index.md`](docs/index.md).
+
 ## Current goal
 
-Dependency policy hardening.
+Generated docs site integration.
 
 The dependency-free validation path remains the default. Dependency rules are defined in [`docs/dependency-policy.md`](docs/dependency-policy.md). Optional full JSON Schema validation is documented in [`docs/optional-strict-validation.md`](docs/optional-strict-validation.md) and surfaced through [`release-manifest.json`](release-manifest.json).
 
@@ -83,6 +87,7 @@ admissibility/
     invalid-missing-claim-boundary.json
     invalid-standing-result-decision.json
 docs/
+  index.md
   dependency-policy.md
   release-readiness.md
   release-checklist.md
@@ -92,6 +97,7 @@ docs/
   workflow-artifact-retention.md
 tools/
   assess_repo.py
+  check_dependency_policy.py
   validate_schema_files.py
   validate_examples.py
   validate_by_schema_subset.py
@@ -131,7 +137,7 @@ Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs
 
 ## Status
 
-Dependency policy hardening build in progress.
+Generated docs site integration build in progress.
 
 ## Relationship to StegVerse
 
