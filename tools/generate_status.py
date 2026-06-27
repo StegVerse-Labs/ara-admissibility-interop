@@ -15,6 +15,7 @@ OUTPUT = ROOT / "status" / "generated-status.json"
 CHECKS = [
     [sys.executable, "tools/assess_repo.py"],
     [sys.executable, "tools/check_dependency_policy.py"],
+    [sys.executable, "tools/check_docs_site.py"],
     [sys.executable, "tools/validate_schema_files.py"],
     [sys.executable, "tools/validate_examples.py"],
     [sys.executable, "tools/validate_by_schema_subset.py"],
@@ -46,7 +47,7 @@ def main() -> int:
     passed = all(result["passed"] for result in results)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "status_version": "0.7.0",
+        "status_version": "0.8.0",
         "state": "self-check-pass" if passed else "self-check-fail",
         "goal_activation_percent": 100,
         "full_build_percent": 99 if passed else 93,
@@ -54,7 +55,8 @@ def main() -> int:
         "checks": results,
         "remaining": [
             "Future hardening: make full JSON Schema validation required only if dependency policy changes.",
-            "Future hardening: add artifact upload retention in the live workflow if platform/tooling permits."
+            "Future hardening: add artifact upload retention in the live workflow if platform/tooling permits.",
+            "Future hardening: enable GitHub Pages or external docs publishing."
         ],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
