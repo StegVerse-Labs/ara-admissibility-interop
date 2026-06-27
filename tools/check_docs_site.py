@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check generated docs site integration invariants."""
+"""Check generated docs site and publishing automation invariants."""
 
 from __future__ import annotations
 
@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS_INDEX = ROOT / "docs" / "index.md"
 DOCS_CONFIG = ROOT / "docs" / "_config.yml"
+PAGES_WORKFLOW = ROOT / ".github" / "workflows" / "docs-pages.yml"
+IOS_PAGES_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "docs-pages.yml"
 MANIFEST = ROOT / "release-manifest.json"
 
 REQUIRED_INDEX_LINKS = [
@@ -26,27 +28,31 @@ REQUIRED_CONFIG_PHRASES = [
     "markdown: kramdown",
 ]
 
+REQUIRED_PAGES_WORKFLOW_PHRASES = [
+    "uses: actions/configure-pages@v5",
+    "uses: actions/upload-pages-artifact@v3",
+    "uses: actions/deploy-pages@v4",
+    "path: docs",
+]
+
+
+def check_contains(path: Path, phrases: list[str], problems: list[str], label: str) -> None:
+    if not path.is_file():
+        problems.append(f"missing:{path.relative_to(ROOT)}")
+        return
+    text = path.read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in text:
+            problems.append(f"missing-{label}-phrase:{phrase}")
+
 
 def main() -> int:
     problems: list[str] = []
 
-    if not DOCS_INDEX.is_file():
-        problems.append("missing:docs/index.md")
-        index_text = ""
-    else:
-        index_text = DOCS_INDEX.read_text(encoding="utf-8")
-        for link in REQUIRED_INDEX_LINKS:
-            if link not in index_text:
-                problems.append(f"missing-docs-index-link:{link}")
-
-    if not DOCS_CONFIG.is_file():
-        problems.append("missing:docs/_config.yml")
-        config_text = ""
-    else:
-        config_text = DOCS_CONFIG.read_text(encoding="utf-8")
-        for phrase in REQUIRED_CONFIG_PHRASES:
-            if phrase not in config_text:
-                problems.append(f"missing-docs-config-phrase:{phrase}")
+    check_contains(DOCS_INDEX, REQUIRED_INDEX_LINKS, problems, "docs-index")
+    check_contains(DOCS_CONFIG, REQUIRED_CONFIG_PHRASES, problems, "docs-config")
+    check_contains(PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "pages-workflow")
+    check_contains(IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "ios-pages-workflow")
 
     if not MANIFEST.is_file():
         problems.append("missing:release-manifest.json")
@@ -54,6 +60,8 @@ def main() -> int:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         docs_site = manifest.get("docs_site", {})
         primary_docs = manifest.get("primary_docs", {})
+        workflows = manifest.get("workflows", {})
+        publishing = docs_site.get("publishing", {})
         if docs_site.get("entrypoint") != "docs/index.md":
             problems.append("manifest-docs-entrypoint")
         if docs_site.get("config") != "docs/_config.yml":
@@ -62,9 +70,27 @@ def main() -> int:
             problems.append("manifest-primary-docs-index")
         if primary_docs.get("docs_config") != "docs/_config.yml":
             problems.append("manifest-primary-docs-config")
+        if publishing.get("canonical_workflow") != ".github/workflows/docs-pages.yml":
+            problems.append("manifest-docs-canonical-workflow")
+        if publishing.get("ios_safe_workflow") != "iosnoperiod/github/workflows/docs-pages.yml":
+            problems.append("manifest-docs-ios-workflow")
+        if publishing.get("manual_publish_required") is not False:
+            problems.append("manifest-manual-docs-publish-not-false")
+        if workflows.get("docs_pages_canonical_path") != ".github/workflows/docs-pages.yml":
+            problems.append("manifest-workflows-docs-canonical-path")
+        if workflows.get("docs_pages_ios_safe_path") != "iosnoperiod/github/workflows/docs-pages.yml":
+            problems.append("manifest-workflows-docs-ios-path")
+        if workflows.get("manual_docs_publish_required") is not False:
+            problems.append("manifest-workflows-manual-docs-publish-not-false")
 
     result = {
-        "checked": ["docs/index.md", "docs/_config.yml", "release-manifest.json"],
+        "checked": [
+            "docs/index.md",
+            "docs/_config.yml",
+            ".github/workflows/docs-pages.yml",
+            "iosnoperiod/github/workflows/docs-pages.yml",
+            "release-manifest.json",
+        ],
         "problem_count": len(problems),
         "problems": problems,
         "result": "pass" if not problems else "fail",
