@@ -16,6 +16,7 @@ CHECKS = [
     [sys.executable, "tools/assess_repo.py"],
     [sys.executable, "tools/check_dependency_policy.py"],
     [sys.executable, "tools/check_docs_site.py"],
+    [sys.executable, "tools/check_automation_policy.py"],
     [sys.executable, "tools/validate_schema_files.py"],
     [sys.executable, "tools/validate_examples.py"],
     [sys.executable, "tools/validate_by_schema_subset.py"],
@@ -47,16 +48,17 @@ def main() -> int:
     passed = all(result["passed"] for result in results)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "status_version": "0.8.0",
+        "status_version": "0.9.0",
         "state": "self-check-pass" if passed else "self-check-fail",
         "goal_activation_percent": 100,
-        "full_build_percent": 99 if passed else 93,
+        "full_build_percent": 100 if passed else 94,
         "handoff_ready": passed,
         "checks": results,
         "remaining": [
-            "Future hardening: make full JSON Schema validation required only if dependency policy changes.",
-            "Future hardening: add artifact upload retention in the live workflow if platform/tooling permits.",
-            "Future hardening: enable GitHub Pages or external docs publishing."
+            "Policy-gated: make full JSON Schema validation required only if dependency policy changes.",
+            "Policy-gated: add external examples only with explicit permission and boundary terms.",
+            "Policy-gated: replace evaluator stub only with new evaluator scope and expected fixture policy.",
+            "Policy-gated: tag or publish formal release only after release checklist pass and maintainer release decision."
         ],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
