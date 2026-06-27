@@ -1,17 +1,36 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.1.0-release-candidate",
-  "status": "optional-strict-validation-build",
+  "status": "dependency-policy-hardening-build",
   "primary_docs": {
     "version": "VERSION",
     "changelog": "CHANGELOG.md",
     "readiness": "docs/release-readiness.md",
     "checklist": "docs/release-checklist.md",
     "release_note": "docs/release-note-0.1.0-rc.md",
+    "dependency_policy": "docs/dependency-policy.md",
     "optional_strict_validation": "docs/optional-strict-validation.md",
     "validation_guide": "docs/validation-report-guide.md",
     "artifact_retention": "docs/workflow-artifact-retention.md"
+  },
+  "dependency_policy": {
+    "baseline": "dependency-free",
+    "required_dependencies": [],
+    "optional_dependencies": [
+      {
+        "name": "jsonschema",
+        "tool": "tools/validate_with_jsonschema_optional.py",
+        "absent_behavior": "skip-with-exit-zero",
+        "present_behavior": "full-json-schema-validation"
+      }
+    ],
+    "prohibited_behavior": [
+      "installing packages during validation without explicit user action",
+      "requiring network access during validation",
+      "failing default CI because an optional package is missing",
+      "silently replacing dependency-free checks with dependency-backed checks"
+    ]
   },
   "validation": {
     "command": "python3 tools/generate_validation_report.py",
