@@ -22,3 +22,15 @@ jobs:
 
       - name: Publish validation summary
         run: cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validation status
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-status
+          path: status/generated-status.json
+
+      - name: Upload validation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: status/validation-report.md
