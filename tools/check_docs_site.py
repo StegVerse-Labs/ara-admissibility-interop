@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check generated docs site and publishing automation invariants."""
+"""Check generated docs site, publishing, and artifact automation invariants."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ DOCS_INDEX = ROOT / "docs" / "index.md"
 DOCS_CONFIG = ROOT / "docs" / "_config.yml"
 PAGES_WORKFLOW = ROOT / ".github" / "workflows" / "docs-pages.yml"
 IOS_PAGES_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "docs-pages.yml"
+REPO_CHECK_WORKFLOW = ROOT / ".github" / "workflows" / "repo-check.yml"
+IOS_REPO_CHECK_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "repo-check.yml"
 MANIFEST = ROOT / "release-manifest.json"
 
 REQUIRED_INDEX_LINKS = [
@@ -35,6 +37,14 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "path: docs",
 ]
 
+REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
+    "uses: actions/upload-artifact@v4",
+    "name: generated-status",
+    "path: status/generated-status.json",
+    "name: validation-report",
+    "path: status/validation-report.md",
+]
+
 
 def check_contains(path: Path, phrases: list[str], problems: list[str], label: str) -> None:
     if not path.is_file():
@@ -53,6 +63,8 @@ def main() -> int:
     check_contains(DOCS_CONFIG, REQUIRED_CONFIG_PHRASES, problems, "docs-config")
     check_contains(PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "pages-workflow")
     check_contains(IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "ios-pages-workflow")
+    check_contains(REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "repo-check-workflow")
+    check_contains(IOS_REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "ios-repo-check-workflow")
 
     if not MANIFEST.is_file():
         problems.append("missing:release-manifest.json")
@@ -61,7 +73,9 @@ def main() -> int:
         docs_site = manifest.get("docs_site", {})
         primary_docs = manifest.get("primary_docs", {})
         workflows = manifest.get("workflows", {})
+        validation = manifest.get("validation", {})
         publishing = docs_site.get("publishing", {})
+        retention = validation.get("artifact_retention", {})
         if docs_site.get("entrypoint") != "docs/index.md":
             problems.append("manifest-docs-entrypoint")
         if docs_site.get("config") != "docs/_config.yml":
@@ -76,12 +90,22 @@ def main() -> int:
             problems.append("manifest-docs-ios-workflow")
         if publishing.get("manual_publish_required") is not False:
             problems.append("manifest-manual-docs-publish-not-false")
+        if retention.get("canonical_workflow") != ".github/workflows/repo-check.yml":
+            problems.append("manifest-retention-canonical-workflow")
+        if retention.get("ios_safe_workflow") != "iosnoperiod/github/workflows/repo-check.yml":
+            problems.append("manifest-retention-ios-workflow")
+        if retention.get("manual_artifact_retention_required") is not False:
+            problems.append("manifest-manual-artifact-retention-not-false")
         if workflows.get("docs_pages_canonical_path") != ".github/workflows/docs-pages.yml":
             problems.append("manifest-workflows-docs-canonical-path")
         if workflows.get("docs_pages_ios_safe_path") != "iosnoperiod/github/workflows/docs-pages.yml":
             problems.append("manifest-workflows-docs-ios-path")
         if workflows.get("manual_docs_publish_required") is not False:
             problems.append("manifest-workflows-manual-docs-publish-not-false")
+        if workflows.get("manual_artifact_retention_required") is not False:
+            problems.append("manifest-workflows-manual-artifact-retention-not-false")
+        if workflows.get("artifact_upload") != "automated":
+            problems.append("manifest-workflows-artifact-upload-not-automated")
 
     result = {
         "checked": [
@@ -89,6 +113,8 @@ def main() -> int:
             "docs/_config.yml",
             ".github/workflows/docs-pages.yml",
             "iosnoperiod/github/workflows/docs-pages.yml",
+            ".github/workflows/repo-check.yml",
+            "iosnoperiod/github/workflows/repo-check.yml",
             "release-manifest.json",
         ],
         "problem_count": len(problems),
