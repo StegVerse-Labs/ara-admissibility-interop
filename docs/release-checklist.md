@@ -15,6 +15,15 @@ Use this checklist before tagging, citing, or presenting the repository as a rel
 - [ ] README states that this repository does not replace ARA.
 - [ ] Release notes avoid endorsement, certification, upstream acceptance, or production authority claims.
 
+## Dependency policy
+
+- [ ] `docs/dependency-policy.md` is present.
+- [ ] Baseline validation remains dependency-free.
+- [ ] No required dependencies are declared for the default validation path.
+- [ ] Optional dependencies are documented before use.
+- [ ] Missing optional dependencies return a clean skip with exit code `0`.
+- [ ] Validation does not install packages or require network access.
+
 ## Validation
 
 - [ ] Run:
@@ -65,6 +74,7 @@ python3 tools/generate_validation_report.py
 
 ## Release-readiness review
 
+- [ ] `docs/dependency-policy.md` explains dependency classes and promotion rules.
 - [ ] `docs/optional-strict-validation.md` explains optional strict validation.
 - [ ] `docs/validation-report-guide.md` explains validation outputs.
 - [ ] `docs/workflow-artifact-retention.md` explains optional artifact retention.
