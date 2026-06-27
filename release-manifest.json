@@ -1,8 +1,8 @@
 {
-  "schema_version": "0.5.0",
+  "schema_version": "0.6.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.1.0-release-candidate",
-  "status": "generated-docs-site-integration-build",
+  "status": "docs-publishing-automation-build",
   "primary_docs": {
     "docs_index": "docs/index.md",
     "docs_config": "docs/_config.yml",
@@ -20,7 +20,12 @@
     "entrypoint": "docs/index.md",
     "config": "docs/_config.yml",
     "mode": "github-pages-ready-markdown",
-    "requires_build_step": false
+    "requires_build_step": false,
+    "publishing": {
+      "canonical_workflow": ".github/workflows/docs-pages.yml",
+      "ios_safe_workflow": "iosnoperiod/github/workflows/docs-pages.yml",
+      "manual_publish_required": false
+    }
   },
   "dependency_policy": {
     "baseline": "dependency-free",
@@ -50,9 +55,12 @@
     "optional_strict_absent_behavior": "skip-with-exit-zero"
   },
   "workflows": {
-    "canonical_path": ".github/workflows/repo-check.yml",
-    "ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
+    "repo_check_canonical_path": ".github/workflows/repo-check.yml",
+    "repo_check_ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
+    "docs_pages_canonical_path": ".github/workflows/docs-pages.yml",
+    "docs_pages_ios_safe_path": "iosnoperiod/github/workflows/docs-pages.yml",
     "summary_output": true,
+    "manual_docs_publish_required": false,
     "artifact_upload": "optional-future-hardening"
   },
   "claims": [
@@ -60,6 +68,7 @@
     "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
     "Optional stricter JSON Schema validation path when jsonschema is installed.",
     "GitHub Pages-ready Markdown docs index and config.",
+    "Automated docs publishing workflow for GitHub Pages.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
   "non_claims": [
@@ -74,7 +83,6 @@
     "make full JSON Schema validation required if dependency policy changes",
     "external example package with explicit permission",
     "richer evaluator semantics beyond the current stub",
-    "artifact upload retention in the live workflow",
-    "enable GitHub Pages or external docs publishing"
+    "artifact upload retention in the live workflow"
   ]
 }
