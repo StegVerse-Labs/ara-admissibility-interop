@@ -14,6 +14,7 @@ OUTPUT = ROOT / "status" / "generated-status.json"
 
 CHECKS = [
     [sys.executable, "tools/assess_repo.py"],
+    [sys.executable, "tools/check_dependency_policy.py"],
     [sys.executable, "tools/validate_schema_files.py"],
     [sys.executable, "tools/validate_examples.py"],
     [sys.executable, "tools/validate_by_schema_subset.py"],
@@ -45,10 +46,10 @@ def main() -> int:
     passed = all(result["passed"] for result in results)
     status = {
         "repo": "StegVerse-Labs/ara-admissibility-interop",
-        "status_version": "0.6.0",
+        "status_version": "0.7.0",
         "state": "self-check-pass" if passed else "self-check-fail",
         "goal_activation_percent": 100,
-        "full_build_percent": 98 if passed else 92,
+        "full_build_percent": 99 if passed else 93,
         "handoff_ready": passed,
         "checks": results,
         "remaining": [
