@@ -26,9 +26,9 @@ This repository begins with a narrow interoperability hypothesis:
 
 ## Current goal
 
-Optional strict validation.
+Dependency policy hardening.
 
-The dependency-free validation path remains the default. Optional full JSON Schema validation is documented in [`docs/optional-strict-validation.md`](docs/optional-strict-validation.md) and surfaced through [`release-manifest.json`](release-manifest.json).
+The dependency-free validation path remains the default. Dependency rules are defined in [`docs/dependency-policy.md`](docs/dependency-policy.md). Optional full JSON Schema validation is documented in [`docs/optional-strict-validation.md`](docs/optional-strict-validation.md) and surfaced through [`release-manifest.json`](release-manifest.json).
 
 ## Run validation
 
@@ -83,6 +83,7 @@ admissibility/
     invalid-missing-claim-boundary.json
     invalid-standing-result-decision.json
 docs/
+  dependency-policy.md
   release-readiness.md
   release-checklist.md
   release-note-0.1.0-rc.md
@@ -130,7 +131,7 @@ Artifact retention is documented in [`docs/workflow-artifact-retention.md`](docs
 
 ## Status
 
-Optional strict validation build in progress.
+Dependency policy hardening build in progress.
 
 ## Relationship to StegVerse
 
