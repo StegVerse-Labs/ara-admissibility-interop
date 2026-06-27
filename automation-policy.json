@@ -1,0 +1,53 @@
+{
+  "schema_version": "0.1.0",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "goal": "self-management-closure",
+  "manual_tasks_allowed": false,
+  "automated_paths": {
+    "validation": {
+      "command": "python3 tools/generate_validation_report.py",
+      "workflow": ".github/workflows/repo-check.yml",
+      "ios_safe_workflow": "iosnoperiod/github/workflows/repo-check.yml",
+      "retains_artifacts": true,
+      "publishes_step_summary": true
+    },
+    "docs_publishing": {
+      "source": "docs/",
+      "workflow": ".github/workflows/docs-pages.yml",
+      "ios_safe_workflow": "iosnoperiod/github/workflows/docs-pages.yml",
+      "manual_publish_required": false
+    },
+    "dependency_policy": {
+      "checker": "tools/check_dependency_policy.py",
+      "required_dependencies": [],
+      "optional_dependencies": ["jsonschema"]
+    },
+    "docs_site_policy": {
+      "checker": "tools/check_docs_site.py",
+      "entrypoint": "docs/index.md",
+      "config": "docs/_config.yml"
+    }
+  },
+  "policy_gated_tasks": [
+    {
+      "task": "make full JSON Schema validation required",
+      "requires": "dependency-policy update"
+    },
+    {
+      "task": "add external examples",
+      "requires": "explicit permission and boundary terms"
+    },
+    {
+      "task": "replace evaluator stub with richer semantics",
+      "requires": "new evaluator scope and expected fixture policy"
+    },
+    {
+      "task": "tag or publish formal release",
+      "requires": "release checklist pass and maintainer release decision"
+    }
+  ],
+  "goal_completion_rule": {
+    "when_goal_activation_percent_is": 100,
+    "next_step": "select the next policy-gated task only if its required policy condition is already satisfied; otherwise report handoff-ready and do not invent manual work"
+  }
+}
