@@ -1,10 +1,11 @@
 {
-  "schema_version": "0.4.0",
+  "schema_version": "0.5.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.1.0-release-candidate",
   "status": "generated-docs-site-integration-build",
   "primary_docs": {
     "docs_index": "docs/index.md",
+    "docs_config": "docs/_config.yml",
     "version": "VERSION",
     "changelog": "CHANGELOG.md",
     "readiness": "docs/release-readiness.md",
@@ -17,7 +18,8 @@
   },
   "docs_site": {
     "entrypoint": "docs/index.md",
-    "mode": "static-markdown-index",
+    "config": "docs/_config.yml",
+    "mode": "github-pages-ready-markdown",
     "requires_build_step": false
   },
   "dependency_policy": {
@@ -57,7 +59,7 @@
     "Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates.",
     "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
     "Optional stricter JSON Schema validation path when jsonschema is installed.",
-    "Static Markdown docs index for generated docs site integration.",
+    "GitHub Pages-ready Markdown docs index and config.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
   "non_claims": [
@@ -73,6 +75,6 @@
     "external example package with explicit permission",
     "richer evaluator semantics beyond the current stub",
     "artifact upload retention in the live workflow",
-    "publish docs index through GitHub Pages or external docs site"
+    "enable GitHub Pages or external docs publishing"
   ]
 }
