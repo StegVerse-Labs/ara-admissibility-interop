@@ -1,0 +1,4 @@
+title: ARA Admissibility Interop
+description: Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates under commit-time admissibility.
+plugins: []
+markdown: kramdown
