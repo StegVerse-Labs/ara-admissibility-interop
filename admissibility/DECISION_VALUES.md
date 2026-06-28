@@ -1,0 +1,6 @@
+# Decision Values
+
+ALLOW
+DENY
+CONDITIONAL
+FAIL_CLOSED
