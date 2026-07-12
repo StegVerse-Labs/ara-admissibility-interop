@@ -10,37 +10,53 @@ Read this file before continuing repository work. This handoff authorizes only b
 
 - Goal activation remains repository-local validation readiness only.
 - Formal release and publication remain policy-gated.
-- Latest observed commit: `c0315cc05628e2cf59e953449bd664b61c52868a` on `main`.
-- Latest observed workflow: `Repo Check`, run `29178009373`.
-- Job: `repo-check`.
-- First failing step: `Generate validation report`.
+- Latest repaired commit: `bb8977531f59f61f82cab5d60fdcd40206011453` on `main`.
+- Latest handled failed commit: `e8b03ff8f68d0df102ca2ad047b02b7db19c8f39`.
+- Failed workflows: `Repo Check` run `29179511675` and `Docs Pages` run `29179511673`.
+- `Repo Check` first failed at `Generate validation report`.
+- `Docs Pages` first failed at `Verify workflow mirror parity`; the publish job was skipped.
 
 ## Failure classification
 
-`tools/check_docs_site.py` requires the literal workflow phrase `path: docs`, while both Pages workflows use the governed dynamic publish root `${{ needs.publication-gate.outputs.publish_root }}` obtained from `publication-manifest.json`.
+The generated Jekyll site workflow now derives its source from `${{ needs.publication-gate.outputs.publish_root }}` and uploads the built `./_site` directory. The live `tools/check_docs_site.py` still required the pre-build artifact path `${{ needs.publication-gate.outputs.publish_root }}`, so repository validation failed after the governed build step was introduced.
 
-The remaining repository self-checks passed. The failure is a stale validator assertion, not evidence that the publication gate or dynamic publish-root boundary failed.
+The Pages failure on `e8b03ff` was a canonical/iOS-safe workflow parity mismatch. The current canonical and iOS-safe workflow copies are now equivalent and both contain the governed Jekyll build and `./_site` upload path.
 
-## Authorized bounded repair
+These are repository-local validation/parity failures. They do not authorize publication, release, deployment, tagging, or authority expansion.
 
-The next permitted task is to align `tools/check_docs_site.py` with the governed dynamic publish-root workflow while preserving checks that:
+## Applied bounded repair
 
-- `actions/upload-pages-artifact@v3` remains present;
-- the artifact path remains `${{ needs.publication-gate.outputs.publish_root }}`;
-- the publication gate continues to derive the root from `publication-manifest.json`;
-- canonical and iOS-safe workflow copies remain equivalent;
-- no release, deployment, tag, external example, dependency-policy, or evaluator authority is changed.
+Commit `bb8977531f59f61f82cab5d60fdcd40206011453` updates `tools/check_docs_site.py` to require:
+
+- `actions/jekyll-build-pages@v1`;
+- source `${{ needs.publication-gate.outputs.publish_root }}`;
+- destination `./_site`;
+- `actions/upload-pages-artifact@v3` with path `./_site`;
+- the existing manifest-derived publication root;
+- canonical and iOS-safe workflow validation.
+
+No release, tag, deployment, external repository, dependency-policy, evaluator, or publication-authority change was made.
 
 ## Verification requirement
 
-Run or observe `Repo Check` on the repair commit. Completion requires `check_docs_site.py` and the complete generated-status check set to pass.
+Observe the `Repo Check` and `Docs Pages` runs on commit `bb8977531f59f61f82cab5d60fdcd40206011453` or a direct successor containing this repair. Completion requires:
+
+- the complete generated-status check set to pass;
+- publication-gate validation to pass;
+- negative publication-gate tests to pass;
+- canonical/iOS workflow parity to pass;
+- the governed publish-root output to be read successfully.
+
+A successful gate does not itself authorize deployment or formal publication beyond the repository's existing workflow policy.
 
 ## Next task after verification
 
-If and only if the full repository check passes, record the passing commit and run receipt here. Do not begin a formal release or publication task without a maintainer release decision.
+If and only if the full repository check and publication gate pass, record the passing commit and run receipts here. Do not begin a formal release or publication task without a maintainer release decision.
 
 ## Remaining modules or work
 
+- Pending verification: `StegVerse-Labs/ara-admissibility-interop` — `Repo Check` on `bb897753...` or successor.
+- Pending verification: `StegVerse-Labs/ara-admissibility-interop` — `Docs Pages` publication gate and workflow parity on `bb897753...` or successor.
 - Policy-gated full JSON Schema dependency decision.
 - Permission-gated external examples.
 - Explicitly scoped evaluator replacement, if later authorized.
@@ -48,4 +64,4 @@ If and only if the full repository check passes, record the passing commit and r
 
 ## Archive readiness
 
-This handoff records the current failure, authority boundary, exact bounded repair, verification condition, and blocked later work. The complete thread is ready for archiving without any additional context needed to move forward.
+This handoff records the current failures, bounded validator repair, preserved authority boundaries, exact verification conditions, and blocked later work. The complete thread is ready for archiving without any additional context needed to move forward.
