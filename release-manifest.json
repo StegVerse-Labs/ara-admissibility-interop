@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.8.1",
+  "schema_version": "0.9.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.2.0-release-candidate",
   "status": "governed-publication-release-candidate",
@@ -17,6 +17,8 @@
     "artifact_retention": "docs/workflow-artifact-retention.md",
     "governed_publication": "docs/governed-publication.md",
     "publication_status": "docs/publication-status.md",
+    "publication_evidence_verification": "docs/publication-evidence-verification.md",
+    "release_evidence_decision": "docs/release-evidence-decision.md",
     "mirror_handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
   },
   "docs_site": {
@@ -36,7 +38,9 @@
       "gate_tests": "tools/test_publication_gate.py",
       "status_generator": "tools/generate_publication_status.py",
       "receipt_generator": "tools/generate_publication_receipt.py",
-      "receipt_schema": "publication/publication-receipt.schema.json"
+      "receipt_schema": "publication/publication-receipt.schema.json",
+      "evidence_verifier": "tools/verify_publication_evidence.py",
+      "release_evaluator": "tools/evaluate_release_evidence.py"
     }
   },
   "dependency_policy": {
@@ -70,8 +74,11 @@
       "python3 tools/test_publication_gate.py",
       "python3 tools/check_workflow_parity.py",
       "python3 tools/generate_publication_status.py",
-      "python3 tools/generate_publication_receipt.py"
+      "python3 tools/generate_publication_receipt.py",
+      "python3 tools/test_publication_evidence_verifier.py",
+      "python3 tools/test_release_evidence_evaluator.py"
     ],
+    "deployed_evidence_command": "python3 tools/evaluate_release_evidence.py --artifact-root _site --identity-file status/deployed-identity.json --live-root-file status/deployed-live-root.html --require-public-review-allow",
     "artifact_retention": {
       "canonical_workflow": ".github/workflows/repo-check.yml",
       "ios_safe_workflow": "iosnoperiod/github/workflows/repo-check.yml",
@@ -80,8 +87,24 @@
       "publication_status_artifact": "publication-status",
       "publication_receipt_artifact": "publication-receipt",
       "deployed_publication_evidence_artifact": "deployed-publication-evidence",
+      "release_evidence_decision_json": "status/release-evidence-decision.json",
+      "release_evidence_decision_markdown": "status/release-evidence-decision.md",
+      "captured_live_root": "status/deployed-live-root.html",
+      "captured_deployment_identity": "status/deployed-identity.json",
+      "retained_built_site": "_site",
       "manual_artifact_retention_required": false
     }
+  },
+  "release_evidence": {
+    "decision_type": "governed-release-evidence-decision",
+    "evaluator": "tools/evaluate_release_evidence.py",
+    "independent_verifier": "tools/verify_publication_evidence.py",
+    "public_review_fail_closed": true,
+    "requires_built_artifact": true,
+    "requires_captured_live_root": true,
+    "requires_captured_deployment_identity": true,
+    "automatic_stable_authorization": false,
+    "stable_tag_creation": "maintainer-authorized-only"
   },
   "workflows": {
     "repo_check_canonical_path": ".github/workflows/repo-check.yml",
@@ -95,6 +118,7 @@
     "artifact_upload": "automated",
     "built_entrypoint_verification": "required",
     "deployment_url_verification": "required",
+    "release_evidence_decision": "required",
     "stable_tag_blocked_until_live_verification": true
   },
   "claims": [
@@ -104,8 +128,10 @@
     "Jekyll-built GitHub Pages documentation site with verified index.html entry point.",
     "Manifest-governed automated docs publishing workflow for GitHub Pages.",
     "Fail-closed publication gate with executable negative tests.",
-    "Automated validation, publication-status, and publication-receipt artifact retention.",
+    "Automated validation, publication-status, publication-receipt, and release-evidence artifact retention.",
     "Hash-bound publication receipt covering the manifest and published file inventory.",
+    "Independent retained-evidence verification for the built artifact, deployment identity, and captured live root.",
+    "Bounded public-review and stable-release evidence decisions without automatic stable-release authorization.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
   "non_claims": [
@@ -116,7 +142,8 @@
     "No execution authority for external systems is claimed.",
     "No canonical doctrine status is claimed.",
     "No independent review, clinical validation, or regulatory authorization is claimed.",
-    "No required full JSON Schema conformance is claimed when the optional dependency is absent."
+    "No required full JSON Schema conformance is claimed when the optional dependency is absent.",
+    "No stable release is automatically authorized by a passing public-review evidence decision."
   ],
   "release_gate": {
     "repo_check_workflow_verified": false,
