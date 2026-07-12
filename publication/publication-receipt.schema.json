@@ -62,7 +62,32 @@
     },
     "gate_result": {"const": "ALLOW"},
     "deployment_url": {"type": "string"},
-    "live_root_verification": {"enum": ["not_run", "passed"]}
+    "live_root_verification": {
+      "type": "object",
+      "required": [
+        "result",
+        "verified_at",
+        "requested_url",
+        "final_url",
+        "http_status",
+        "expected_marker",
+        "marker_found",
+        "body_sha256",
+        "body_size_bytes"
+      ],
+      "properties": {
+        "result": {"enum": ["not_run", "passed"]},
+        "verified_at": {"type": "string"},
+        "requested_url": {"type": "string"},
+        "final_url": {"type": "string"},
+        "http_status": {"type": ["integer", "null"]},
+        "expected_marker": {"type": "string"},
+        "marker_found": {"type": "boolean"},
+        "body_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
+        "body_size_bytes": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }
