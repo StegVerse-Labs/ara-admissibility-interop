@@ -34,7 +34,8 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "uses: actions/configure-pages@v5",
     "uses: actions/upload-pages-artifact@v3",
     "uses: actions/deploy-pages@v4",
-    "path: docs",
+    'json.load(open("publication-manifest.json"))["publish_root"]',
+    "path: ${{ needs.publication-gate.outputs.publish_root }}",
 ]
 
 REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
