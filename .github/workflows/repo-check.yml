@@ -35,13 +35,16 @@ jobs:
       - name: Generate publication receipt
         run: python3 tools/generate_publication_receipt.py
 
+      - name: Test independent publication evidence verifier
+        run: python3 tools/test_publication_evidence_verifier.py
+
       - name: Publish validation summary
         run: |
           cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Publication gate, negative fixtures, workflow parity, status generation, and receipt generation passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Publication gate, negative fixtures, workflow parity, status generation, receipt generation, and independent evidence-verifier tests passed." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload validation status
         uses: actions/upload-artifact@v4
