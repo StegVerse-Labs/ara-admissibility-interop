@@ -75,8 +75,10 @@ jobs:
       - name: Generate governed publication status page
         run: python3 tools/generate_publication_status.py
 
-      - name: Configure Pages
+      - name: Configure and enable Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload governed docs artifact
         uses: actions/upload-pages-artifact@v3
