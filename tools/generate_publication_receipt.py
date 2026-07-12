@@ -32,8 +32,11 @@ def resolve_artifact_root(manifest: dict) -> tuple[Path, str, str]:
         raise ValueError("publication artifact root escapes repository root") from exc
     if not artifact_root.is_dir():
         raise ValueError(f"publication artifact root does not exist: {configured}")
-    if artifact_kind == "built_site" and not (artifact_root / "index.html").is_file():
-        raise ValueError("built publication artifact has no index.html")
+    if artifact_kind == "built_site":
+        if not (artifact_root / "index.html").is_file():
+            raise ValueError("built publication artifact has no index.html")
+        if not (artifact_root / "deployment-identity.json").is_file():
+            raise ValueError("built publication artifact has no deployment identity")
     return artifact_root, configured, artifact_kind
 
 
@@ -68,7 +71,7 @@ def optional_int(name: str) -> int | None:
         raise ValueError(f"{name} must be an integer") from exc
 
 
-def live_verification_record() -> dict:
+def live_verification_record(expected_commit: str) -> dict:
     result = os.getenv("LIVE_ROOT_VERIFICATION", "not_run")
     record = {
         "result": result,
@@ -80,6 +83,10 @@ def live_verification_record() -> dict:
         "marker_found": os.getenv("LIVE_ROOT_MARKER_FOUND", "false").lower() == "true",
         "body_sha256": os.getenv("LIVE_ROOT_BODY_SHA256", ""),
         "body_size_bytes": optional_int("LIVE_ROOT_BODY_SIZE_BYTES"),
+        "deployed_commit_sha": os.getenv("LIVE_ROOT_DEPLOYED_COMMIT_SHA", ""),
+        "identity_http_status": optional_int("LIVE_IDENTITY_HTTP_STATUS"),
+        "identity_final_url": os.getenv("LIVE_IDENTITY_FINAL_URL", ""),
+        "identity_body_sha256": os.getenv("LIVE_IDENTITY_BODY_SHA256", ""),
     }
     if result == "passed":
         if record["http_status"] != 200:
@@ -92,6 +99,14 @@ def live_verification_record() -> dict:
             raise ValueError("passed live-root verification requires a SHA-256 body hash")
         if not record["verified_at"]:
             raise ValueError("passed live-root verification requires a timestamp")
+        if record["deployed_commit_sha"] != expected_commit:
+            raise ValueError("passed live-root verification requires the current commit identity")
+        if record["identity_http_status"] != 200:
+            raise ValueError("passed live-root verification requires HTTP 200 for deployment identity")
+        if not record["identity_final_url"].startswith("https://"):
+            raise ValueError("passed live-root verification requires an HTTPS identity URL")
+        if len(record["identity_body_sha256"]) != 64:
+            raise ValueError("passed live-root verification requires a SHA-256 identity hash")
     return record
 
 
@@ -103,9 +118,10 @@ def main() -> int:
         print("reason=" + "; ".join(errors))
         return 1
 
+    commit_sha = os.getenv("GITHUB_SHA", "local")
     try:
         artifact_root, configured_root, artifact_kind = resolve_artifact_root(manifest)
-        live_root = live_verification_record()
+        live_root = live_verification_record(commit_sha)
     except ValueError as exc:
         print("PUBLICATION_RECEIPT=FAIL-CLOSED")
         print(f"reason={exc}")
@@ -118,11 +134,11 @@ def main() -> int:
         return 1
 
     receipt = {
-        "schema_version": "1.2.0",
+        "schema_version": "1.3.0",
         "receipt_type": "governed-publication-receipt",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "repository": os.getenv("GITHUB_REPOSITORY", "StegVerse-Labs/ara-admissibility-interop"),
-        "commit_sha": os.getenv("GITHUB_SHA", "local"),
+        "commit_sha": commit_sha,
         "workflow_run_id": os.getenv("GITHUB_RUN_ID", "local"),
         "workflow_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT", "local"),
         "publication_status": manifest["publication_status"],
@@ -152,6 +168,7 @@ def main() -> int:
     print(f"artifact_root={configured_root}")
     print(f"artifact_tree_sha256={artifact_tree_sha256}")
     print(f"live_root_verification={live_root['result']}")
+    print(f"deployed_commit_sha={live_root['deployed_commit_sha']}")
     print(f"file_count={len(files)}")
     return 0
 
