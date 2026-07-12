@@ -11,6 +11,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Validation report guide](validation-report-guide.md)
 - [Governed publication](governed-publication.md)
 - [Independent publication evidence verification](publication-evidence-verification.md)
+- [Governed release evidence decision](release-evidence-decision.md)
 
 ## Governance and boundaries
 
@@ -47,12 +48,19 @@ python3 tools/check_workflow_parity.py
 python3 tools/generate_publication_status.py
 python3 tools/generate_publication_receipt.py
 python3 tools/test_publication_evidence_verifier.py
+python3 tools/test_release_evidence_evaluator.py
 ```
 
 To inspect a retained receipt independently:
 
 ```bash
 python3 tools/verify_publication_evidence.py status/publication-receipt.json
+```
+
+To convert verified evidence into bounded public-review and stable-release decisions:
+
+```bash
+python3 tools/evaluate_release_evidence.py
 ```
 
 Expected generated outputs:
@@ -62,6 +70,8 @@ status/generated-status.json
 status/validation-report.md
 status/publication-status.json
 status/publication-receipt.json
+status/release-evidence-decision.json
+status/release-evidence-decision.md
 docs/publication-status.md
 ```
 
