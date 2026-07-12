@@ -14,6 +14,7 @@ IOS_PAGES_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "docs-pages
 REPO_CHECK_WORKFLOW = ROOT / ".github" / "workflows" / "repo-check.yml"
 IOS_REPO_CHECK_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "repo-check.yml"
 MANIFEST = ROOT / "release-manifest.json"
+STAMP_TOOL = ROOT / "tools" / "stamp_built_site.py"
 
 REQUIRED_INDEX_LINKS = [
     "release-readiness.md",
@@ -39,7 +40,9 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "source: ./${{ needs.publication-gate.outputs.publish_root }}",
     "destination: ./_site",
     "path: ./_site",
-    "Verify live deployed root",
+    "python3 tools/stamp_built_site.py",
+    "deployment-identity.json",
+    "Verify live deployed root and commit identity",
     "ARA Admissibility Interop Docs",
     "PUBLICATION_ARTIFACT_ROOT: _site",
     "PUBLICATION_ARTIFACT_KIND: built_site",
@@ -51,6 +54,17 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "LIVE_ROOT_MARKER_FOUND=true",
     "LIVE_ROOT_BODY_SHA256=",
     "LIVE_ROOT_BODY_SIZE_BYTES=",
+    "LIVE_ROOT_DEPLOYED_COMMIT_SHA=",
+    "LIVE_IDENTITY_HTTP_STATUS=",
+    "LIVE_IDENTITY_FINAL_URL=",
+    "LIVE_IDENTITY_BODY_SHA256=",
+]
+
+REQUIRED_STAMP_TOOL_PHRASES = [
+    '"identity_type": "governed-pages-deployment-identity"',
+    '"commit_sha": commit_sha',
+    'deployment-identity.json',
+    'stegverse-deployment-commit',
 ]
 
 REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
@@ -79,6 +93,7 @@ def main() -> int:
     check_contains(DOCS_CONFIG, REQUIRED_CONFIG_PHRASES, problems, "docs-config")
     check_contains(PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "pages-workflow")
     check_contains(IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "ios-pages-workflow")
+    check_contains(STAMP_TOOL, REQUIRED_STAMP_TOOL_PHRASES, problems, "stamp-tool")
     check_contains(REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "repo-check-workflow")
     check_contains(IOS_REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "ios-repo-check-workflow")
 
@@ -131,6 +146,7 @@ def main() -> int:
             "docs/_config.yml",
             ".github/workflows/docs-pages.yml",
             "iosnoperiod/github/workflows/docs-pages.yml",
+            "tools/stamp_built_site.py",
             ".github/workflows/repo-check.yml",
             "iosnoperiod/github/workflows/repo-check.yml",
             "release-manifest.json",
