@@ -18,15 +18,18 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added `tools/generate_publication_status.py` producing machine-readable and public status outputs.
 - Added `tools/generate_publication_receipt.py` with manifest and published-file SHA-256 hashes.
 - Added `publication/publication-receipt.schema.json`.
-- Added deployment URL verification.
 - Added retained artifacts for validation, publication status, receipts, and deployed publication evidence.
 - Updated `VERSION`, `CHANGELOG.md`, release manifest, release note, release readiness, and release checklist for `0.2.0-release-candidate`.
 - Observed a successful GitHub Pages deployment at `https://stegverse-labs.github.io/ara-admissibility-interop/`.
-- Diagnosed the live root `404`: the workflow uploaded raw Markdown from `docs/`, so the deployed artifact lacked `index.html`.
+- Diagnosed the prior live root `404`: the workflow uploaded raw Markdown from `docs/`, so the deployed artifact lacked `index.html`.
 - Replaced raw docs upload with `actions/jekyll-build-pages@v1` and `_site` deployment.
-- Added a fail-closed check requiring `_site/index.html` before artifact upload.
+- Added a fail-closed check requiring `_site/index.html` and the expected site marker before artifact upload.
+- Added post-deployment live-root verification with bounded retries, HTTPS enforcement, and expected rendered-content verification.
+- Changed deployed receipts to hash the built `_site` artifact rather than only the Markdown source tree.
+- Added a deterministic artifact-tree SHA-256 covering deployed paths, file hashes, and sizes.
+- Extended the receipt schema with artifact root, artifact kind, artifact-tree hash, and live-root verification state.
 - Resynchronized the iOS-safe Pages workflow mirror.
-- Corrected `release-manifest.json` to declare the required Jekyll build step and built entry point.
+- Updated `tools/check_docs_site.py` to enforce the Jekyll build, live verification, and built-artifact receipt invariants.
 
 ## Current publication posture
 
@@ -44,9 +47,11 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - HTTPS Pages deployment environment and URL: observed
 - prior deployed root page: failed with `404` because no rendered `index.html` was present
 - Jekyll build correction: installed
-- corrected Pages workflow live success: pending
-- built `_site/index.html` verification: pending live workflow evidence
-- live root page verification after corrected deployment: pending
+- built-site entry-point and marker checks: installed
+- live deployed-root content verification: installed
+- built-artifact hash receipt: installed
+- corrected Pages workflow live success: pending observed run evidence
+- rendered root page after corrected deployment: pending observed evidence
 - deployed publication receipt inspection: pending
 - stable release tag: blocked
 
@@ -56,12 +61,13 @@ A successful Pages deployment means only that the documentation was permitted un
 
 ## Next tasks
 
-1. Confirm the corrected `Docs Pages` workflow completes the Jekyll build and verifies `_site/index.html`.
-2. Open the root Pages URL and confirm a rendered documentation page replaces the `404`.
-3. Inspect the `deployed-publication-evidence` artifact.
-4. Verify receipt commit SHA, manifest hash, file inventory, and HTTPS deployment URL.
-5. Update `release-manifest.json` release-gate booleans only from observed evidence.
-6. Create a stable tag only after explicit release authorization.
-7. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm `Repo Check` passes on the latest direct successor containing the validator and receipt changes.
+2. Confirm `Docs Pages` builds `_site/index.html`, verifies the marker, deploys, and passes live-root verification.
+3. Open the root Pages URL and confirm a rendered documentation page replaces the prior `404`.
+4. Inspect the `deployed-publication-evidence` artifact.
+5. Verify receipt commit SHA, manifest hash, built-artifact tree hash, file inventory, live verification state, and HTTPS deployment URL.
+6. Update `release-manifest.json` release-gate booleans only from observed evidence.
+7. Create a stable tag only after explicit release authorization.
+8. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
