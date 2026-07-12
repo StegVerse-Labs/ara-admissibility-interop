@@ -38,10 +38,14 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added `tools/test_release_evidence_evaluator.py` covering valid public review, stale deployment, invalid reliance posture, and fully explicit stable gates.
 - Added `docs/release-evidence-decision.md` and linked it from the documentation index.
 - Repo Check tests both independent evidence verification and bounded release-evidence decisions.
-- The release-evidence evaluator now accepts the retained `_site`, captured deployment identity, and captured live root so its decision is bound to the complete evidence package.
-- Docs Pages now runs the evaluator with `--require-public-review-allow` after live verification and receipt generation.
-- The deployed evidence artifact now retains `_site`, captured live root, captured deployment identity, publication receipt, publication status, and JSON/Markdown release decisions.
-- Updated `release-manifest.json` to declare the verifier, evaluator, evidence scope, retained outputs, fail-closed public-review posture, and prohibition on automatic stable authorization.
+- The release-evidence evaluator accepts the retained `_site`, captured deployment identity, and captured live root so its decision is bound to the complete evidence package.
+- Docs Pages runs the evaluator with `--require-public-review-allow` after live verification and receipt generation.
+- Added `tools/generate_evidence_bundle_manifest.py` and `tools/verify_evidence_bundle_manifest.py` to bind the retained deployment evidence into one deterministic bundle.
+- Added `tools/test_evidence_bundle_manifest.py` covering valid bundles, file tampering, missing files, duplicate entries, escaping paths, aggregate-hash mismatch, file-count mismatch, and malformed hashes.
+- Repo Check now runs the evidence-bundle regression suite.
+- Docs Pages generates, verifies, summarizes, and retains `status/deployed-evidence-bundle.json`.
+- The deployed evidence artifact retains `_site`, captured live root, captured deployment identity, publication receipt, publication status, JSON/Markdown release decisions, and the bundle manifest.
+- Updated `release-manifest.json` to schema `0.10.0`, declaring evidence-bundle generation, verification, tests, retention, and a separate `deployed_evidence_bundle_verified` release gate.
 - Resynchronized canonical and iOS-safe Repo Check and Pages workflows.
 - Updated `tools/check_docs_site.py` to enforce the complete deployment, evidence, and decision invariants.
 
@@ -60,8 +64,9 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - canonical/iOS workflow parity: built
 - independent evidence verifier and tests: built
 - release-evidence evaluator and tests: built
+- evidence-bundle generator, verifier, and regression tests: built
 - deployed Pages decision integration: built
-- complete retained evidence package: configured
+- complete hash-bound retained evidence package: configured
 - HTTPS Pages deployment environment and URL: observed
 - prior deployed root page: failed with `404` because no rendered `index.html` was present
 - Jekyll build correction: installed
@@ -72,10 +77,12 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - structured live HTTP and identity evidence receipt: installed
 - independent retained-evidence verification: installed
 - machine-readable public-review versus stable-release decision: installed
-- fresh Repo Check and Pages runs: triggered by this handoff update
+- deterministic evidence-bundle verification: installed
+- fresh Repo Check and Pages runs: triggered by the latest manifest and handoff updates
 - corrected Pages workflow live success: pending observed run evidence
 - rendered current-commit root page: pending observed evidence
 - deployed publication evidence artifact inspection: pending
+- deployed evidence bundle inspection: pending
 - stable release tag: blocked
 
 ## Boundary
@@ -86,13 +93,15 @@ A passing independent evidence verification proves internal consistency and inte
 
 An `ALLOW` public-review decision does not authorize a stable release. Stable release remains separately blocked until every release-gate condition is supported by observed evidence and `stable_release_authorized` is explicitly true.
 
+A passing evidence-bundle verification proves the declared retained files remain hash-consistent as a unit. It does not create authority or standing absent from the underlying evidence and governance state.
+
 ## Next tasks
 
-1. Confirm `Repo Check` passes with the updated validator, independent verifier, and release-evidence evaluator tests.
-2. Confirm `Docs Pages` builds and stamps `_site`, verifies the exact current commit at the live URL, generates the receipt, evaluates the full retained evidence package, and returns public-review `ALLOW`.
+1. Confirm `Repo Check` passes with publication, receipt, release-decision, and evidence-bundle regression tests.
+2. Confirm `Docs Pages` builds and stamps `_site`, verifies the exact current commit at the live URL, generates the receipt, evaluates the full retained evidence package, generates the bundle manifest, and verifies its aggregate hash.
 3. Open the root Pages URL and confirm a rendered current-commit documentation page replaces the prior `404`.
 4. Inspect the `deployed-publication-evidence` artifact and confirm all declared files are present.
-5. Run `tools/verify_publication_evidence.py` and `tools/evaluate_release_evidence.py` against the retained deployment evidence.
+5. Run `tools/verify_publication_evidence.py`, `tools/evaluate_release_evidence.py`, and `tools/verify_evidence_bundle_manifest.py` against the retained deployment evidence.
 6. Update `release-manifest.json` release-gate booleans only from observed evidence.
 7. Create a stable tag only after explicit release authorization.
 8. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
