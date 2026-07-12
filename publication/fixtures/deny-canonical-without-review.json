@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_class": "documentation_site",
+  "publication_status": "canonical",
+  "canonical_status": "authorized",
+  "independent_review_status": "not_started",
+  "clinical_status": "not_validated",
+  "regulatory_status": "not_authorized",
+  "reliance_posture": "research_and_review_only",
+  "publish_target": "github_pages",
+  "publish_root": "docs",
+  "allowed_publication_statuses": ["public_review", "canonical"],
+  "required_non_claims": ["No upstream ARA endorsement is claimed."],
+  "gate_policy": {
+    "block_canonical_without_independent_review": true,
+    "block_clinical_claims_without_validation": true,
+    "block_regulatory_claims_without_authorization": true,
+    "require_publish_root": true,
+    "require_non_claims": true
+  }
+}
