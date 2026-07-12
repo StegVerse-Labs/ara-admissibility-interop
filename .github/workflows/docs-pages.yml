@@ -80,10 +80,26 @@ jobs:
         with:
           enablement: true
 
-      - name: Upload governed docs artifact
+      - name: Build governed documentation site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./${{ needs.publication-gate.outputs.publish_root }}
+          destination: ./_site
+
+      - name: Verify built site entry point
+        shell: bash
+        run: |
+          test -f _site/index.html || {
+            echo "Built Pages artifact has no _site/index.html"
+            find _site -maxdepth 2 -type f -print || true
+            exit 1
+          }
+          echo "Built Pages entry point verified: _site/index.html" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload governed site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ needs.publication-gate.outputs.publish_root }}
+          path: ./_site
 
       - name: Deploy docs to Pages
         id: deployment
