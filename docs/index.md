@@ -7,7 +7,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Publication status](publication-status.md)
 - [Release readiness](release-readiness.md)
 - [Release checklist](release-checklist.md)
-- [Release note: 0.1.0 RC](release-note-0.1.0-rc.md)
+- [Release note: 0.2.0 RC](release-note-0.2.0-rc.md)
 - [Validation report guide](validation-report-guide.md)
 - [Governed publication](governed-publication.md)
 
