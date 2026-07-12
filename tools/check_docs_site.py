@@ -15,6 +15,8 @@ REPO_CHECK_WORKFLOW = ROOT / ".github" / "workflows" / "repo-check.yml"
 IOS_REPO_CHECK_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "repo-check.yml"
 MANIFEST = ROOT / "release-manifest.json"
 STAMP_TOOL = ROOT / "tools" / "stamp_built_site.py"
+EVIDENCE_VERIFIER = ROOT / "tools" / "verify_publication_evidence.py"
+RELEASE_EVALUATOR = ROOT / "tools" / "evaluate_release_evidence.py"
 
 REQUIRED_INDEX_LINKS = [
     "release-readiness.md",
@@ -22,6 +24,8 @@ REQUIRED_INDEX_LINKS = [
     "dependency-policy.md",
     "optional-strict-validation.md",
     "validation-report-guide.md",
+    "publication-evidence-verification.md",
+    "release-evidence-decision.md",
     "../admissibility/non-claims.md",
 ]
 
@@ -58,6 +62,17 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "LIVE_IDENTITY_HTTP_STATUS=",
     "LIVE_IDENTITY_FINAL_URL=",
     "LIVE_IDENTITY_BODY_SHA256=",
+    "status/deployed-live-root.html",
+    "status/deployed-identity.json",
+    "Evaluate deployed release evidence",
+    "python3 tools/evaluate_release_evidence.py",
+    "--artifact-root _site",
+    "--identity-file status/deployed-identity.json",
+    "--live-root-file status/deployed-live-root.html",
+    "--require-public-review-allow",
+    "status/release-evidence-decision.json",
+    "status/release-evidence-decision.md",
+    "_site",
 ]
 
 REQUIRED_STAMP_TOOL_PHRASES = [
@@ -67,12 +82,31 @@ REQUIRED_STAMP_TOOL_PHRASES = [
     'stegverse-deployment-commit',
 ]
 
+REQUIRED_EVIDENCE_VERIFIER_PHRASES = [
+    "def verify(",
+    "artifact-tree-mismatch",
+    "identity-commit-mismatch",
+    "live-root-hash-mismatch",
+]
+
+REQUIRED_RELEASE_EVALUATOR_PHRASES = [
+    "governed-release-evidence-decision",
+    "public_review_decision",
+    "stable_release_decision",
+    "stable_release_automatically_authorized",
+    "--artifact-root",
+    "--identity-file",
+    "--live-root-file",
+]
+
 REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
     "uses: actions/upload-artifact@v4",
     "name: generated-status",
     "path: status/generated-status.json",
     "name: validation-report",
     "path: status/validation-report.md",
+    "python3 tools/test_publication_evidence_verifier.py",
+    "python3 tools/test_release_evidence_evaluator.py",
 ]
 
 
@@ -94,6 +128,8 @@ def main() -> int:
     check_contains(PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "pages-workflow")
     check_contains(IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "ios-pages-workflow")
     check_contains(STAMP_TOOL, REQUIRED_STAMP_TOOL_PHRASES, problems, "stamp-tool")
+    check_contains(EVIDENCE_VERIFIER, REQUIRED_EVIDENCE_VERIFIER_PHRASES, problems, "evidence-verifier")
+    check_contains(RELEASE_EVALUATOR, REQUIRED_RELEASE_EVALUATOR_PHRASES, problems, "release-evaluator")
     check_contains(REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "repo-check-workflow")
     check_contains(IOS_REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "ios-repo-check-workflow")
 
@@ -107,6 +143,7 @@ def main() -> int:
         validation = manifest.get("validation", {})
         publishing = docs_site.get("publishing", {})
         retention = validation.get("artifact_retention", {})
+        release_evidence = manifest.get("release_evidence", {})
         if docs_site.get("entrypoint") != "docs/index.md":
             problems.append("manifest-docs-entrypoint")
         if docs_site.get("config") != "docs/_config.yml":
@@ -121,12 +158,20 @@ def main() -> int:
             problems.append("manifest-docs-ios-workflow")
         if publishing.get("manual_publish_required") is not False:
             problems.append("manifest-manual-docs-publish-not-false")
+        if publishing.get("evidence_verifier") != "tools/verify_publication_evidence.py":
+            problems.append("manifest-publishing-evidence-verifier")
+        if publishing.get("release_evaluator") != "tools/evaluate_release_evidence.py":
+            problems.append("manifest-publishing-release-evaluator")
         if retention.get("canonical_workflow") != ".github/workflows/repo-check.yml":
             problems.append("manifest-retention-canonical-workflow")
         if retention.get("ios_safe_workflow") != "iosnoperiod/github/workflows/repo-check.yml":
             problems.append("manifest-retention-ios-workflow")
         if retention.get("manual_artifact_retention_required") is not False:
             problems.append("manifest-manual-artifact-retention-not-false")
+        if retention.get("release_evidence_decision_json") != "status/release-evidence-decision.json":
+            problems.append("manifest-release-decision-json")
+        if retention.get("release_evidence_decision_markdown") != "status/release-evidence-decision.md":
+            problems.append("manifest-release-decision-markdown")
         if workflows.get("docs_pages_canonical_path") != ".github/workflows/docs-pages.yml":
             problems.append("manifest-workflows-docs-canonical-path")
         if workflows.get("docs_pages_ios_safe_path") != "iosnoperiod/github/workflows/docs-pages.yml":
@@ -139,6 +184,12 @@ def main() -> int:
             problems.append("manifest-workflows-artifact-upload-not-automated")
         if workflows.get("deployment_url_verification") != "required":
             problems.append("manifest-workflows-deployment-url-verification")
+        if workflows.get("release_evidence_decision") != "required":
+            problems.append("manifest-workflows-release-evidence-decision")
+        if release_evidence.get("automatic_stable_authorization") is not False:
+            problems.append("manifest-release-evidence-auto-stable")
+        if release_evidence.get("public_review_fail_closed") is not True:
+            problems.append("manifest-release-evidence-public-review-fail-closed")
 
     result = {
         "checked": [
@@ -147,6 +198,8 @@ def main() -> int:
             ".github/workflows/docs-pages.yml",
             "iosnoperiod/github/workflows/docs-pages.yml",
             "tools/stamp_built_site.py",
+            "tools/verify_publication_evidence.py",
+            "tools/evaluate_release_evidence.py",
             ".github/workflows/repo-check.yml",
             "iosnoperiod/github/workflows/repo-check.yml",
             "release-manifest.json",
