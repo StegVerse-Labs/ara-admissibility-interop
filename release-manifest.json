@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.8.0",
+  "schema_version": "0.8.1",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.2.0-release-candidate",
   "status": "governed-publication-release-candidate",
@@ -21,9 +21,12 @@
   },
   "docs_site": {
     "entrypoint": "docs/index.md",
+    "built_entrypoint": "_site/index.html",
     "config": "docs/_config.yml",
-    "mode": "github-pages-ready-markdown",
-    "requires_build_step": false,
+    "mode": "jekyll-built-github-pages",
+    "requires_build_step": true,
+    "build_action": "actions/jekyll-build-pages@v1",
+    "build_output": "_site",
     "publishing": {
       "canonical_workflow": ".github/workflows/docs-pages.yml",
       "ios_safe_workflow": "iosnoperiod/github/workflows/docs-pages.yml",
@@ -90,6 +93,7 @@
     "manual_docs_publish_required": false,
     "manual_artifact_retention_required": false,
     "artifact_upload": "automated",
+    "built_entrypoint_verification": "required",
     "deployment_url_verification": "required",
     "stable_tag_blocked_until_live_verification": true
   },
@@ -97,7 +101,7 @@
     "Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates.",
     "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
     "Optional stricter JSON Schema validation path when jsonschema is installed.",
-    "GitHub Pages-ready Markdown documentation site.",
+    "Jekyll-built GitHub Pages documentation site with verified index.html entry point.",
     "Manifest-governed automated docs publishing workflow for GitHub Pages.",
     "Fail-closed publication gate with executable negative tests.",
     "Automated validation, publication-status, and publication-receipt artifact retention.",
@@ -117,7 +121,9 @@
   "release_gate": {
     "repo_check_workflow_verified": false,
     "pages_workflow_verified": false,
-    "https_deployment_url_verified": false,
+    "https_deployment_url_verified": true,
+    "built_entrypoint_verified": false,
+    "live_root_page_verified": false,
     "deployed_publication_receipt_verified": false,
     "stable_release_authorized": false
   },
