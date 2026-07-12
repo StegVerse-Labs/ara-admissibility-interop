@@ -58,6 +58,43 @@ def inventory(artifact_root: Path) -> tuple[list[dict], str]:
     return files, tree_digest.hexdigest()
 
 
+def optional_int(name: str) -> int | None:
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return None
+    try:
+        return int(raw)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer") from exc
+
+
+def live_verification_record() -> dict:
+    result = os.getenv("LIVE_ROOT_VERIFICATION", "not_run")
+    record = {
+        "result": result,
+        "verified_at": os.getenv("LIVE_ROOT_VERIFIED_AT", ""),
+        "requested_url": os.getenv("PAGES_DEPLOYMENT_URL", "pending"),
+        "final_url": os.getenv("LIVE_ROOT_FINAL_URL", ""),
+        "http_status": optional_int("LIVE_ROOT_HTTP_STATUS"),
+        "expected_marker": os.getenv("LIVE_ROOT_EXPECTED_MARKER", ""),
+        "marker_found": os.getenv("LIVE_ROOT_MARKER_FOUND", "false").lower() == "true",
+        "body_sha256": os.getenv("LIVE_ROOT_BODY_SHA256", ""),
+        "body_size_bytes": optional_int("LIVE_ROOT_BODY_SIZE_BYTES"),
+    }
+    if result == "passed":
+        if record["http_status"] != 200:
+            raise ValueError("passed live-root verification requires HTTP 200")
+        if not record["final_url"].startswith("https://"):
+            raise ValueError("passed live-root verification requires an HTTPS final URL")
+        if not record["marker_found"] or not record["expected_marker"]:
+            raise ValueError("passed live-root verification requires the expected marker")
+        if len(record["body_sha256"]) != 64:
+            raise ValueError("passed live-root verification requires a SHA-256 body hash")
+        if not record["verified_at"]:
+            raise ValueError("passed live-root verification requires a timestamp")
+    return record
+
+
 def main() -> int:
     manifest = load_manifest()
     errors = validate(manifest)
@@ -68,6 +105,7 @@ def main() -> int:
 
     try:
         artifact_root, configured_root, artifact_kind = resolve_artifact_root(manifest)
+        live_root = live_verification_record()
     except ValueError as exc:
         print("PUBLICATION_RECEIPT=FAIL-CLOSED")
         print(f"reason={exc}")
@@ -80,7 +118,7 @@ def main() -> int:
         return 1
 
     receipt = {
-        "schema_version": "1.1.0",
+        "schema_version": "1.2.0",
         "receipt_type": "governed-publication-receipt",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "repository": os.getenv("GITHUB_REPOSITORY", "StegVerse-Labs/ara-admissibility-interop"),
@@ -103,7 +141,7 @@ def main() -> int:
         "files": files,
         "gate_result": "ALLOW",
         "deployment_url": os.getenv("PAGES_DEPLOYMENT_URL", "pending"),
-        "live_root_verification": os.getenv("LIVE_ROOT_VERIFICATION", "not_run"),
+        "live_root_verification": live_root,
     }
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -113,6 +151,7 @@ def main() -> int:
     print(f"artifact_kind={artifact_kind}")
     print(f"artifact_root={configured_root}")
     print(f"artifact_tree_sha256={artifact_tree_sha256}")
+    print(f"live_root_verification={live_root['result']}")
     print(f"file_count={len(files)}")
     return 0
 
