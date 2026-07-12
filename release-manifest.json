@@ -1,8 +1,8 @@
 {
-  "schema_version": "0.7.0",
+  "schema_version": "0.8.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
-  "candidate": "0.1.0-release-candidate",
-  "status": "manual-task-elimination-build",
+  "candidate": "0.2.0-release-candidate",
+  "status": "governed-publication-release-candidate",
   "primary_docs": {
     "docs_index": "docs/index.md",
     "docs_config": "docs/_config.yml",
@@ -10,11 +10,14 @@
     "changelog": "CHANGELOG.md",
     "readiness": "docs/release-readiness.md",
     "checklist": "docs/release-checklist.md",
-    "release_note": "docs/release-note-0.1.0-rc.md",
+    "release_note": "docs/release-note-0.2.0-rc.md",
     "dependency_policy": "docs/dependency-policy.md",
     "optional_strict_validation": "docs/optional-strict-validation.md",
     "validation_guide": "docs/validation-report-guide.md",
-    "artifact_retention": "docs/workflow-artifact-retention.md"
+    "artifact_retention": "docs/workflow-artifact-retention.md",
+    "governed_publication": "docs/governed-publication.md",
+    "publication_status": "docs/publication-status.md",
+    "mirror_handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
   },
   "docs_site": {
     "entrypoint": "docs/index.md",
@@ -24,7 +27,13 @@
     "publishing": {
       "canonical_workflow": ".github/workflows/docs-pages.yml",
       "ios_safe_workflow": "iosnoperiod/github/workflows/docs-pages.yml",
-      "manual_publish_required": false
+      "manual_publish_required": false,
+      "publication_manifest": "publication-manifest.json",
+      "gate": "tools/check_publication_gate.py",
+      "gate_tests": "tools/test_publication_gate.py",
+      "status_generator": "tools/generate_publication_status.py",
+      "receipt_generator": "tools/generate_publication_receipt.py",
+      "receipt_schema": "publication/publication-receipt.schema.json"
     }
   },
   "dependency_policy": {
@@ -53,11 +62,21 @@
     "optional_strict_command": "python3 tools/validate_with_jsonschema_optional.py",
     "optional_strict_dependency": "jsonschema",
     "optional_strict_absent_behavior": "skip-with-exit-zero",
+    "publication_commands": [
+      "python3 tools/check_publication_gate.py",
+      "python3 tools/test_publication_gate.py",
+      "python3 tools/check_workflow_parity.py",
+      "python3 tools/generate_publication_status.py",
+      "python3 tools/generate_publication_receipt.py"
+    ],
     "artifact_retention": {
       "canonical_workflow": ".github/workflows/repo-check.yml",
       "ios_safe_workflow": "iosnoperiod/github/workflows/repo-check.yml",
       "generated_status_artifact": "generated-status",
       "validation_report_artifact": "validation-report",
+      "publication_status_artifact": "publication-status",
+      "publication_receipt_artifact": "publication-receipt",
+      "deployed_publication_evidence_artifact": "deployed-publication-evidence",
       "manual_artifact_retention_required": false
     }
   },
@@ -66,18 +85,23 @@
     "repo_check_ios_safe_path": "iosnoperiod/github/workflows/repo-check.yml",
     "docs_pages_canonical_path": ".github/workflows/docs-pages.yml",
     "docs_pages_ios_safe_path": "iosnoperiod/github/workflows/docs-pages.yml",
+    "workflow_parity_check": "tools/check_workflow_parity.py",
     "summary_output": true,
     "manual_docs_publish_required": false,
     "manual_artifact_retention_required": false,
-    "artifact_upload": "automated"
+    "artifact_upload": "automated",
+    "deployment_url_verification": "required",
+    "stable_tag_blocked_until_live_verification": true
   },
   "claims": [
     "Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates.",
     "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
     "Optional stricter JSON Schema validation path when jsonschema is installed.",
-    "GitHub Pages-ready Markdown docs index and config.",
-    "Automated docs publishing workflow for GitHub Pages.",
-    "Automated validation artifact retention for generated status and validation report outputs.",
+    "GitHub Pages-ready Markdown documentation site.",
+    "Manifest-governed automated docs publishing workflow for GitHub Pages.",
+    "Fail-closed publication gate with executable negative tests.",
+    "Automated validation, publication-status, and publication-receipt artifact retention.",
+    "Hash-bound publication receipt covering the manifest and published file inventory.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
   "non_claims": [
@@ -86,11 +110,21 @@
     "No production Standing Proof Engine behavior is claimed.",
     "No journal, conference, lab, platform, or repository acceptance is claimed.",
     "No execution authority for external systems is claimed.",
+    "No canonical doctrine status is claimed.",
+    "No independent review, clinical validation, or regulatory authorization is claimed.",
     "No required full JSON Schema conformance is claimed when the optional dependency is absent."
   ],
+  "release_gate": {
+    "repo_check_workflow_verified": false,
+    "pages_workflow_verified": false,
+    "https_deployment_url_verified": false,
+    "deployed_publication_receipt_verified": false,
+    "stable_release_authorized": false
+  },
   "next_version_candidates": [
     "make full JSON Schema validation required if dependency policy changes",
     "external example package with explicit permission",
-    "richer evaluator semantics beyond the current stub"
+    "richer evaluator semantics beyond the current stub",
+    "optional governed Site mirroring after Site handoff review"
   ]
 }
