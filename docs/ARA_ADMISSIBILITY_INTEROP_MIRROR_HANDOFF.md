@@ -21,6 +21,12 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added deployment URL verification.
 - Added retained artifacts for validation, publication status, receipts, and deployed publication evidence.
 - Updated `VERSION`, `CHANGELOG.md`, release manifest, release note, release readiness, and release checklist for `0.2.0-release-candidate`.
+- Observed a successful GitHub Pages deployment at `https://stegverse-labs.github.io/ara-admissibility-interop/`.
+- Diagnosed the live root `404`: the workflow uploaded raw Markdown from `docs/`, so the deployed artifact lacked `index.html`.
+- Replaced raw docs upload with `actions/jekyll-build-pages@v1` and `_site` deployment.
+- Added a fail-closed check requiring `_site/index.html` before artifact upload.
+- Resynchronized the iOS-safe Pages workflow mirror.
+- Corrected `release-manifest.json` to declare the required Jekyll build step and built entry point.
 
 ## Current publication posture
 
@@ -35,9 +41,12 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 
 - local architecture and checks: built
 - canonical/iOS workflow parity: built
-- repository-check live success: not yet verified through available connector status
-- Pages live success: not yet verified through available connector status
-- verified HTTPS deployment URL: pending live evidence
+- HTTPS Pages deployment environment and URL: observed
+- prior deployed root page: failed with `404` because no rendered `index.html` was present
+- Jekyll build correction: installed
+- corrected Pages workflow live success: pending
+- built `_site/index.html` verification: pending live workflow evidence
+- live root page verification after corrected deployment: pending
 - deployed publication receipt inspection: pending
 - stable release tag: blocked
 
@@ -47,11 +56,12 @@ A successful Pages deployment means only that the documentation was permitted un
 
 ## Next tasks
 
-1. Confirm the `Repo Check` and `Docs Pages` workflow runs for the final candidate commit.
-2. Inspect the `deployed-publication-evidence` artifact.
-3. Verify receipt commit SHA, manifest hash, file inventory, and HTTPS deployment URL.
-4. Update `release-manifest.json` release-gate booleans only from observed evidence.
-5. Create a stable tag only after explicit release authorization.
-6. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm the corrected `Docs Pages` workflow completes the Jekyll build and verifies `_site/index.html`.
+2. Open the root Pages URL and confirm a rendered documentation page replaces the `404`.
+3. Inspect the `deployed-publication-evidence` artifact.
+4. Verify receipt commit SHA, manifest hash, file inventory, and HTTPS deployment URL.
+5. Update `release-manifest.json` release-gate booleans only from observed evidence.
+6. Create a stable tag only after explicit release authorization.
+7. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
