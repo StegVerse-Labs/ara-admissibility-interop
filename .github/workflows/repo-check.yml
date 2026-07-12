@@ -20,6 +20,9 @@ jobs:
       - name: Generate validation report
         run: python3 tools/generate_validation_report.py
 
+      - name: Check governed publication boundary
+        run: python3 tools/check_publication_gate.py
+
       - name: Publish validation summary
         run: cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
 
