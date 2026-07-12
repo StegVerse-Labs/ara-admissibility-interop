@@ -27,10 +27,12 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added post-deployment live-root verification with bounded retries, HTTPS enforcement, HTTP 200 enforcement, and expected rendered-content verification.
 - Changed deployed receipts to hash the built `_site` artifact rather than only the Markdown source tree.
 - Added a deterministic artifact-tree SHA-256 covering deployed paths, file hashes, and sizes.
-- Extended receipt schema to `1.2.0` with artifact root, artifact kind, artifact-tree hash, and structured live HTTP evidence.
-- The deployed receipt now records the verification timestamp, requested URL, effective final URL, HTTP status, expected marker, marker result, response-body SHA-256, and response size.
+- Extended the receipt schema to `1.3.0` with artifact identity, structured live HTTP evidence, and exact deployed-commit verification.
+- Added `tools/stamp_built_site.py` to write `_site/deployment-identity.json` and inject the current commit into `_site/index.html`.
+- The live verifier now requires both the rendered root and `deployment-identity.json` to identify the current `GITHUB_SHA`.
+- The deployed receipt now records the verification timestamp, requested URL, effective final URL, HTTP status, expected marker, marker result, response-body SHA-256, response size, deployed commit SHA, identity URL, identity HTTP status, and identity-body SHA-256.
 - Resynchronized the iOS-safe Pages workflow mirror.
-- Updated `tools/check_docs_site.py` to enforce the Jekyll build, live verification, built-artifact receipt, and live HTTP evidence invariants.
+- Updated `tools/check_docs_site.py` to enforce Jekyll rendering, deployment stamping, current-commit verification, built-artifact receipts, and live HTTP evidence invariants.
 
 ## Current publication posture
 
@@ -49,12 +51,13 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - prior deployed root page: failed with `404` because no rendered `index.html` was present
 - Jekyll build correction: installed
 - built-site entry-point and marker checks: installed
-- live deployed-root HTTP and content verification: installed
+- current-commit deployment identity: installed
+- live deployed-root HTTP, content, and commit verification: installed
 - built-artifact hash receipt: installed
-- structured live HTTP evidence receipt: installed
+- structured live HTTP and identity evidence receipt: installed
 - fresh verification run: triggered by this documentation update
 - corrected Pages workflow live success: pending observed run evidence
-- rendered root page after corrected deployment: pending observed evidence
+- rendered current-commit root page: pending observed evidence
 - deployed publication receipt inspection: pending
 - stable release tag: blocked
 
@@ -64,11 +67,11 @@ A successful Pages deployment means only that the documentation was permitted un
 
 ## Next tasks
 
-1. Confirm `Repo Check` passes on the latest direct successor containing the validator and receipt changes.
-2. Confirm `Docs Pages` builds `_site/index.html`, verifies the marker, deploys, and records HTTP 200 live-root evidence.
+1. Confirm `Repo Check` passes on the latest direct successor containing the validator, stamp, workflow, schema, and receipt changes.
+2. Confirm `Docs Pages` builds `_site/index.html`, writes `deployment-identity.json`, deploys, and verifies the exact current commit at the live URL.
 3. Open the root Pages URL and confirm a rendered documentation page replaces the prior `404`.
 4. Inspect the `deployed-publication-evidence` artifact.
-5. Verify receipt commit SHA, manifest hash, built-artifact tree hash, file inventory, verification timestamp, final URL, HTTP status, marker result, response-body hash, and response size.
+5. Verify receipt commit SHA, manifest hash, built-artifact tree hash, file inventory, deployed commit SHA, identity URL and hash, verification timestamp, final URL, HTTP status, marker result, response-body hash, and response size.
 6. Update `release-manifest.json` release-gate booleans only from observed evidence.
 7. Create a stable tag only after explicit release authorization.
 8. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
