@@ -2,19 +2,25 @@
 
 ## Current goal
 
-Governed public documentation publishing through GitHub Pages.
+Complete live verification of the `0.2.0-release-candidate` governed public-review publication path.
 
 ## Completed
 
-- Existing Pages workflow confirmed at `.github/workflows/docs-pages.yml`.
-- Existing iOS-safe mirror confirmed at `iosnoperiod/github/workflows/docs-pages.yml`.
-- Added `publication-manifest.json` with explicit public-review, canonical, independent-review, clinical, regulatory, and reliance states.
+- Confirmed canonical Pages workflow at `.github/workflows/docs-pages.yml`.
+- Confirmed iOS-safe mirror at `iosnoperiod/github/workflows/docs-pages.yml`.
+- Added `publication-manifest.json` with explicit publication, canonical, independent-review, clinical, regulatory, and reliance states.
 - Added dependency-free fail-closed gate at `tools/check_publication_gate.py`.
-- Pages deployment now requires the publication gate to return `ALLOW`.
+- Added executable positive and negative gate tests at `tools/test_publication_gate.py`.
+- Added inspectable negative fixtures under `publication/fixtures/`.
+- Pages deployment requires the publication gate to return `ALLOW`.
 - Publish root is read from the manifest instead of being hard-coded.
-- Repository checks now run the publication gate on pushes and pull requests.
-- Canonical and iOS-safe workflow mirrors are aligned.
-- Added `docs/governed-publication.md` and linked it from the docs index.
+- Added workflow parity enforcement for canonical and iOS-safe workflows.
+- Added `tools/generate_publication_status.py` producing machine-readable and public status outputs.
+- Added `tools/generate_publication_receipt.py` with manifest and published-file SHA-256 hashes.
+- Added `publication/publication-receipt.schema.json`.
+- Added deployment URL verification.
+- Added retained artifacts for validation, publication status, receipts, and deployed publication evidence.
+- Updated `VERSION`, `CHANGELOG.md`, release manifest, release note, release readiness, and release checklist for `0.2.0-release-candidate`.
 
 ## Current publication posture
 
@@ -25,16 +31,27 @@ Governed public documentation publishing through GitHub Pages.
 - regulatory status: `not_authorized`
 - reliance posture: `research_and_review_only`
 
+## Current release gate
+
+- local architecture and checks: built
+- canonical/iOS workflow parity: built
+- repository-check live success: not yet verified through available connector status
+- Pages live success: not yet verified through available connector status
+- verified HTTPS deployment URL: pending live evidence
+- deployed publication receipt inspection: pending
+- stable release tag: blocked
+
 ## Boundary
 
-A successful Pages deployment means only that the documentation was permitted under the declared publication posture. It does not establish upstream ARA endorsement, external certification, clinical validity, regulatory authorization, canonical doctrine status, or execution authority.
+A successful Pages deployment means only that the documentation was permitted under the declared publication posture. It does not establish upstream ARA endorsement, external certification, independent review, clinical validity, regulatory authorization, canonical doctrine status, or execution authority.
 
 ## Next tasks
 
-1. Add publication receipt generation with commit SHA, manifest hash, docs-tree hash, gate result, and deployment URL.
-2. Retain the receipt as a workflow artifact and expose a bounded public copy in the docs site.
-3. Add negative fixtures proving canonical, clinical, malformed, and missing-root publication requests fail closed.
-4. Add release-manifest checks that verify canonical and iOS-safe workflow parity.
-5. Add optional downstream Site mirror only after inspecting the Site repository handoff.
+1. Confirm the `Repo Check` and `Docs Pages` workflow runs for the final candidate commit.
+2. Inspect the `deployed-publication-evidence` artifact.
+3. Verify receipt commit SHA, manifest hash, file inventory, and HTTPS deployment URL.
+4. Update `release-manifest.json` release-gate booleans only from observed evidence.
+5. Create a stable tag only after explicit release authorization.
+6. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
