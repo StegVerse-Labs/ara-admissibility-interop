@@ -26,8 +26,19 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def evaluate(receipt: dict, manifest: dict) -> dict:
-    verification_problems = verify(receipt)
+def evaluate(
+    receipt: dict,
+    manifest: dict,
+    artifact_root: Path | None = None,
+    identity_file: Path | None = None,
+    live_root_file: Path | None = None,
+) -> dict:
+    verification_problems = verify(
+        receipt,
+        artifact_root=artifact_root,
+        identity_file=identity_file,
+        live_root_file=live_root_file,
+    )
     live = receipt.get("live_root_verification", {})
     release_gate = manifest.get("release_gate", {})
     blockers: list[str] = []
@@ -60,8 +71,15 @@ def evaluate(receipt: dict, manifest: dict) -> dict:
         if release_gate.get(field) is not True:
             stable_blockers.append(f"release-gate:{field}")
 
+    evidence_scope = {
+        "receipt": True,
+        "artifact_root": artifact_root is not None,
+        "identity_file": identity_file is not None,
+        "live_root_file": live_root_file is not None,
+    }
+
     return {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "decision_type": "governed-release-evidence-decision",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "repository": receipt.get("repository"),
@@ -71,6 +89,7 @@ def evaluate(receipt: dict, manifest: dict) -> dict:
         "manifest_sha256": receipt.get("manifest_sha256"),
         "deployment_url": receipt.get("deployment_url"),
         "deployed_commit_sha": live.get("deployed_commit_sha"),
+        "evidence_scope": evidence_scope,
         "evidence_verification": "pass" if not verification_problems else "fail",
         "evidence_problems": verification_problems,
         "public_review_decision": "ALLOW" if public_review_ready else "BLOCK",
@@ -86,6 +105,7 @@ def evaluate(receipt: dict, manifest: dict) -> dict:
 
 
 def render_markdown(decision: dict) -> str:
+    scope = decision.get("evidence_scope", {})
     lines = [
         "# Release Evidence Decision",
         "",
@@ -94,6 +114,13 @@ def render_markdown(decision: dict) -> str:
         f"- Evidence verification: **{decision['evidence_verification']}**",
         f"- Public-review decision: **{decision['public_review_decision']}**",
         f"- Stable-release decision: **{decision['stable_release_decision']}**",
+        "",
+        "## Evidence scope",
+        "",
+        f"- Receipt checked: `{scope.get('receipt', False)}`",
+        f"- Built artifact checked: `{scope.get('artifact_root', False)}`",
+        f"- Deployment identity checked: `{scope.get('identity_file', False)}`",
+        f"- Captured live root checked: `{scope.get('live_root_file', False)}`",
         "",
         "## Public-review blockers",
     ]
@@ -110,6 +137,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--receipt", type=Path, default=DEFAULT_RECEIPT)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--artifact-root", type=Path)
+    parser.add_argument("--identity-file", type=Path)
+    parser.add_argument("--live-root-file", type=Path)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--markdown", type=Path, default=DEFAULT_MARKDOWN)
     parser.add_argument("--require-public-review-allow", action="store_true")
@@ -122,7 +152,13 @@ def main() -> int:
         print(f"RELEASE_EVIDENCE_DECISION=FAIL-CLOSED\nreason={exc}")
         return 1
 
-    decision = evaluate(receipt, manifest)
+    decision = evaluate(
+        receipt,
+        manifest,
+        artifact_root=args.artifact_root,
+        identity_file=args.identity_file,
+        live_root_file=args.live_root_file,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(decision, indent=2) + "\n", encoding="utf-8")
     args.markdown.parent.mkdir(parents=True, exist_ok=True)
