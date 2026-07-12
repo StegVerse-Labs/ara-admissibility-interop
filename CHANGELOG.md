@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.2.0-release-candidate
+
+### Added
+
+- Explicit governed publication manifest for `public_review` and future `canonical` states.
+- Dependency-free fail-closed publication gate.
+- Negative publication fixtures and executable gate tests.
+- GitHub Pages deployment conditioned on the publication gate.
+- Hash-bound publication receipt with manifest hash, file inventory, commit, workflow, and deployment identity.
+- Publication receipt JSON Schema.
+- Human- and machine-readable publication status generation.
+- Deployment URL verification and retained deployment evidence.
+- Canonical and iOS-safe workflow parity checking.
+- Updated docs index, publication-status surface, governed-publication guide, and mirror handoff.
+
+### Boundary
+
+This release candidate automates publication only under the manifest-declared posture. It does not establish upstream ARA endorsement, certification of external artifacts, independent review, canonical doctrine, clinical validity, regulatory authorization, or execution authority.
+
+### Release gate
+
+- Repository-check workflow must pass.
+- Pages workflow must pass.
+- A deployed publication receipt must contain a verified HTTPS deployment URL.
+- Stable tagging remains blocked until those conditions are evidenced.
+
 ## 0.1.0-release-candidate
 
 ### Added
@@ -30,5 +56,5 @@ This release candidate does not certify external ARA artifacts, assert upstream 
 ### Remaining future hardening
 
 - Optional full JSON Schema validation if dependency policy permits.
-- Optional workflow artifact upload for retained generated reports.
 - Additional external artifact examples if collaborators provide explicit permission and terminology boundaries.
+- Richer evaluator semantics beyond the current stub.
