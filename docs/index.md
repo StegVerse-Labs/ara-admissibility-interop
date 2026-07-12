@@ -10,6 +10,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Release note: 0.2.0 RC](release-note-0.2.0-rc.md)
 - [Validation report guide](validation-report-guide.md)
 - [Governed publication](governed-publication.md)
+- [Independent publication evidence verification](publication-evidence-verification.md)
 
 ## Governance and boundaries
 
@@ -45,6 +46,13 @@ python3 tools/test_publication_gate.py
 python3 tools/check_workflow_parity.py
 python3 tools/generate_publication_status.py
 python3 tools/generate_publication_receipt.py
+python3 tools/test_publication_evidence_verifier.py
+```
+
+To inspect a retained receipt independently:
+
+```bash
+python3 tools/verify_publication_evidence.py status/publication-receipt.json
 ```
 
 Expected generated outputs:
