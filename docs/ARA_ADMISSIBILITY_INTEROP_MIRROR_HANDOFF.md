@@ -29,18 +29,21 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added a deterministic artifact-tree SHA-256 covering deployed paths, file hashes, and sizes.
 - Extended the receipt schema to `1.3.0` with artifact identity, structured live HTTP evidence, and exact deployed-commit verification.
 - Added `tools/stamp_built_site.py` to write `_site/deployment-identity.json` and inject the current commit into `_site/index.html`.
-- The live verifier now requires both the rendered root and `deployment-identity.json` to identify the current `GITHUB_SHA`.
-- The deployed receipt records the verification timestamp, requested URL, effective final URL, HTTP status, expected marker, marker result, response-body SHA-256, response size, deployed commit SHA, identity URL, identity HTTP status, and identity-body SHA-256.
+- The live verifier requires both the rendered root and `deployment-identity.json` to identify the current `GITHUB_SHA`.
+- The deployed receipt records verification timestamp, effective URLs, HTTP statuses, marker result, body hashes, response size, and deployed commit identity.
 - Added `tools/verify_publication_evidence.py` for dependency-free verification of retained receipts, built-site inventories, artifact-tree hashes, deployment identity, and captured live-root hashes.
 - Added `tools/test_publication_evidence_verifier.py` with valid, stale-commit, altered-tree, and tampered-file test cases.
 - Added `docs/publication-evidence-verification.md` and linked it from the documentation index.
 - Added `tools/evaluate_release_evidence.py` to convert verified evidence into separate public-review and stable-release decisions.
 - Added `tools/test_release_evidence_evaluator.py` covering valid public review, stale deployment, invalid reliance posture, and fully explicit stable gates.
 - Added `docs/release-evidence-decision.md` and linked it from the documentation index.
-- Repo Check now tests both independent evidence verification and bounded release-evidence decisions.
-- Resynchronized the canonical and iOS-safe Repo Check workflows.
-- Resynchronized the iOS-safe Pages workflow mirror.
-- Updated `tools/check_docs_site.py` to enforce Jekyll rendering, deployment stamping, current-commit verification, built-artifact receipts, and live HTTP evidence invariants.
+- Repo Check tests both independent evidence verification and bounded release-evidence decisions.
+- The release-evidence evaluator now accepts the retained `_site`, captured deployment identity, and captured live root so its decision is bound to the complete evidence package.
+- Docs Pages now runs the evaluator with `--require-public-review-allow` after live verification and receipt generation.
+- The deployed evidence artifact now retains `_site`, captured live root, captured deployment identity, publication receipt, publication status, and JSON/Markdown release decisions.
+- Updated `release-manifest.json` to declare the verifier, evaluator, evidence scope, retained outputs, fail-closed public-review posture, and prohibition on automatic stable authorization.
+- Resynchronized canonical and iOS-safe Repo Check and Pages workflows.
+- Updated `tools/check_docs_site.py` to enforce the complete deployment, evidence, and decision invariants.
 
 ## Current publication posture
 
@@ -57,6 +60,8 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - canonical/iOS workflow parity: built
 - independent evidence verifier and tests: built
 - release-evidence evaluator and tests: built
+- deployed Pages decision integration: built
+- complete retained evidence package: configured
 - HTTPS Pages deployment environment and URL: observed
 - prior deployed root page: failed with `404` because no rendered `index.html` was present
 - Jekyll build correction: installed
@@ -67,10 +72,10 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - structured live HTTP and identity evidence receipt: installed
 - independent retained-evidence verification: installed
 - machine-readable public-review versus stable-release decision: installed
-- fresh Repo Check and Pages runs: triggered by the latest documentation and workflow updates
+- fresh Repo Check and Pages runs: triggered by this handoff update
 - corrected Pages workflow live success: pending observed run evidence
 - rendered current-commit root page: pending observed evidence
-- deployed publication receipt inspection: pending
+- deployed publication evidence artifact inspection: pending
 - stable release tag: blocked
 
 ## Boundary
@@ -83,14 +88,13 @@ An `ALLOW` public-review decision does not authorize a stable release. Stable re
 
 ## Next tasks
 
-1. Confirm `Repo Check` passes with the independent verifier and release-evidence evaluator tests.
-2. Integrate `tools/evaluate_release_evidence.py --require-public-review-allow` into the deployed Pages evidence step and retain both decision outputs.
-3. Confirm `Docs Pages` builds `_site/index.html`, writes `deployment-identity.json`, deploys, and verifies the exact current commit at the live URL.
-4. Open the root Pages URL and confirm a rendered documentation page replaces the prior `404`.
-5. Inspect the `deployed-publication-evidence` artifact.
-6. Run `tools/verify_publication_evidence.py` and `tools/evaluate_release_evidence.py` against the retained deployment evidence.
-7. Update `release-manifest.json` release-gate booleans only from observed evidence.
-8. Create a stable tag only after explicit release authorization.
-9. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm `Repo Check` passes with the updated validator, independent verifier, and release-evidence evaluator tests.
+2. Confirm `Docs Pages` builds and stamps `_site`, verifies the exact current commit at the live URL, generates the receipt, evaluates the full retained evidence package, and returns public-review `ALLOW`.
+3. Open the root Pages URL and confirm a rendered current-commit documentation page replaces the prior `404`.
+4. Inspect the `deployed-publication-evidence` artifact and confirm all declared files are present.
+5. Run `tools/verify_publication_evidence.py` and `tools/evaluate_release_evidence.py` against the retained deployment evidence.
+6. Update `release-manifest.json` release-gate booleans only from observed evidence.
+7. Create a stable tag only after explicit release authorization.
+8. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
