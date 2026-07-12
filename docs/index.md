@@ -8,12 +8,14 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Release checklist](release-checklist.md)
 - [Release note: 0.1.0 RC](release-note-0.1.0-rc.md)
 - [Validation report guide](validation-report-guide.md)
+- [Governed publication](governed-publication.md)
 
 ## Governance and boundaries
 
 - [Dependency policy](dependency-policy.md)
 - [Optional strict validation](optional-strict-validation.md)
 - [Workflow artifact retention](workflow-artifact-retention.md)
+- [Publication manifest](../publication-manifest.json)
 
 ## Core repository references
 
@@ -36,6 +38,7 @@ Run from the repository root:
 
 ```bash
 python3 tools/generate_validation_report.py
+python3 tools/check_publication_gate.py
 ```
 
 Expected generated outputs:
@@ -44,6 +47,12 @@ Expected generated outputs:
 status/generated-status.json
 status/validation-report.md
 ```
+
+The publication gate must report `PUBLICATION_GATE=ALLOW` before the Pages deployment job can run.
+
+## Publication posture
+
+The current site is published for `public_review`. Canonical status, independent review, clinical validation, regulatory authorization, and execution authority are not implied by deployment.
 
 ## Boundary
 
