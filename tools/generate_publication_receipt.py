@@ -22,6 +22,42 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def resolve_artifact_root(manifest: dict) -> tuple[Path, str, str]:
+    configured = os.getenv("PUBLICATION_ARTIFACT_ROOT", manifest["publish_root"])
+    artifact_kind = os.getenv("PUBLICATION_ARTIFACT_KIND", "source_tree")
+    artifact_root = (ROOT / configured).resolve()
+    try:
+        artifact_root.relative_to(ROOT.resolve())
+    except ValueError as exc:
+        raise ValueError("publication artifact root escapes repository root") from exc
+    if not artifact_root.is_dir():
+        raise ValueError(f"publication artifact root does not exist: {configured}")
+    if artifact_kind == "built_site" and not (artifact_root / "index.html").is_file():
+        raise ValueError("built publication artifact has no index.html")
+    return artifact_root, configured, artifact_kind
+
+
+def inventory(artifact_root: Path) -> tuple[list[dict], str]:
+    files = []
+    tree_digest = hashlib.sha256()
+    for path in sorted(p for p in artifact_root.rglob("*") if p.is_file()):
+        relative_path = path.relative_to(artifact_root).as_posix()
+        file_hash = sha256_file(path)
+        size = path.stat().st_size
+        files.append({
+            "path": relative_path,
+            "sha256": file_hash,
+            "size_bytes": size,
+        })
+        tree_digest.update(relative_path.encode("utf-8"))
+        tree_digest.update(b"\0")
+        tree_digest.update(file_hash.encode("ascii"))
+        tree_digest.update(b"\0")
+        tree_digest.update(str(size).encode("ascii"))
+        tree_digest.update(b"\n")
+    return files, tree_digest.hexdigest()
+
+
 def main() -> int:
     manifest = load_manifest()
     errors = validate(manifest)
@@ -30,17 +66,21 @@ def main() -> int:
         print("reason=" + "; ".join(errors))
         return 1
 
-    publish_root = (ROOT / manifest["publish_root"]).resolve()
-    files = []
-    for path in sorted(p for p in publish_root.rglob("*") if p.is_file()):
-        files.append({
-            "path": path.relative_to(ROOT).as_posix(),
-            "sha256": sha256_file(path),
-            "size_bytes": path.stat().st_size,
-        })
+    try:
+        artifact_root, configured_root, artifact_kind = resolve_artifact_root(manifest)
+    except ValueError as exc:
+        print("PUBLICATION_RECEIPT=FAIL-CLOSED")
+        print(f"reason={exc}")
+        return 1
+
+    files, artifact_tree_sha256 = inventory(artifact_root)
+    if not files:
+        print("PUBLICATION_RECEIPT=FAIL-CLOSED")
+        print("reason=publication artifact contains no files")
+        return 1
 
     receipt = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "receipt_type": "governed-publication-receipt",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "repository": os.getenv("GITHUB_REPOSITORY", "StegVerse-Labs/ara-admissibility-interop"),
@@ -55,17 +95,24 @@ def main() -> int:
         "reliance_posture": manifest["reliance_posture"],
         "publish_target": manifest["publish_target"],
         "publish_root": manifest["publish_root"],
+        "artifact_root": configured_root,
+        "artifact_kind": artifact_kind,
+        "artifact_tree_sha256": artifact_tree_sha256,
         "manifest_sha256": sha256_file(ROOT / "publication-manifest.json"),
         "file_count": len(files),
         "files": files,
         "gate_result": "ALLOW",
         "deployment_url": os.getenv("PAGES_DEPLOYMENT_URL", "pending"),
+        "live_root_verification": os.getenv("LIVE_ROOT_VERIFICATION", "not_run"),
     }
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print("PUBLICATION_RECEIPT=CREATED")
     print(f"output={OUTPUT.relative_to(ROOT)}")
+    print(f"artifact_kind={artifact_kind}")
+    print(f"artifact_root={configured_root}")
+    print(f"artifact_tree_sha256={artifact_tree_sha256}")
     print(f"file_count={len(files)}")
     return 0
 
