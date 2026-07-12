@@ -23,8 +23,20 @@ jobs:
       - name: Check governed publication boundary
         run: python3 tools/check_publication_gate.py
 
+      - name: Test publication gate failures
+        run: python3 tools/test_publication_gate.py
+
+      - name: Verify workflow mirror parity
+        run: python3 tools/check_workflow_parity.py
+
+      - name: Generate publication receipt
+        run: python3 tools/generate_publication_receipt.py
+
       - name: Publish validation summary
-        run: cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Publication gate, negative fixtures, workflow parity, and receipt generation passed." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload validation status
         uses: actions/upload-artifact@v4
@@ -37,3 +49,9 @@ jobs:
         with:
           name: validation-report
           path: status/validation-report.md
+
+      - name: Upload publication receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-receipt
+          path: status/publication-receipt.json
