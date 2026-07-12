@@ -94,7 +94,11 @@ jobs:
             find _site -maxdepth 2 -type f -print || true
             exit 1
           }
-          echo "Built Pages entry point verified: _site/index.html" >> "$GITHUB_STEP_SUMMARY"
+          grep -Fq "ARA Admissibility Interop Docs" _site/index.html || {
+            echo "Built Pages entry point lacks the expected site marker"
+            exit 1
+          }
+          echo "Built Pages entry point and marker verified." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload governed site artifact
         uses: actions/upload-pages-artifact@v3
@@ -105,19 +109,44 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Verify deployment output
+      - name: Verify live deployed root
         shell: bash
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
-          url='${{ steps.deployment.outputs.page_url }}'
-          case "$url" in
+          case "$PAGE_URL" in
             https://*) ;;
-            *) echo "Deployment URL is missing or not HTTPS: $url"; exit 1 ;;
+            *) echo "Deployment URL is missing or not HTTPS: $PAGE_URL"; exit 1 ;;
           esac
-          echo "Pages deployment verified: $url" >> "$GITHUB_STEP_SUMMARY"
+
+          verified=false
+          for attempt in $(seq 1 12); do
+            probe_url="${PAGE_URL}?commit=${GITHUB_SHA}&attempt=${attempt}"
+            if curl --fail --silent --show-error --location \
+              -H 'Cache-Control: no-cache' \
+              "$probe_url" -o /tmp/ara-pages-root.html \
+              && grep -Fq "ARA Admissibility Interop Docs" /tmp/ara-pages-root.html; then
+              verified=true
+              break
+            fi
+            echo "Live root not ready on attempt ${attempt}; retrying..."
+            sleep 5
+          done
+
+          test "$verified" = true || {
+            echo "Live Pages root did not return the expected rendered site marker."
+            sed -n '1,80p' /tmp/ara-pages-root.html 2>/dev/null || true
+            exit 1
+          }
+
+          echo "Live Pages root verified: $PAGE_URL" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Generate deployed publication status and receipt
         env:
           PAGES_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
+          PUBLICATION_ARTIFACT_ROOT: _site
+          PUBLICATION_ARTIFACT_KIND: built_site
+          LIVE_ROOT_VERIFICATION: passed
         run: |
           python3 tools/generate_publication_status.py
           python3 tools/generate_publication_receipt.py
