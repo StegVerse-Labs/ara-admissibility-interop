@@ -11,6 +11,7 @@ from pathlib import Path
 from check_publication_gate import validate
 
 ROOT = Path(__file__).resolve().parents[1]
+FIXTURES = ROOT / "publication" / "fixtures"
 BASE = json.loads((ROOT / "publication-manifest.json").read_text(encoding="utf-8"))
 
 
@@ -23,6 +24,14 @@ def run_case(name: str, manifest: dict, expect_allow: bool, root: Path) -> None:
     print(f"{name}: {state}")
 
 
+def load_fixture(name: str) -> dict:
+    path = FIXTURES / name
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise AssertionError(f"fixture must be a JSON object: {path}")
+    return data
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as temp_dir:
         root = Path(temp_dir)
@@ -33,28 +42,50 @@ def main() -> int:
         valid = copy.deepcopy(BASE)
         run_case("valid-public-review", valid, True, root)
 
-        canonical_without_review = copy.deepcopy(BASE)
-        canonical_without_review["publication_status"] = "canonical"
-        canonical_without_review["canonical_status"] = "authorized"
-        canonical_without_review["independent_review_status"] = "not_started"
-        run_case("canonical-without-review", canonical_without_review, False, root)
+        valid_canonical = copy.deepcopy(BASE)
+        valid_canonical["publication_status"] = "canonical"
+        valid_canonical["canonical_status"] = "authorized"
+        valid_canonical["independent_review_status"] = "complete"
+        run_case("valid-canonical-after-review", valid_canonical, True, root)
+
+        fixture_names = [
+            "deny-canonical-without-review.json",
+            "deny-escaping-publish-root.json",
+            "deny-unsupported-target.json",
+            "deny-missing-required-field.json",
+            "deny-empty-non-claims.json",
+        ]
+        for fixture_name in fixture_names:
+            run_case(fixture_name.removesuffix(".json"), load_fixture(fixture_name), False, root)
 
         unauthorized_canonical = copy.deepcopy(BASE)
         unauthorized_canonical["publication_status"] = "canonical"
         unauthorized_canonical["canonical_status"] = "not_authorized"
         run_case("canonical-without-authorization", unauthorized_canonical, False, root)
 
-        escaping_root = copy.deepcopy(BASE)
-        escaping_root["publish_root"] = "../outside"
-        run_case("escaping-publish-root", escaping_root, False, root)
+        missing_root = copy.deepcopy(BASE)
+        missing_root["publish_root"] = "missing-docs"
+        run_case("missing-publish-root", missing_root, False, root)
 
-        unsupported_target = copy.deepcopy(BASE)
-        unsupported_target["publish_target"] = "external_platform"
-        run_case("unsupported-publish-target", unsupported_target, False, root)
+        no_index = copy.deepcopy(BASE)
+        empty_root = root / "empty-docs"
+        empty_root.mkdir()
+        no_index["publish_root"] = "empty-docs"
+        run_case("publish-root-without-index", no_index, False, root)
 
-        missing_non_claims = copy.deepcopy(BASE)
-        missing_non_claims["required_non_claims"] = []
-        run_case("missing-non-claims", missing_non_claims, False, root)
+        invalid_allowed_statuses = copy.deepcopy(BASE)
+        invalid_allowed_statuses["allowed_publication_statuses"] = []
+        run_case("empty-allowed-statuses", invalid_allowed_statuses, False, root)
+
+        invalid_policy = copy.deepcopy(BASE)
+        invalid_policy["gate_policy"] = []
+        run_case("invalid-gate-policy", invalid_policy, False, root)
+
+        clinical_overreach = copy.deepcopy(BASE)
+        clinical_overreach["clinical_status"] = "validated"
+        clinical_overreach["regulatory_status"] = "not_authorized"
+        clinical_overreach["reliance_posture"] = "clinical_reliance"
+        run_case("clinical-reliance-without-authorization", clinical_overreach, False, root)
 
     print("publication gate tests: PASS")
     return 0
