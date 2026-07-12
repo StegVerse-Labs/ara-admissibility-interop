@@ -6,10 +6,12 @@ on:
       - main
     paths:
       - 'docs/**'
+      - 'publication/**'
       - 'publication-manifest.json'
       - 'tools/check_publication_gate.py'
       - 'tools/test_publication_gate.py'
       - 'tools/check_workflow_parity.py'
+      - 'tools/generate_publication_status.py'
       - 'tools/generate_publication_receipt.py'
       - '.github/workflows/docs-pages.yml'
       - 'iosnoperiod/github/workflows/docs-pages.yml'
@@ -70,6 +72,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Generate governed publication status page
+        run: python3 tools/generate_publication_status.py
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
@@ -92,13 +97,21 @@ jobs:
           esac
           echo "Pages deployment verified: $url" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Generate deployed publication receipt
+      - name: Generate deployed publication status and receipt
         env:
           PAGES_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
-        run: python3 tools/generate_publication_receipt.py
+        run: |
+          python3 tools/generate_publication_status.py
+          python3 tools/generate_publication_receipt.py
 
-      - name: Upload deployed publication receipt
+      - name: Publish deployment summary
+        run: cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload deployed publication evidence
         uses: actions/upload-artifact@v4
         with:
-          name: deployed-publication-receipt
-          path: status/publication-receipt.json
+          name: deployed-publication-evidence
+          path: |
+            status/publication-status.json
+            status/publication-receipt.json
+            docs/publication-status.md
