@@ -37,11 +37,11 @@ def fail(message: str) -> int:
     return 1
 
 
-def load_manifest() -> dict[str, Any]:
-    if not MANIFEST_PATH.is_file():
-        raise ValueError("publication-manifest.json is missing")
+def load_manifest(path: Path = MANIFEST_PATH) -> dict[str, Any]:
+    if not path.is_file():
+        raise ValueError(f"publication manifest is missing: {path}")
     try:
-        data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"publication manifest cannot be read: {exc}") from exc
     if not isinstance(data, dict):
@@ -49,7 +49,7 @@ def load_manifest() -> dict[str, Any]:
     return data
 
 
-def validate(data: dict[str, Any]) -> list[str]:
+def validate(data: dict[str, Any], root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     missing = sorted(REQUIRED_FIELDS - data.keys())
     if missing:
@@ -66,9 +66,10 @@ def validate(data: dict[str, Any]) -> list[str]:
     if not isinstance(publish_root, str) or not publish_root.strip():
         errors.append("publish_root must be a non-empty relative path")
     else:
-        root_path = (ROOT / publish_root).resolve()
+        repository_root = root.resolve()
+        root_path = (repository_root / publish_root).resolve()
         try:
-            root_path.relative_to(ROOT.resolve())
+            root_path.relative_to(repository_root)
         except ValueError:
             errors.append("publish_root escapes repository root")
         else:
@@ -78,7 +79,9 @@ def validate(data: dict[str, Any]) -> list[str]:
                 errors.append("publish_root has no index.md or index.html")
 
     non_claims = data.get("required_non_claims")
-    if not isinstance(non_claims, list) or not all(isinstance(x, str) and x.strip() for x in non_claims):
+    if not isinstance(non_claims, list) or not non_claims or not all(
+        isinstance(x, str) and x.strip() for x in non_claims
+    ):
         errors.append("required_non_claims must be a non-empty string list")
 
     policy = data.get("gate_policy")
