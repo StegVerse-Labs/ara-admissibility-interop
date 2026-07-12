@@ -119,34 +119,65 @@ jobs:
             *) echo "Deployment URL is missing or not HTTPS: $PAGE_URL"; exit 1 ;;
           esac
 
+          expected_marker="ARA Admissibility Interop Docs"
           verified=false
+          final_status=""
+          final_url=""
+
           for attempt in $(seq 1 12); do
             probe_url="${PAGE_URL}?commit=${GITHUB_SHA}&attempt=${attempt}"
-            if curl --fail --silent --show-error --location \
-              -H 'Cache-Control: no-cache' \
-              "$probe_url" -o /tmp/ara-pages-root.html \
-              && grep -Fq "ARA Admissibility Interop Docs" /tmp/ara-pages-root.html; then
+            mapfile -t curl_meta < <(
+              curl --silent --show-error --location --max-time 30 \
+                -H 'Cache-Control: no-cache' \
+                -o /tmp/ara-pages-root.html \
+                -w '%{http_code}\n%{url_effective}\n' \
+                "$probe_url" || true
+            )
+            final_status="${curl_meta[0]:-000}"
+            final_url="${curl_meta[1]:-$probe_url}"
+
+            if [ "$final_status" = "200" ] \
+              && grep -Fq "$expected_marker" /tmp/ara-pages-root.html; then
               verified=true
               break
             fi
-            echo "Live root not ready on attempt ${attempt}; retrying..."
+
+            echo "Live root not ready on attempt ${attempt}: status=${final_status}; retrying..."
             sleep 5
           done
 
           test "$verified" = true || {
-            echo "Live Pages root did not return the expected rendered site marker."
+            echo "Live Pages root did not return HTTP 200 with the expected rendered site marker."
+            echo "Final status: $final_status"
+            echo "Final URL: $final_url"
             sed -n '1,80p' /tmp/ara-pages-root.html 2>/dev/null || true
             exit 1
           }
 
-          echo "Live Pages root verified: $PAGE_URL" >> "$GITHUB_STEP_SUMMARY"
+          body_sha256="$(sha256sum /tmp/ara-pages-root.html | awk '{print $1}')"
+          body_size_bytes="$(wc -c < /tmp/ara-pages-root.html | tr -d ' ')"
+          verified_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+          {
+            echo "LIVE_ROOT_VERIFICATION=passed"
+            echo "LIVE_ROOT_VERIFIED_AT=$verified_at"
+            echo "LIVE_ROOT_HTTP_STATUS=$final_status"
+            echo "LIVE_ROOT_FINAL_URL=$final_url"
+            echo "LIVE_ROOT_EXPECTED_MARKER=$expected_marker"
+            echo "LIVE_ROOT_MARKER_FOUND=true"
+            echo "LIVE_ROOT_BODY_SHA256=$body_sha256"
+            echo "LIVE_ROOT_BODY_SIZE_BYTES=$body_size_bytes"
+          } >> "$GITHUB_ENV"
+
+          echo "Live Pages root verified: $final_url" >> "$GITHUB_STEP_SUMMARY"
+          echo "HTTP status: $final_status" >> "$GITHUB_STEP_SUMMARY"
+          echo "Response body SHA-256: $body_sha256" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Generate deployed publication status and receipt
         env:
           PAGES_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
           PUBLICATION_ARTIFACT_ROOT: _site
           PUBLICATION_ARTIFACT_KIND: built_site
-          LIVE_ROOT_VERIFICATION: passed
         run: |
           python3 tools/generate_publication_status.py
           python3 tools/generate_publication_receipt.py
