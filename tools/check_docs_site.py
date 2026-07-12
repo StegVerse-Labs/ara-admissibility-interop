@@ -39,6 +39,11 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "source: ./${{ needs.publication-gate.outputs.publish_root }}",
     "destination: ./_site",
     "path: ./_site",
+    "Verify live deployed root",
+    "ARA Admissibility Interop Docs",
+    "PUBLICATION_ARTIFACT_ROOT: _site",
+    "PUBLICATION_ARTIFACT_KIND: built_site",
+    "LIVE_ROOT_VERIFICATION: passed",
 ]
 
 REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
@@ -110,6 +115,8 @@ def main() -> int:
             problems.append("manifest-workflows-manual-artifact-retention-not-false")
         if workflows.get("artifact_upload") != "automated":
             problems.append("manifest-workflows-artifact-upload-not-automated")
+        if workflows.get("deployment_url_verification") != "required":
+            problems.append("manifest-workflows-deployment-url-verification")
 
     result = {
         "checked": [
