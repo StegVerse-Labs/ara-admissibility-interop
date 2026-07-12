@@ -8,11 +8,14 @@ on:
       - 'docs/**'
       - 'publication/**'
       - 'publication-manifest.json'
+      - 'release-manifest.json'
       - 'tools/check_publication_gate.py'
       - 'tools/test_publication_gate.py'
       - 'tools/check_workflow_parity.py'
       - 'tools/generate_publication_status.py'
       - 'tools/generate_publication_receipt.py'
+      - 'tools/verify_publication_evidence.py'
+      - 'tools/evaluate_release_evidence.py'
       - 'tools/stamp_built_site.py'
       - '.github/workflows/docs-pages.yml'
       - 'iosnoperiod/github/workflows/docs-pages.yml'
@@ -230,6 +233,10 @@ jobs:
             echo "LIVE_IDENTITY_BODY_SHA256=$identity_sha256"
           } >> "$GITHUB_ENV"
 
+          mkdir -p status
+          cp /tmp/ara-pages-root.html status/deployed-live-root.html
+          cp /tmp/ara-deployment-identity.json status/deployed-identity.json
+
           echo "Live Pages root verified: $final_url" >> "$GITHUB_STEP_SUMMARY"
           echo "Verified deployed commit: $expected_commit" >> "$GITHUB_STEP_SUMMARY"
           echo "HTTP status: $final_status" >> "$GITHUB_STEP_SUMMARY"
@@ -245,8 +252,19 @@ jobs:
           python3 tools/generate_publication_status.py
           python3 tools/generate_publication_receipt.py
 
+      - name: Evaluate deployed release evidence
+        run: |
+          python3 tools/evaluate_release_evidence.py \
+            --artifact-root _site \
+            --identity-file status/deployed-identity.json \
+            --live-root-file status/deployed-live-root.html \
+            --require-public-review-allow
+
       - name: Publish deployment summary
-        run: cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          cat status/release-evidence-decision.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload deployed publication evidence
         uses: actions/upload-artifact@v4
@@ -255,4 +273,9 @@ jobs:
           path: |
             status/publication-status.json
             status/publication-receipt.json
+            status/release-evidence-decision.json
+            status/release-evidence-decision.md
+            status/deployed-live-root.html
+            status/deployed-identity.json
             docs/publication-status.md
+            _site
