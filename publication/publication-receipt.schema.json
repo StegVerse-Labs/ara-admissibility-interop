@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/governed-publication-receipt.schema.json",
+  "title": "Governed Publication Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "receipt_type",
+    "generated_at",
+    "repository",
+    "commit_sha",
+    "publication_status",
+    "canonical_status",
+    "independent_review_status",
+    "reliance_posture",
+    "publish_target",
+    "publish_root",
+    "manifest_sha256",
+    "file_count",
+    "files",
+    "gate_result",
+    "deployment_url"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "receipt_type": {"const": "governed-publication-receipt"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "repository": {"type": "string"},
+    "commit_sha": {"type": "string"},
+    "workflow_run_id": {"type": "string"},
+    "workflow_run_attempt": {"type": "string"},
+    "publication_status": {"type": "string"},
+    "canonical_status": {"type": "string"},
+    "independent_review_status": {"type": "string"},
+    "clinical_status": {"type": "string"},
+    "regulatory_status": {"type": "string"},
+    "reliance_posture": {"type": "string"},
+    "publish_target": {"type": "string"},
+    "publish_root": {"type": "string"},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file_count": {"type": "integer", "minimum": 1},
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "size_bytes"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size_bytes": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "gate_result": {"const": "ALLOW"},
+    "deployment_url": {"type": "string"}
+  },
+  "additionalProperties": false
+}
