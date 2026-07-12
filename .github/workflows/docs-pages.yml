@@ -8,7 +8,11 @@ on:
       - 'docs/**'
       - 'publication-manifest.json'
       - 'tools/check_publication_gate.py'
+      - 'tools/test_publication_gate.py'
+      - 'tools/check_workflow_parity.py'
+      - 'tools/generate_publication_receipt.py'
       - '.github/workflows/docs-pages.yml'
+      - 'iosnoperiod/github/workflows/docs-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -37,6 +41,12 @@ jobs:
       - name: Evaluate governed publication gate
         run: python3 tools/check_publication_gate.py
 
+      - name: Test publication gate failures
+        run: python3 tools/test_publication_gate.py
+
+      - name: Verify workflow mirror parity
+        run: python3 tools/check_workflow_parity.py
+
       - name: Read publish root
         id: manifest
         shell: bash
@@ -55,6 +65,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
@@ -66,3 +81,24 @@ jobs:
       - name: Deploy docs to Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify deployment output
+        shell: bash
+        run: |
+          url='${{ steps.deployment.outputs.page_url }}'
+          case "$url" in
+            https://*) ;;
+            *) echo "Deployment URL is missing or not HTTPS: $url"; exit 1 ;;
+          esac
+          echo "Pages deployment verified: $url" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Generate deployed publication receipt
+        env:
+          PAGES_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
+        run: python3 tools/generate_publication_receipt.py
+
+      - name: Upload deployed publication receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-publication-receipt
+          path: status/publication-receipt.json
