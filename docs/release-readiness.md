@@ -2,48 +2,53 @@
 
 ## Candidate
 
-Version: `0.1.0-release-candidate`
+Version: `0.2.0-release-candidate`
 
 Release manifest: [`../release-manifest.json`](../release-manifest.json)
 
 Release checklist: [`release-checklist.md`](release-checklist.md)
 
-Release note: [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md)
+Release note: [`release-note-0.2.0-rc.md`](release-note-0.2.0-rc.md)
 
-Optional strict validation: [`optional-strict-validation.md`](optional-strict-validation.md)
+Publication status: [`publication-status.md`](publication-status.md)
 
 ## Purpose
 
-This release candidate captures the first complete public shape of the ARA admissibility interoperability prototype.
-
-It is intended to be reviewable as a repository artifact without requiring chat history.
+This release candidate adds manifest-governed, fail-closed automated publication to the ARA admissibility interoperability prototype. It is intended to be inspectable without chat history and to preserve publication posture, non-claims, workflow identity, file hashes, and deployment evidence.
 
 ## Release candidate criteria
-
-A release candidate is ready when the repository can demonstrate:
 
 | Criterion | Status |
 | --- | --- |
 | Boundary and non-claims are explicit | Ready |
 | ARA-style artifact concepts are mapped to standing concepts | Ready |
-| Commitment-candidate schema exists | Ready |
-| Standing-result schema exists | Ready |
+| Commitment-candidate and standing-result schemas exist | Ready |
 | ALLOW, DENY, and FAIL-CLOSED examples exist | Ready |
-| Invalid fixtures are rejected | Ready |
-| Evaluator stub proves all three outcomes | Ready |
-| Machine-readable status can be generated | Ready |
-| Human-readable validation report can be generated | Ready |
-| Canonical workflow runs validation reporting | Ready |
-| iOS-safe workflow mirror is aligned | Ready |
-| Optional strict JSON Schema validation is visible in generated status | Ready |
-| Artifact upload retention exists | Optional future hardening |
+| Dependency-free validation path exists | Ready |
+| Publication manifest declares current posture | Ready |
+| Fail-closed publication gate exists | Ready |
+| Negative publication tests exist | Ready |
+| Publication receipt schema and generator exist | Ready |
+| Publication status generator exists | Ready |
+| Canonical/iOS-safe workflow parity is enforced | Ready |
+| Pages deployment is gated by publication state | Ready |
+| Validation and publication artifacts are retained | Ready |
+| Repository-check workflow has completed successfully for the candidate | Pending live verification |
+| Pages workflow has completed successfully for the candidate | Pending live verification |
+| Verified HTTPS deployment URL is present in a deployed receipt | Pending live verification |
+| Stable release tag is authorized | No |
 
-## Required release check
+## Required local checks
 
 Run:
 
 ```bash
 python3 tools/generate_validation_report.py
+python3 tools/check_publication_gate.py
+python3 tools/test_publication_gate.py
+python3 tools/check_workflow_parity.py
+python3 tools/generate_publication_status.py
+python3 tools/generate_publication_receipt.py
 ```
 
 Expected generated files:
@@ -51,47 +56,44 @@ Expected generated files:
 ```text
 status/generated-status.json
 status/validation-report.md
+status/publication-status.json
+status/publication-receipt.json
+docs/publication-status.md
 ```
 
-Expected state:
+Expected states:
 
 ```text
 self-check-pass
+PUBLICATION_GATE=ALLOW
+publication gate tests: PASS
+workflow parity: PASS
+PUBLICATION_STATUS=ALLOW
+PUBLICATION_RECEIPT=CREATED
 ```
 
-## Optional strict check
+## Live release verification
 
-The optional strict path is:
+The candidate remains untagged until GitHub Actions provides evidence that:
 
-```bash
-python3 tools/validate_with_jsonschema_optional.py
-```
-
-This check is optional. If `jsonschema` is absent, it reports `skip` with exit code `0`. If `jsonschema` is installed, it performs stricter schema validation and fails on violations.
+1. `Repo Check` succeeds on the candidate commit.
+2. `Docs Pages` succeeds on the candidate commit.
+3. The deployment output contains an HTTPS Pages URL.
+4. `deployed-publication-evidence` contains a receipt bound to that commit and URL.
 
 ## Non-release claims
 
 This release candidate does not claim:
 
 - upstream ARA endorsement;
-- certification of external ARA artifacts;
+- certification of external artifacts;
 - journal, conference, lab, or platform acceptance;
 - production Standing Proof Engine behavior;
-- required full JSON Schema conformance when the optional dependency is absent;
-- execution authority for any external system.
+- canonical doctrine status;
+- independent review, clinical validation, or regulatory authorization;
+- execution authority for any external system;
+- required full JSON Schema conformance when the optional dependency is absent.
 
-## Suggested release note
+## Suggested release statement
 
-Use [`release-note-0.1.0-rc.md`](release-note-0.1.0-rc.md) for short public or reviewer-facing summaries.
-
-`0.1.0-release-candidate` establishes a dependency-free interoperability prototype for presenting ARA-style artifacts as commitment candidates and evaluating them through ALLOW, DENY, and FAIL-CLOSED standing-result examples.
-
-## Next version candidate
-
-The next candidate after this release should be `0.2.0` if the repository adds one or more of:
-
-- make full JSON Schema validation required if dependency policy changes;
-- external example package with explicit permission;
-- richer evaluator semantics beyond the current stub;
-- artifact upload retention in the live workflow;
-- generated docs site integration.
+`0.2.0-release-candidate` establishes a dependency-free interoperability prototype with manifest-governed GitHub Pages publication, fail-closed boundary tests, workflow parity checks, and hash-bound publication receipts. Stable release remains blocked pending live workflow and deployment verification.
