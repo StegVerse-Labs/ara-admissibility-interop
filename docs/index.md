@@ -4,6 +4,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 
 ## Start here
 
+- [Publication status](publication-status.md)
 - [Release readiness](release-readiness.md)
 - [Release checklist](release-checklist.md)
 - [Release note: 0.1.0 RC](release-note-0.1.0-rc.md)
@@ -16,6 +17,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Optional strict validation](optional-strict-validation.md)
 - [Workflow artifact retention](workflow-artifact-retention.md)
 - [Publication manifest](../publication-manifest.json)
+- [Publication receipt schema](../publication/publication-receipt.schema.json)
 
 ## Core repository references
 
@@ -32,13 +34,17 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [ARA-to-standing map](../admissibility/ara-to-standing-map.md)
 - [Evaluator usage](../admissibility/evaluator-usage.md)
 
-## Validation command
+## Validation commands
 
 Run from the repository root:
 
 ```bash
 python3 tools/generate_validation_report.py
 python3 tools/check_publication_gate.py
+python3 tools/test_publication_gate.py
+python3 tools/check_workflow_parity.py
+python3 tools/generate_publication_status.py
+python3 tools/generate_publication_receipt.py
 ```
 
 Expected generated outputs:
@@ -46,6 +52,9 @@ Expected generated outputs:
 ```text
 status/generated-status.json
 status/validation-report.md
+status/publication-status.json
+status/publication-receipt.json
+docs/publication-status.md
 ```
 
 The publication gate must report `PUBLICATION_GATE=ALLOW` before the Pages deployment job can run.
