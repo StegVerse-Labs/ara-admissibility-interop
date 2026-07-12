@@ -32,10 +32,13 @@ REQUIRED_CONFIG_PHRASES = [
 
 REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "uses: actions/configure-pages@v5",
+    "uses: actions/jekyll-build-pages@v1",
     "uses: actions/upload-pages-artifact@v3",
     "uses: actions/deploy-pages@v4",
     'json.load(open("publication-manifest.json"))["publish_root"]',
-    "path: ${{ needs.publication-gate.outputs.publish_root }}",
+    "source: ./${{ needs.publication-gate.outputs.publish_root }}",
+    "destination: ./_site",
+    "path: ./_site",
 ]
 
 REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
