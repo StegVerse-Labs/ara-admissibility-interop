@@ -73,7 +73,11 @@
         "expected_marker",
         "marker_found",
         "body_sha256",
-        "body_size_bytes"
+        "body_size_bytes",
+        "deployed_commit_sha",
+        "identity_http_status",
+        "identity_final_url",
+        "identity_body_sha256"
       ],
       "properties": {
         "result": {"enum": ["not_run", "passed"]},
@@ -84,7 +88,11 @@
         "expected_marker": {"type": "string"},
         "marker_found": {"type": "boolean"},
         "body_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
-        "body_size_bytes": {"type": ["integer", "null"], "minimum": 0}
+        "body_size_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "deployed_commit_sha": {"type": "string"},
+        "identity_http_status": {"type": ["integer", "null"]},
+        "identity_final_url": {"type": "string"},
+        "identity_body_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"}
       },
       "additionalProperties": false
     }
