@@ -1,3 +1,8 @@
+---
+layout: default
+title: ARA Admissibility Interop Docs
+---
+
 # ARA Admissibility Interop Docs
 
 This documentation index is the static-site entry point for the ARA admissibility interoperability prototype.
