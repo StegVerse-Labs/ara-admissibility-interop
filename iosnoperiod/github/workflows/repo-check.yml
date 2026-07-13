@@ -53,13 +53,16 @@ jobs:
       - name: Test notification transport and monitored ingestion
         run: python3 tools/test_deployment_notification_transport.py
 
+      - name: Test notification replay ledger
+        run: python3 tools/test_deployment_notification_replay_ledger.py
+
       - name: Publish validation summary
         run: |
           cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Publication gates, evidence verification, bounded promotion, handoff-backed notification, Microsoft Graph transport, and monitored-ingestion tests passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Publication gates, evidence verification, bounded promotion, handoff-backed notification, Microsoft Graph transport, monitored ingestion, and replay-ledger tests passed." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload validation status
         uses: actions/upload-artifact@v4
