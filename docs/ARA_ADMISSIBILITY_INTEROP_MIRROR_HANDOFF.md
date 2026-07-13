@@ -31,7 +31,10 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added `docs/deployment-email-monitoring.md` and linked it from the documentation index.
 - Added canonical and iOS-safe deployment-notification workflow mirrors and extended workflow parity enforcement to include them.
 - Docs Pages run `29224103644` on commit `76173b36746b548ce3b92f39c82b0ae01d36767a` passed the publication gate and Jekyll build but again failed at `Stamp built site with deployment identity` because the built artifact did not expose `_site/index.html` at the expected root.
-- Commit `486aedd1f7a9278e567743de05d9d976d87e4c5d` made `tools/stamp_built_site.py` path-robust: it accepts the required root entry point or deterministically copies exactly one nested Jekyll `index.html` to `_site/index.html`; zero or multiple candidates still fail closed with a complete built-file diagnostic.
+- Commit `486aedd1f7a9278e567743de05d9d976d87e4c5d` made `tools/stamp_built_site.py` path-robust: it accepts the required root entry point or deterministically copies exactly one nested Jekyll `index.html` to `_site/index.html`; zero or multiple candidates still fail closed.
+- Docs Pages runs `29224565499` and `29224578601` exercised commits `486aedd1f7a9278e567743de05d9d976d87e4c5d` and `7fbaa99565973376fedacf41123dc6c59fbafb48`; both passed the publication gate and Jekyll build but still failed at the stamping step, and neither produced a retained artifact.
+- Repo Check run `29224677219` on commit `b58bdd7287891dbfcc872b3e2ca01e12a5f92a16` failed only at workflow parity after the replay-ledger test was added to the canonical workflow. Commit `26a10d480173eabdf85e64df90ebad4636057d30` immediately synchronized the iOS-safe mirror, so no duplicate parity repair is required.
+- Commit `06549b05450ed9110f9a0d9711c73e6fa658b642` added a bounded deterministic `_site` inventory to `tools/stamp_built_site.py` before entry-point resolution. The next Pages run will expose the actual build layout while preserving fail-closed behavior.
 
 ## Current publication posture
 
@@ -45,7 +48,7 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 ## Current release gate
 
 - local architecture and checks: built
-- canonical/iOS workflow parity: built across Repo Check, Docs Pages, and Deployment Notification
+- canonical/iOS workflow parity: built across Repo Check, Docs Pages, and Deployment Notification; successor verification pending after `26a10d4`
 - independent evidence verifier and tests: built
 - release-evidence evaluator and tests: built
 - evidence-bundle generator, verifier, and tests: built
@@ -58,7 +61,8 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Microsoft Graph application credentials: not configured or not yet observed
 - governed email delivery: pending configured successor-run evidence
 - mailbox polling and durable ledger persistence across monitor runs: pending workflow integration
-- path-robust built-site entry normalization: installed, successor-run verification pending
+- path-robust built-site entry normalization: installed
+- bounded build-layout diagnostics: installed, successor-run evidence pending
 - corrected Pages workflow live success: pending successor-run evidence
 - rendered current-commit root page: pending successor-run evidence
 - deployed publication evidence artifact inspection: pending
@@ -79,17 +83,18 @@ An `ALLOW` public-review decision and a successful technical-gate promotion do n
 
 ## Next tasks
 
-1. Confirm Repo Check passes the notification generation, Graph transport configuration, monitored-ingestion, and replay-ledger tests with all prior publication, receipt, decision, bundle, and promotion suites.
-2. Confirm a successor Docs Pages run exercises commit `486aedd1f7a9278e567743de05d9d976d87e4c5d`, produces `_site/index.html`, stamps the deployment identity, deploys, verifies the exact current commit, and retains a valid `deployed-publication-evidence` artifact.
-3. Inspect the retained artifact and independently verify the publication receipt and aggregate evidence bundle.
-4. Confirm Deployment Notification starts from that successful run, downloads and reverifies the artifact, regenerates the current handoff-backed message, and writes `deployment-notification-delivery.json`.
-5. Configure the five Microsoft Graph application secrets only after the Entra application has `sendMail` application permission and an appropriately restricted mailbox-access policy.
-6. Confirm the sent email contains the canonical Markdown body plus the notification envelope and evidence-bundle attachments.
-7. Add scheduled mailbox polling that downloads those three attachments and invokes `tools/process_deployment_notification_once.py` with a ledger restored from durable monitor state.
-8. Persist the updated ledger and processing receipt across monitor runs, and create no more than one verification task per deterministic notification identity.
-9. Retrieve and independently verify the GitHub artifact before producing or applying any gate-promotion proposal.
-10. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-11. Create a stable tag only after explicit release authorization.
-12. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm Repo Check passes after canonical/iOS replay-ledger workflow parity was restored by commit `26a10d480173eabdf85e64df90ebad4636057d30`.
+2. Inspect the first successor Docs Pages run containing commit `06549b05450ed9110f9a0d9711c73e6fa658b642`; use its bounded `_site` inventory to identify the exact build layout and repair only the entry-point discovery defect.
+3. Confirm Docs Pages produces `_site/index.html`, stamps deployment identity, deploys, verifies the exact current commit, and retains a valid `deployed-publication-evidence` artifact.
+4. Inspect the retained artifact and independently verify the publication receipt and aggregate evidence bundle.
+5. Confirm Deployment Notification starts from that successful run, downloads and reverifies the artifact, regenerates the current handoff-backed message, and writes `deployment-notification-delivery.json`.
+6. Configure the five Microsoft Graph application secrets only after the Entra application has `sendMail` application permission and an appropriately restricted mailbox-access policy.
+7. Confirm the sent email contains the canonical Markdown body plus the notification envelope and evidence-bundle attachments.
+8. Add scheduled mailbox polling that downloads those three attachments and invokes `tools/process_deployment_notification_once.py` with a ledger restored from durable monitor state.
+9. Persist the updated ledger and processing receipt across monitor runs, and create no more than one verification task per deterministic notification identity.
+10. Retrieve and independently verify the GitHub artifact before producing or applying any gate-promotion proposal.
+11. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
+12. Create a stable tag only after explicit release authorization.
+13. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
