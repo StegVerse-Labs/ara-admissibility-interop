@@ -18,6 +18,8 @@ on:
       - 'tools/evaluate_release_evidence.py'
       - 'tools/generate_evidence_bundle_manifest.py'
       - 'tools/verify_evidence_bundle_manifest.py'
+      - 'tools/generate_deployment_notification.py'
+      - 'tools/test_deployment_notification.py'
       - 'tools/stamp_built_site.py'
       - '.github/workflows/docs-pages.yml'
       - 'iosnoperiod/github/workflows/docs-pages.yml'
@@ -51,6 +53,9 @@ jobs:
 
       - name: Test publication gate failures
         run: python3 tools/test_publication_gate.py
+
+      - name: Test handoff-backed deployment notification
+        run: python3 tools/test_deployment_notification.py
 
       - name: Verify workflow mirror parity
         run: python3 tools/check_workflow_parity.py
@@ -268,6 +273,9 @@ jobs:
           python3 tools/verify_evidence_bundle_manifest.py \
             status/deployed-evidence-bundle.json --root .
 
+      - name: Generate handoff-backed deployment notification
+        run: python3 tools/generate_deployment_notification.py
+
       - name: Publish deployment summary
         run: |
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
@@ -276,6 +284,9 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Deployment evidence bundle SHA-256:" >> "$GITHUB_STEP_SUMMARY"
           python3 -c 'import json; print("`" + json.load(open("status/deployed-evidence-bundle.json"))["bundle_sha256"] + "`")' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deployment email notification subject:" >> "$GITHUB_STEP_SUMMARY"
+          python3 -c 'import json; print(json.load(open("status/deployment-notification-envelope.json"))["subject"])' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload deployed publication evidence
         uses: actions/upload-artifact@v4
@@ -289,5 +300,7 @@ jobs:
             status/deployed-live-root.html
             status/deployed-identity.json
             status/deployed-evidence-bundle.json
+            status/deployment-notification-email.md
+            status/deployment-notification-envelope.json
             docs/publication-status.md
             _site
