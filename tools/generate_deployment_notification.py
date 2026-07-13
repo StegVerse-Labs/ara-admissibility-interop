@@ -28,6 +28,11 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def repository_path(path: Path) -> Path:
+    """Resolve a CLI path against the repository root without changing its boundary."""
+    return path.resolve() if path.is_absolute() else (ROOT / path).resolve()
+
+
 def extract_sections(markdown: str) -> dict[str, str]:
     lines = markdown.splitlines()
     sections: dict[str, list[str]] = {}
@@ -84,10 +89,17 @@ def main() -> int:
     parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
     args = parser.parse_args()
 
+    handoff_path = repository_path(args.handoff)
+    bundle_path = repository_path(args.bundle)
+    decision_path = repository_path(args.decision)
+    markdown_path = repository_path(args.markdown)
+    json_path = repository_path(args.json)
+
     try:
-        handoff_text = args.handoff.read_text(encoding="utf-8")
-        bundle = json.loads(args.bundle.read_text(encoding="utf-8"))
-        decision = json.loads(args.decision.read_text(encoding="utf-8"))
+        handoff_relative_path = handoff_path.relative_to(ROOT).as_posix()
+        handoff_text = handoff_path.read_text(encoding="utf-8")
+        bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+        decision = json.loads(decision_path.read_text(encoding="utf-8"))
         sections = extract_sections(handoff_text)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"DEPLOYMENT_NOTIFICATION=FAIL-CLOSED\nreason={exc}")
@@ -116,7 +128,7 @@ def main() -> int:
         "bundle_sha256": bundle.get("bundle_sha256"),
         "public_review_decision": decision.get("public_review_decision"),
         "stable_release_decision": decision.get("stable_release_decision"),
-        "handoff_path": args.handoff.relative_to(ROOT).as_posix(),
+        "handoff_path": handoff_relative_path,
         "handoff_sha256": sha256_text(handoff_text),
         "included_handoff_sections": list(REQUIRED_SECTIONS),
         "next_action": "retrieve-and-independently-verify",
@@ -125,14 +137,14 @@ def main() -> int:
     body = render(subject, envelope, sections)
     envelope["body_sha256"] = sha256_text(body)
 
-    args.markdown.parent.mkdir(parents=True, exist_ok=True)
-    args.json.parent.mkdir(parents=True, exist_ok=True)
-    args.markdown.write_text(body, encoding="utf-8")
-    args.json.write_text(json.dumps(envelope, indent=2) + "\n", encoding="utf-8")
+    markdown_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    markdown_path.write_text(body, encoding="utf-8")
+    json_path.write_text(json.dumps(envelope, indent=2) + "\n", encoding="utf-8")
     print("DEPLOYMENT_NOTIFICATION=CREATED")
     print(f"subject={subject}")
-    print(f"body={args.markdown}")
-    print(f"envelope={args.json}")
+    print(f"body={markdown_path}")
+    print(f"envelope={json_path}")
     return 0
 
 
