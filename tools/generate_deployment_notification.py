@@ -61,7 +61,7 @@ def render(subject: str, envelope: dict, sections: dict[str, str]) -> str:
         f"- Public-review decision: **{envelope['public_review_decision']}**",
         f"- Stable-release decision: **{envelope['stable_release_decision']}**",
         "",
-        "This message signals that a governed deployment-evidence candidate is available. It does not itself authorize release-gate promotion or stable release.",
+        "This message is a signal, not release authority. It reports that a governed deployment-evidence candidate is available and does not itself authorize release-gate promotion or stable release.",
         "",
     ]
     for heading in REQUIRED_SECTIONS:
