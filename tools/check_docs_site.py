@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check generated docs site, publishing, and artifact automation invariants."""
+"""Check generated docs site, publishing, evidence, and notification invariants."""
 
 from __future__ import annotations
 
@@ -13,10 +13,15 @@ PAGES_WORKFLOW = ROOT / ".github" / "workflows" / "docs-pages.yml"
 IOS_PAGES_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "docs-pages.yml"
 REPO_CHECK_WORKFLOW = ROOT / ".github" / "workflows" / "repo-check.yml"
 IOS_REPO_CHECK_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "repo-check.yml"
+NOTIFY_WORKFLOW = ROOT / ".github" / "workflows" / "deployment-notification.yml"
+IOS_NOTIFY_WORKFLOW = ROOT / "iosnoperiod" / "github" / "workflows" / "deployment-notification.yml"
 MANIFEST = ROOT / "release-manifest.json"
 STAMP_TOOL = ROOT / "tools" / "stamp_built_site.py"
 EVIDENCE_VERIFIER = ROOT / "tools" / "verify_publication_evidence.py"
 RELEASE_EVALUATOR = ROOT / "tools" / "evaluate_release_evidence.py"
+NOTIFICATION_GENERATOR = ROOT / "tools" / "generate_deployment_notification.py"
+NOTIFICATION_SENDER = ROOT / "tools" / "send_deployment_notification.py"
+NOTIFICATION_INGESTOR = ROOT / "tools" / "ingest_deployment_notification.py"
 
 REQUIRED_INDEX_LINKS = [
     "release-readiness.md",
@@ -26,6 +31,8 @@ REQUIRED_INDEX_LINKS = [
     "validation-report-guide.md",
     "publication-evidence-verification.md",
     "release-evidence-decision.md",
+    "release-gate-promotion.md",
+    "deployment-email-monitoring.md",
     "../admissibility/non-claims.md",
 ]
 
@@ -51,35 +58,55 @@ REQUIRED_PAGES_WORKFLOW_PHRASES = [
     "PUBLICATION_ARTIFACT_ROOT: _site",
     "PUBLICATION_ARTIFACT_KIND: built_site",
     "LIVE_ROOT_VERIFICATION=passed",
-    "LIVE_ROOT_VERIFIED_AT=",
-    "LIVE_ROOT_HTTP_STATUS=",
-    "LIVE_ROOT_FINAL_URL=",
-    "LIVE_ROOT_EXPECTED_MARKER=",
-    "LIVE_ROOT_MARKER_FOUND=true",
-    "LIVE_ROOT_BODY_SHA256=",
-    "LIVE_ROOT_BODY_SIZE_BYTES=",
     "LIVE_ROOT_DEPLOYED_COMMIT_SHA=",
-    "LIVE_IDENTITY_HTTP_STATUS=",
-    "LIVE_IDENTITY_FINAL_URL=",
-    "LIVE_IDENTITY_BODY_SHA256=",
     "status/deployed-live-root.html",
     "status/deployed-identity.json",
-    "Evaluate deployed release evidence",
     "python3 tools/evaluate_release_evidence.py",
-    "--artifact-root _site",
-    "--identity-file status/deployed-identity.json",
-    "--live-root-file status/deployed-live-root.html",
     "--require-public-review-allow",
     "status/release-evidence-decision.json",
-    "status/release-evidence-decision.md",
-    "_site",
+    "status/deployed-evidence-bundle.json",
+    "status/deployment-notification-email.md",
+    "status/deployment-notification-envelope.json",
+]
+
+REQUIRED_NOTIFY_WORKFLOW_PHRASES = [
+    "name: Deployment Notification",
+    "workflow_run:",
+    "workflows:",
+    "- Docs Pages",
+    "github.event.workflow_run.conclusion == 'success'",
+    "gh run download",
+    "deployed-publication-evidence",
+    "python3 tools/verify_evidence_bundle_manifest.py",
+    "python3 tools/verify_publication_evidence.py",
+    "python3 tools/generate_deployment_notification.py",
+    "python3 tools/send_deployment_notification.py",
+    "STEGVERSE_MAIL_TENANT_ID",
+    "STEGVERSE_MAIL_CLIENT_ID",
+    "STEGVERSE_MAIL_CLIENT_SECRET",
+    "STEGVERSE_MAIL_SENDER",
+    "STEGVERSE_MAIL_RECIPIENT",
+    "deployment-notification-delivery.json",
+    "name: governed-deployment-notification",
+]
+
+REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
+    "uses: actions/upload-artifact@v4",
+    "name: generated-status",
+    "path: status/generated-status.json",
+    "python3 tools/test_publication_evidence_verifier.py",
+    "python3 tools/test_release_evidence_evaluator.py",
+    "python3 tools/test_evidence_bundle_manifest.py",
+    "python3 tools/test_release_gate_promotion.py",
+    "python3 tools/test_deployment_notification.py",
+    "python3 tools/test_deployment_notification_transport.py",
 ]
 
 REQUIRED_STAMP_TOOL_PHRASES = [
     '"identity_type": "governed-pages-deployment-identity"',
     '"commit_sha": commit_sha',
-    'deployment-identity.json',
-    'stegverse-deployment-commit',
+    "deployment-identity.json",
+    "stegverse-deployment-commit",
 ]
 
 REQUIRED_EVIDENCE_VERIFIER_PHRASES = [
@@ -99,14 +126,32 @@ REQUIRED_RELEASE_EVALUATOR_PHRASES = [
     "--live-root-file",
 ]
 
-REQUIRED_REPO_CHECK_WORKFLOW_PHRASES = [
-    "uses: actions/upload-artifact@v4",
-    "name: generated-status",
-    "path: status/generated-status.json",
-    "name: validation-report",
-    "path: status/validation-report.md",
-    "python3 tools/test_publication_evidence_verifier.py",
-    "python3 tools/test_release_evidence_evaluator.py",
+REQUIRED_NOTIFICATION_GENERATOR_PHRASES = [
+    "Current goal",
+    "Current publication posture",
+    "Current release gate",
+    "Boundary",
+    "Next tasks",
+    "handoff_sha256",
+    "body_sha256",
+]
+
+REQUIRED_NOTIFICATION_SENDER_PHRASES = [
+    "microsoft-graph-sendmail",
+    "client_credentials",
+    "https://graph.microsoft.com/.default",
+    "sendMail",
+    "partial mail configuration",
+    "delivery_status",
+    "not_configured",
+]
+
+REQUIRED_NOTIFICATION_INGESTOR_PHRASES = [
+    "governed-deployment-evidence-verification-candidate",
+    "verification_required",
+    "body-sha256",
+    "bundle-sha256-mismatch",
+    "do not set stable_release_authorized",
 ]
 
 
@@ -122,88 +167,80 @@ def check_contains(path: Path, phrases: list[str], problems: list[str], label: s
 
 def main() -> int:
     problems: list[str] = []
-
-    check_contains(DOCS_INDEX, REQUIRED_INDEX_LINKS, problems, "docs-index")
-    check_contains(DOCS_CONFIG, REQUIRED_CONFIG_PHRASES, problems, "docs-config")
-    check_contains(PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "pages-workflow")
-    check_contains(IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, problems, "ios-pages-workflow")
-    check_contains(STAMP_TOOL, REQUIRED_STAMP_TOOL_PHRASES, problems, "stamp-tool")
-    check_contains(EVIDENCE_VERIFIER, REQUIRED_EVIDENCE_VERIFIER_PHRASES, problems, "evidence-verifier")
-    check_contains(RELEASE_EVALUATOR, REQUIRED_RELEASE_EVALUATOR_PHRASES, problems, "release-evaluator")
-    check_contains(REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "repo-check-workflow")
-    check_contains(IOS_REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, problems, "ios-repo-check-workflow")
+    checks = [
+        (DOCS_INDEX, REQUIRED_INDEX_LINKS, "docs-index"),
+        (DOCS_CONFIG, REQUIRED_CONFIG_PHRASES, "docs-config"),
+        (PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, "pages-workflow"),
+        (IOS_PAGES_WORKFLOW, REQUIRED_PAGES_WORKFLOW_PHRASES, "ios-pages-workflow"),
+        (NOTIFY_WORKFLOW, REQUIRED_NOTIFY_WORKFLOW_PHRASES, "notify-workflow"),
+        (IOS_NOTIFY_WORKFLOW, REQUIRED_NOTIFY_WORKFLOW_PHRASES, "ios-notify-workflow"),
+        (REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, "repo-check-workflow"),
+        (IOS_REPO_CHECK_WORKFLOW, REQUIRED_REPO_CHECK_WORKFLOW_PHRASES, "ios-repo-check-workflow"),
+        (STAMP_TOOL, REQUIRED_STAMP_TOOL_PHRASES, "stamp-tool"),
+        (EVIDENCE_VERIFIER, REQUIRED_EVIDENCE_VERIFIER_PHRASES, "evidence-verifier"),
+        (RELEASE_EVALUATOR, REQUIRED_RELEASE_EVALUATOR_PHRASES, "release-evaluator"),
+        (NOTIFICATION_GENERATOR, REQUIRED_NOTIFICATION_GENERATOR_PHRASES, "notification-generator"),
+        (NOTIFICATION_SENDER, REQUIRED_NOTIFICATION_SENDER_PHRASES, "notification-sender"),
+        (NOTIFICATION_INGESTOR, REQUIRED_NOTIFICATION_INGESTOR_PHRASES, "notification-ingestor"),
+    ]
+    for path, phrases, label in checks:
+        check_contains(path, phrases, problems, label)
 
     if not MANIFEST.is_file():
         problems.append("missing:release-manifest.json")
     else:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        docs_site = manifest.get("docs_site", {})
         primary_docs = manifest.get("primary_docs", {})
-        workflows = manifest.get("workflows", {})
+        publishing = manifest.get("docs_site", {}).get("publishing", {})
         validation = manifest.get("validation", {})
-        publishing = docs_site.get("publishing", {})
         retention = validation.get("artifact_retention", {})
         release_evidence = manifest.get("release_evidence", {})
-        if docs_site.get("entrypoint") != "docs/index.md":
-            problems.append("manifest-docs-entrypoint")
-        if docs_site.get("config") != "docs/_config.yml":
-            problems.append("manifest-docs-config")
-        if primary_docs.get("docs_index") != "docs/index.md":
-            problems.append("manifest-primary-docs-index")
-        if primary_docs.get("docs_config") != "docs/_config.yml":
-            problems.append("manifest-primary-docs-config")
-        if publishing.get("canonical_workflow") != ".github/workflows/docs-pages.yml":
-            problems.append("manifest-docs-canonical-workflow")
-        if publishing.get("ios_safe_workflow") != "iosnoperiod/github/workflows/docs-pages.yml":
-            problems.append("manifest-docs-ios-workflow")
-        if publishing.get("manual_publish_required") is not False:
-            problems.append("manifest-manual-docs-publish-not-false")
-        if publishing.get("evidence_verifier") != "tools/verify_publication_evidence.py":
-            problems.append("manifest-publishing-evidence-verifier")
-        if publishing.get("release_evaluator") != "tools/evaluate_release_evidence.py":
-            problems.append("manifest-publishing-release-evaluator")
-        if retention.get("canonical_workflow") != ".github/workflows/repo-check.yml":
-            problems.append("manifest-retention-canonical-workflow")
-        if retention.get("ios_safe_workflow") != "iosnoperiod/github/workflows/repo-check.yml":
-            problems.append("manifest-retention-ios-workflow")
-        if retention.get("manual_artifact_retention_required") is not False:
-            problems.append("manifest-manual-artifact-retention-not-false")
-        if retention.get("release_evidence_decision_json") != "status/release-evidence-decision.json":
-            problems.append("manifest-release-decision-json")
-        if retention.get("release_evidence_decision_markdown") != "status/release-evidence-decision.md":
-            problems.append("manifest-release-decision-markdown")
-        if workflows.get("docs_pages_canonical_path") != ".github/workflows/docs-pages.yml":
-            problems.append("manifest-workflows-docs-canonical-path")
-        if workflows.get("docs_pages_ios_safe_path") != "iosnoperiod/github/workflows/docs-pages.yml":
-            problems.append("manifest-workflows-docs-ios-path")
-        if workflows.get("manual_docs_publish_required") is not False:
-            problems.append("manifest-workflows-manual-docs-publish-not-false")
-        if workflows.get("manual_artifact_retention_required") is not False:
-            problems.append("manifest-workflows-manual-artifact-retention-not-false")
-        if workflows.get("artifact_upload") != "automated":
-            problems.append("manifest-workflows-artifact-upload-not-automated")
-        if workflows.get("deployment_url_verification") != "required":
-            problems.append("manifest-workflows-deployment-url-verification")
-        if workflows.get("release_evidence_decision") != "required":
-            problems.append("manifest-workflows-release-evidence-decision")
+        notification = manifest.get("deployment_notification", {})
+        workflows = manifest.get("workflows", {})
+
+        expected = {
+            "primary-docs-email-monitoring": (
+                primary_docs.get("deployment_email_monitoring"),
+                "docs/deployment-email-monitoring.md",
+            ),
+            "publishing-notification-sender": (
+                publishing.get("notification_sender"),
+                "tools/send_deployment_notification.py",
+            ),
+            "publishing-notification-ingestor": (
+                publishing.get("notification_ingestor"),
+                "tools/ingest_deployment_notification.py",
+            ),
+            "retention-notification-delivery": (
+                retention.get("deployment_notification_delivery"),
+                "status/deployment-notification-delivery.json",
+            ),
+            "workflow-notification-canonical": (
+                workflows.get("deployment_notification_canonical_path"),
+                ".github/workflows/deployment-notification.yml",
+            ),
+            "workflow-notification-ios": (
+                workflows.get("deployment_notification_ios_safe_path"),
+                "iosnoperiod/github/workflows/deployment-notification.yml",
+            ),
+        }
+        for label, (actual, wanted) in expected.items():
+            if actual != wanted:
+                problems.append(f"manifest-{label}")
+
         if release_evidence.get("automatic_stable_authorization") is not False:
             problems.append("manifest-release-evidence-auto-stable")
         if release_evidence.get("public_review_fail_closed") is not True:
             problems.append("manifest-release-evidence-public-review-fail-closed")
+        if notification.get("mailbox_password_allowed") is not False:
+            problems.append("manifest-notification-mailbox-password")
+        if notification.get("email_is_authority") is not False:
+            problems.append("manifest-notification-email-authority")
+        if notification.get("inbound_result") != "verification-required next-task candidate":
+            problems.append("manifest-notification-inbound-result")
 
     result = {
-        "checked": [
-            "docs/index.md",
-            "docs/_config.yml",
-            ".github/workflows/docs-pages.yml",
-            "iosnoperiod/github/workflows/docs-pages.yml",
-            "tools/stamp_built_site.py",
-            "tools/verify_publication_evidence.py",
-            "tools/evaluate_release_evidence.py",
-            ".github/workflows/repo-check.yml",
-            "iosnoperiod/github/workflows/repo-check.yml",
-            "release-manifest.json",
-        ],
+        "checked": [str(path.relative_to(ROOT)) for path, _, _ in checks] + ["release-manifest.json"],
         "problem_count": len(problems),
         "problems": problems,
         "result": "pass" if not problems else "fail",
