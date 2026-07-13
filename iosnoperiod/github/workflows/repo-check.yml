@@ -44,13 +44,16 @@ jobs:
       - name: Test evidence bundle manifest verifier
         run: python3 tools/test_evidence_bundle_manifest.py
 
+      - name: Test evidence-bounded release gate promotion
+        run: python3 tools/test_release_gate_promotion.py
+
       - name: Publish validation summary
         run: |
           cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Publication gates, negative fixtures, workflow parity, receipt generation, independent evidence verification, release-evidence decisions, and evidence-bundle tests passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Publication gates, workflow parity, receipt verification, release decisions, evidence bundles, and bounded gate-promotion tests passed." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload validation status
         uses: actions/upload-artifact@v4
