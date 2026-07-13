@@ -30,6 +30,8 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Updated `release-manifest.json` to schema `0.13.0`, replacing stale Jekyll declarations with the dependency-free governed builder, registering the builder tests, all four workflow pairs, exact notification attachments, replay processing, scheduled mailbox polling, and durable monitor-state retention.
 - Strengthened `tools/check_docs_site.py` to enforce the deterministic builder contract, four workflow pairs, three canonical email attachments, 90-day monitor-state retention, one-task-per-notification semantics, and the prohibition on automated release authority.
 - Updated `docs/deployment-email-monitoring.md` with the hourly monitor schedule, sixth monitor-mailbox secret, restricted `Mail.Send` and `Mail.ReadWrite` requirements, replay identity, mark-read sequencing, and retained cross-run state.
+- Repo Check run `29228302637` on commit `5657faf198cb1b805690a866d68ce46745c3ec40` reached `Generate validation report` and reported only two stale literal assertions: `missing-builder-phrase:dependency` and `missing-builder-tests-phrase:linked-page`; all independently reported schema, example, policy, and evaluator checks passed.
+- A concurrent bounded update replaced the stale `linked-page` assertion with executable test markers. Commit `e49e6c9c7b8f7e6af7d87344d470a1aa7dd99ba0` replaced the remaining generic `dependency` assertion with the builder's exact `without external runtime dependencies` contract, preserving all other self-check, publication, notification, replay, monitor, and release-boundary invariants.
 - Existing exact-commit stamping, live HTTP verification, receipt generation, evidence evaluation, bundle verification, notification generation, and retained-artifact boundaries remain unchanged.
 
 ## Current publication posture
@@ -48,7 +50,7 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - deterministic dependency-free docs builder and tests: built and declared in release manifest schema `0.13.0`
 - exact-commit deployment and live verification: observed through the retained-evidence boundary
 - independent evidence verifier canonical identity-hash compatibility: repaired, successor-run verification pending
-- docs aggregate self-check alignment: strengthened for builder, notification, replay, and monitor invariants; successor-run verification pending
+- docs aggregate self-check alignment: stale builder and builder-test literal assertions repaired; successor-run verification pending
 - retained evidence bundle download and independent re-verification: observed in Deployment Notification runs `29225409767` and `29225962832`
 - handoff-backed notification regeneration: exact relative-path failure repaired in commit `791d4df65c1618c2acde3bc56bf35505577fb7ee`; successor-run verification pending
 - release-evidence evaluator and bounded gate promoter: built
@@ -73,7 +75,7 @@ The dependency-free builder, manifest alignment, identity-hash compatibility, se
 
 ## Next tasks
 
-1. Confirm Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after the schema `0.13.0` and self-check updates.
+1. Confirm a successor Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after commit `e49e6c9c7b8f7e6af7d87344d470a1aa7dd99ba0`.
 2. Confirm a successor Deployment Notification run regenerates the handoff-backed notification without the prior `Path.relative_to` failure and stops only at a declared credential boundary or completes delivery-receipt generation.
 3. Confirm a successor Docs Pages run passes `Evaluate deployed release evidence` using the canonical `identity_body_sha256` field.
 4. Confirm Docs Pages generates and verifies the aggregate evidence bundle, generates the handoff-backed notification, and retains `deployed-publication-evidence`.
