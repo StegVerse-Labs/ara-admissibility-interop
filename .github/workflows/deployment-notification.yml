@@ -1,0 +1,121 @@
+name: Deployment Notification
+
+on:
+  workflow_run:
+    workflows:
+      - Docs Pages
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Docs Pages workflow run ID containing deployed-publication-evidence
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  notify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve source workflow run
+        id: source
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          AUTOMATIC_RUN_ID: ${{ github.event.workflow_run.id }}
+          AUTOMATIC_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          DISPATCH_RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            run_id="$DISPATCH_RUN_ID"
+            head_sha="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.head_sha')"
+          else
+            run_id="$AUTOMATIC_RUN_ID"
+            head_sha="$AUTOMATIC_HEAD_SHA"
+          fi
+          test -n "$run_id" || { echo "Missing source run ID"; exit 1; }
+          test -n "$head_sha" || { echo "Missing source head SHA"; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.head_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Download deployed publication evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          mkdir -p received-evidence
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name deployed-publication-evidence \
+            --dir received-evidence
+
+      - name: Reverify retained evidence bundle
+        run: |
+          python3 tools/verify_evidence_bundle_manifest.py \
+            received-evidence/status/deployed-evidence-bundle.json \
+            --root received-evidence
+          python3 tools/verify_publication_evidence.py \
+            received-evidence/status/publication-receipt.json \
+            --artifact-root received-evidence/_site \
+            --identity-file received-evidence/status/deployed-identity.json \
+            --live-root-file received-evidence/status/deployed-live-root.html
+
+      - name: Regenerate handoff-backed email notification
+        run: |
+          python3 tools/generate_deployment_notification.py \
+            --handoff docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md \
+            --bundle received-evidence/status/deployed-evidence-bundle.json \
+            --decision received-evidence/status/release-evidence-decision.json \
+            --markdown received-evidence/status/deployment-notification-email.md \
+            --json received-evidence/status/deployment-notification-envelope.json
+
+      - name: Send governed Microsoft Graph notification
+        env:
+          STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
+          STEGVERSE_MAIL_CLIENT_ID: ${{ secrets.STEGVERSE_MAIL_CLIENT_ID }}
+          STEGVERSE_MAIL_CLIENT_SECRET: ${{ secrets.STEGVERSE_MAIL_CLIENT_SECRET }}
+          STEGVERSE_MAIL_SENDER: ${{ secrets.STEGVERSE_MAIL_SENDER }}
+          STEGVERSE_MAIL_RECIPIENT: ${{ secrets.STEGVERSE_MAIL_RECIPIENT }}
+        run: |
+          python3 tools/send_deployment_notification.py \
+            --body received-evidence/status/deployment-notification-email.md \
+            --envelope received-evidence/status/deployment-notification-envelope.json \
+            --bundle received-evidence/status/deployed-evidence-bundle.json \
+            --receipt received-evidence/status/deployment-notification-delivery.json
+
+      - name: Publish notification summary
+        run: |
+          cat received-evidence/status/deployment-notification-email.md >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Delivery receipt" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat received-evidence/status/deployment-notification-delivery.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload governed notification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: governed-deployment-notification
+          path: |
+            received-evidence/status/deployment-notification-email.md
+            received-evidence/status/deployment-notification-envelope.json
+            received-evidence/status/deployment-notification-delivery.json
+            received-evidence/status/deployed-evidence-bundle.json
