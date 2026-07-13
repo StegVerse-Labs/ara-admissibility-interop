@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+"""Regression tests for governed deployment mailbox polling helpers."""
+
+from __future__ import annotations
+
+import base64
+import importlib.util
+import os
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+MODULE_PATH = ROOT / "tools" / "poll_deployment_notification_mailbox.py"
+spec = importlib.util.spec_from_file_location("poller", MODULE_PATH)
+assert spec and spec.loader
+poller = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(poller)
+
+
+def assert_true(value: bool, label: str) -> None:
+    if not value:
+        raise AssertionError(label)
+
+
+def main() -> int:
+    original = {name: os.environ.get(name) for name in poller.ENV_NAMES}
+    try:
+        for name in poller.ENV_NAMES:
+            os.environ.pop(name, None)
+        _, state = poller.configuration()
+        assert_true(state == "not_configured", "absent-config")
+
+        os.environ[poller.ENV_NAMES[0]] = "tenant"
+        try:
+            poller.configuration()
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("partial-config")
+
+        for name in poller.ENV_NAMES:
+            os.environ[name] = name.lower()
+        _, state = poller.configuration()
+        assert_true(state == "configured", "complete-config")
+
+        governed = {
+            "id": "message-1",
+            "subject": "[StegVerse][DEPLOYMENT-EVIDENCE][ARA][ALLOW] abc123",
+            "hasAttachments": True,
+        }
+        assert_true(poller.governed_message(governed), "governed-message")
+        assert_true(not poller.governed_message({**governed, "subject": "ordinary"}), "subject-filter")
+        assert_true(not poller.governed_message({**governed, "hasAttachments": False}), "attachment-filter")
+
+        attachments = []
+        for name in sorted(poller.REQUIRED_ATTACHMENTS):
+            attachments.append({"name": name, "contentBytes": base64.b64encode(name.encode()).decode()})
+        mapped = poller.attachment_map(attachments)
+        assert_true(set(mapped) == poller.REQUIRED_ATTACHMENTS, "attachment-map")
+
+        try:
+            poller.attachment_map(attachments[:-1])
+        except ValueError as exc:
+            assert_true("missing required attachments" in str(exc), "missing-attachment-message")
+        else:
+            raise AssertionError("missing-attachment")
+
+        duplicate = attachments + [attachments[0]]
+        try:
+            poller.attachment_map(duplicate)
+        except ValueError as exc:
+            assert_true("duplicate required attachment" in str(exc), "duplicate-attachment-message")
+        else:
+            raise AssertionError("duplicate-attachment")
+
+        bad = list(attachments)
+        bad[0] = {"name": bad[0]["name"], "contentBytes": "%%%"}
+        try:
+            poller.attachment_map(bad)
+        except ValueError as exc:
+            assert_true("invalid base64 attachment" in str(exc), "invalid-base64-message")
+        else:
+            raise AssertionError("invalid-base64")
+
+        url = poller.message_query_url("rigel@stegverse.org", 25)
+        assert_true("isRead+eq+false" in url, "unread-filter")
+        assert_true("receivedDateTime+asc" in url, "oldest-first")
+        assert_true("rigel@stegverse.org" in url, "mailbox-url")
+
+        print("DEPLOYMENT_MAILBOX_POLLER_TESTS=PASS")
+        return 0
+    finally:
+        for name, value in original.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
