@@ -2,37 +2,30 @@
 
 ## Current goal
 
-Complete live verification of the `0.2.0-release-candidate` governed public-review publication path.
+Complete live verification of the `0.2.0-release-candidate` governed public-review publication path and activate evidence-backed email monitoring for successor orchestration.
 
 ## Completed
 
-- Confirmed canonical Pages workflow at `.github/workflows/docs-pages.yml`.
-- Confirmed iOS-safe mirror at `iosnoperiod/github/workflows/docs-pages.yml`.
-- Added `publication-manifest.json` with explicit publication, canonical, independent-review, clinical, regulatory, and reliance states.
-- Added dependency-free fail-closed gate at `tools/check_publication_gate.py` with executable positive and negative tests.
-- Added workflow parity enforcement for canonical and iOS-safe workflows.
-- Added publication status, receipt generation, receipt schema, retained artifacts, and release-candidate documentation.
-- Replaced raw Markdown deployment with Jekyll-built `_site` deployment.
-- Added fail-closed `_site/index.html`, expected-marker, HTTPS, HTTP 200, and exact-current-commit verification.
-- Added `tools/stamp_built_site.py`, `_site/deployment-identity.json`, built-artifact hashing, live-root hashing, and receipt schema `1.3.0`.
-- Added dependency-free publication-evidence verification and tamper regression tests.
-- Added bounded release-evidence evaluation with separate public-review and stable-release decisions.
-- Added deterministic deployment-evidence bundle generation, independent bundle verification, aggregate SHA-256, and tamper regression tests.
-- Docs Pages now verifies the live deployment, generates the receipt, evaluates the complete retained evidence package, generates and verifies the evidence bundle, and retains all outputs.
-- Added `tools/promote_release_gates.py` for evidence-bounded release-gate promotion.
-- Added `tools/test_release_gate_promotion.py` covering valid promotion, stale deployment, blocked public-review decisions, bundle tampering, commit mismatch, input immutability, and protected-field preservation.
-- Release-gate promotion may update only evidence-backed technical gates and requires `--write-manifest` to alter `release-manifest.json`.
-- Release-gate promotion cannot set `repo_check_workflow_verified`, cannot set `stable_release_authorized`, and cannot create a tag.
-- Updated `release-manifest.json` to schema `0.11.0` and declared promotion tools, tests, outputs, promotable fields, protected fields, and explicit-write posture.
-- Added `docs/release-gate-promotion.md` and linked it from the documentation index.
-- Repo Check now runs publication, receipt, release-decision, evidence-bundle, and release-gate-promotion regression suites.
-- Resynchronized canonical and iOS-safe Repo Check and Pages workflows.
-- Diagnosed Docs Pages run `29220895727` on commit `eb352100474d46a34ddb660e3943dfb29676d0db`: publication gate and Jekyll build passed; `Stamp built site with deployment identity` failed because the build did not produce `_site/index.html`.
-- Confirmed `publication-manifest.json` declares `docs` as the publish root and `docs/index.md` existed without Jekyll front matter, so it was not guaranteed to render as the root HTML page.
-- Added minimal Jekyll front matter to `docs/index.md` in commit `dc96c72622dc6064f6774aa989af968428cc48a7` without changing publication posture, authority boundaries, or release gates.
-- Diagnosed Repo Check run `29223141558` on commit `31dc1115f3591cc087793574f718fa0997a63560`: every prior validation step passed, while `tools/test_deployment_notification.py` failed only its `authority-boundary` assertion.
-- Confirmed `tools/generate_deployment_notification.py` stored the required phrase in the JSON envelope but omitted the exact phrase `signal, not release authority` from the rendered notification body.
-- Updated the rendered notification boundary sentence in commit `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3`; no publication, release, deployment, or authority state was changed.
+- Confirmed canonical Pages workflow at `.github/workflows/docs-pages.yml` and iOS-safe mirror at `iosnoperiod/github/workflows/docs-pages.yml`.
+- Added explicit publication, canonical, independent-review, clinical, regulatory, and reliance states.
+- Added dependency-free fail-closed publication gates, positive and negative tests, workflow parity, status generation, receipts, and retained artifacts.
+- Replaced raw Markdown deployment with Jekyll-built `_site` deployment and added root-entry, marker, HTTPS, HTTP 200, and exact-current-commit checks.
+- Added built-site deployment identity, deterministic artifact-tree hashing, live-root hashing, receipt schema `1.3.0`, independent evidence verification, and tamper tests.
+- Added bounded release-evidence decisions with separate public-review and stable-release results.
+- Added deterministic deployment-evidence bundle generation, aggregate SHA-256, independent verification, and bundle tamper tests.
+- Added evidence-bounded release-gate promotion that cannot set `repo_check_workflow_verified`, cannot set `stable_release_authorized`, and cannot create a tag.
+- Added Jekyll front matter to `docs/index.md` after the prior build failed to produce `_site/index.html`.
+- Repaired the deployment-notification authority-boundary sentence after its regression test identified the missing exact phrase.
+- Added `tools/generate_deployment_notification.py` to import the handoff sections `Current goal`, `Current publication posture`, `Current release gate`, `Boundary`, and `Next tasks` into the email body.
+- Added `tools/send_deployment_notification.py`, a dependency-free Microsoft Graph sender that accepts only Microsoft Entra application credentials, rejects partial configuration, and writes a delivery receipt.
+- Added `.github/workflows/deployment-notification.yml`, triggered only after a successful `Docs Pages` run or by an explicit source-run dispatch.
+- The successor notification workflow checks out the exact deployment commit, downloads `deployed-publication-evidence`, independently reverifies the bundle and publication receipt, regenerates the handoff-backed body, attempts Graph delivery, and retains notification evidence.
+- Added `tools/ingest_deployment_notification.py` to verify received notification body hash, subject class, required handoff-section list, commit identity, artifact name, bundle hash, next action, and public-review decision.
+- Passing inbound validation creates `status/deployment-next-task-candidate.json` with `task_status: verification_required`; it does not promote gates or authorize release.
+- Added `tools/test_deployment_notification_transport.py` covering valid ingestion, body tampering, commit mismatch, bundle mismatch, missing handoff sections, blocked public review, absent configuration, complete configuration, and partial-configuration rejection.
+- Added `docs/deployment-email-monitoring.md` and linked it from the documentation index.
+- Added canonical and iOS-safe deployment-notification workflow mirrors and extended workflow parity enforcement to include them.
+- Repo Check now runs notification generation, Microsoft Graph transport configuration, and monitored-ingestion regression tests.
 
 ## Current publication posture
 
@@ -46,24 +39,20 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 ## Current release gate
 
 - local architecture and checks: built
-- canonical/iOS workflow parity: built
+- canonical/iOS workflow parity: built across Repo Check, Docs Pages, and Deployment Notification
 - independent evidence verifier and tests: built
 - release-evidence evaluator and tests: built
 - evidence-bundle generator, verifier, and tests: built
 - evidence-bounded release-gate promoter and tests: built
-- deployed Pages decision integration: built
-- complete hash-bound retained evidence package: configured
-- HTTPS Pages deployment environment and URL: observed
-- prior deployed root page: failed with `404` because no rendered `index.html` was present
-- Jekyll build correction and exact-commit verification: installed
-- rendered root entry-point repair: installed at `dc96c72622dc6064f6774aa989af968428cc48a7`
-- deployment-notification authority-boundary repair: installed at `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3`
-- release-gate proposal generation: installed
-- manifest mutation: explicit-write-only
-- authority-bearing gates: protected from automated promotion
-- corrected Pages workflow live success: pending successor run evidence
-- rendered current-commit root page: pending successor run evidence
-- deployment-notification regression pass: pending successor run evidence
+- handoff-backed notification generator and tests: built
+- Microsoft Graph outbound transport: built
+- post-Pages successor notification workflow: built
+- monitored-notification ingestion and next-task candidate generation: built
+- Microsoft Graph application credentials: not configured or not yet observed
+- governed email delivery: pending configured successor-run evidence
+- mailbox monitor retrieval and invocation: pending external mailbox integration
+- corrected Pages workflow live success: pending successor-run evidence
+- rendered current-commit root page: pending successor-run evidence
 - deployed publication evidence artifact inspection: pending
 - deployed evidence bundle inspection: pending
 - stable release tag: blocked
@@ -74,17 +63,21 @@ A successful Pages deployment means only that the documentation was permitted un
 
 A passing evidence verification or evidence-bundle verification proves consistency and integrity of the declared retained evidence. It does not create scientific truth, authority, consent, legality, clinical meaning, canonical status, or standing absent from the underlying evidence and governance state.
 
+An email notification is a signal that a governed verification candidate exists. Email delivery or receipt is not deployment evidence, release-gate authority, Repo Check standing, stable-release authorization, or permission to create a tag.
+
 An `ALLOW` public-review decision and a successful technical-gate promotion do not authorize a stable release. `repo_check_workflow_verified` requires separately observed Repo Check evidence, and `stable_release_authorized` requires explicit maintainer authorization.
 
 ## Next tasks
 
-1. Confirm the successor `Repo Check` run for commit `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3` passes the deployment-notification regression suite together with all prior publication, receipt, decision, bundle, and gate-promotion tests.
-2. Confirm the successor `Docs Pages` run builds `_site/index.html`, stamps the deployment identity, deploys, verifies the current commit live, generates the receipt, evaluates evidence, and verifies the aggregate bundle hash.
-3. Inspect the `deployed-publication-evidence` artifact and verify all declared files.
-4. Run the receipt, decision, bundle, and gate-promotion tools against the retained evidence.
-5. Use proposal mode first; use `--write-manifest` only after the retained bundle is directly inspected.
-6. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-7. Create a stable tag only after explicit release authorization.
-8. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm Repo Check passes the notification generation, Graph transport configuration, and monitored-ingestion tests with all prior publication, receipt, decision, bundle, and promotion suites.
+2. Confirm Docs Pages builds `_site/index.html`, deploys, verifies the exact current commit, and retains a valid `deployed-publication-evidence` artifact.
+3. Confirm Deployment Notification starts from that successful run, downloads and reverifies the artifact, regenerates the current handoff-backed message, and writes `deployment-notification-delivery.json`.
+4. Configure the five Microsoft Graph application secrets only after the Entra application has `sendMail` application permission and an appropriately restricted mailbox-access policy.
+5. Confirm the sent email contains the required handoff sections and attachments for the notification envelope and evidence-bundle manifest.
+6. Connect mailbox monitoring so a received message is passed through `tools/ingest_deployment_notification.py` and produces a verification-required next-task candidate.
+7. Retrieve and independently verify the GitHub artifact before producing or applying any gate-promotion proposal.
+8. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
+9. Create a stable tag only after explicit release authorization.
+10. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
