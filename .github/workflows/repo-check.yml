@@ -11,74 +11,57 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-
       - name: Generate validation report
         run: python3 tools/generate_validation_report.py
-
       - name: Check governed publication boundary
         run: python3 tools/check_publication_gate.py
-
       - name: Test publication gate failures
         run: python3 tools/test_publication_gate.py
-
       - name: Verify workflow mirror parity
         run: python3 tools/check_workflow_parity.py
-
+      - name: Test governed docs builder
+        run: python3 tools/test_governed_docs_builder.py
       - name: Generate publication status
         run: python3 tools/generate_publication_status.py
-
       - name: Generate publication receipt
         run: python3 tools/generate_publication_receipt.py
-
       - name: Test independent publication evidence verifier
         run: python3 tools/test_publication_evidence_verifier.py
-
       - name: Test release evidence evaluator
         run: python3 tools/test_release_evidence_evaluator.py
-
       - name: Test evidence bundle manifest verifier
         run: python3 tools/test_evidence_bundle_manifest.py
-
       - name: Test evidence-bounded release gate promotion
         run: python3 tools/test_release_gate_promotion.py
-
       - name: Test handoff-backed deployment notification
         run: python3 tools/test_deployment_notification.py
-
       - name: Test notification transport and monitored ingestion
         run: python3 tools/test_deployment_notification_transport.py
-
       - name: Test notification replay ledger
         run: python3 tools/test_deployment_notification_replay_ledger.py
-
       - name: Test governed mailbox poller
         run: python3 tools/test_deployment_mailbox_poller.py
-
       - name: Publish validation summary
         run: |
           cat status/validation-report.md >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Publication gates, evidence verification, bounded promotion, handoff-backed notification, Microsoft Graph transport, replay protection, and scheduled mailbox-poller tests passed." >> "$GITHUB_STEP_SUMMARY"
-
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Deterministic docs building, publication evidence, bounded promotion, governed notification, replay protection, and mailbox-poller tests passed.' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload validation status
         uses: actions/upload-artifact@v4
         with:
           name: generated-status
           path: status/generated-status.json
-
       - name: Upload validation report
         uses: actions/upload-artifact@v4
         with:
           name: validation-report
           path: status/validation-report.md
-
       - name: Upload publication status
         uses: actions/upload-artifact@v4
         with:
@@ -86,7 +69,6 @@ jobs:
           path: |
             status/publication-status.json
             docs/publication-status.md
-
       - name: Upload publication receipt
         uses: actions/upload-artifact@v4
         with:
