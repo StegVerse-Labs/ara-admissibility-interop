@@ -110,7 +110,12 @@ REQUIRED = {
     "notification-generator": ["Current goal", "Current publication posture", "Current release gate", "Boundary", "Next tasks", "body_sha256"],
     "notification-sender": ["microsoft-graph-sendmail", "client_credentials", "sendMail", "delivery_status", "not_configured"],
     "notification-ingestor": ["governed-deployment-evidence-verification-candidate", "verification_required", "bundle-sha256-mismatch"],
-    "mailbox-poller": ["Mail.ReadWrite", "isRead", "process_deployment_notification_once.py"],
+    "mailbox-poller": [
+        "https://graph.microsoft.com/.default",
+        "client_credentials",
+        '"isRead": True',
+        "process_deployment_notification_once.py",
+    ],
 }
 
 
