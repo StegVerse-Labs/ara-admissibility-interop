@@ -14,7 +14,7 @@ The deployment-notification path converts a successfully verified Pages deployme
 
 ## Required Microsoft Graph settings
 
-The workflow reads these GitHub Actions secrets at runtime:
+The outbound workflow reads these GitHub Actions secrets at runtime:
 
 - `STEGVERSE_MAIL_TENANT_ID`
 - `STEGVERSE_MAIL_CLIENT_ID`
@@ -22,9 +22,18 @@ The workflow reads these GitHub Actions secrets at runtime:
 - `STEGVERSE_MAIL_SENDER`
 - `STEGVERSE_MAIL_RECIPIENT`
 
-A mailbox password is not accepted. A partial configuration fails closed. When all five values are absent, the workflow records `delivery_status: not_configured` without claiming that email was sent.
+The scheduled mailbox monitor uses the same tenant, client, and client-secret values plus:
 
-The Microsoft Entra application must be separately authorized for the Graph `sendMail` application permission and restricted according to the tenant's mailbox-access policy.
+- `STEGVERSE_MONITOR_MAILBOX`
+
+A mailbox password is not accepted. A partial configuration fails closed. When a complete configuration is absent, the workflows record `not_configured` without claiming delivery or mailbox processing.
+
+The Microsoft Entra application requires narrowly restricted application access appropriate to each operation:
+
+- `Mail.Send` for the designated sender mailbox.
+- `Mail.ReadWrite` for the designated monitor mailbox because accepted messages are marked read.
+
+Tenant policy must restrict the application to the intended mailbox scope.
 
 ## Imported handoff sections
 
@@ -38,24 +47,49 @@ The email body imports:
 
 The notification envelope records the full handoff SHA-256, body SHA-256, exact commit, workflow run, artifact name, and deployment evidence-bundle SHA-256.
 
-## Inbound monitoring
+## Scheduled inbound monitoring
 
-A mailbox monitor passes the received body, envelope attachment, and bundle-manifest attachment to:
+`.github/workflows/deployment-mailbox-monitor.yml` runs hourly at minute 17 and also supports explicit dispatch. It restores the newest non-expired `deployment-mailbox-monitor-state` artifact before polling.
 
-```bash
-python3 tools/ingest_deployment_notification.py \
-  --envelope status/deployment-notification-envelope.json \
-  --body status/deployment-notification-email.md \
-  --bundle status/deployed-evidence-bundle.json
-```
-
-The tool verifies the body hash, subject class, required handoff-section list, commit identity, artifact name, next action, public-review decision, and bundle hash. A passing notification creates:
+The poller retrieves unread governed messages oldest first and requires exactly these canonical attachments:
 
 ```text
-status/deployment-next-task-candidate.json
+deployment-notification-email.md
+deployment-notification-envelope.json
+deployed-evidence-bundle.json
 ```
 
-The candidate requires retrieval and independent verification of the GitHub artifact before any release-gate proposal may be created.
+Each message is passed through:
+
+```bash
+python3 tools/process_deployment_notification_once.py \
+  --envelope deployment-notification-envelope.json \
+  --body deployment-notification-email.md \
+  --bundle deployed-evidence-bundle.json \
+  --ledger deployment-notification-ledger.json
+```
+
+The processor verifies the body hash, subject class, required handoff-section list, commit identity, artifact name, next action, public-review decision, and bundle hash. It creates at most one verification-required task per deterministic notification identity.
+
+The identity binds:
+
+- Repository
+- Commit SHA
+- Workflow run ID
+- Evidence-bundle SHA-256
+- Email-body SHA-256
+
+An identical replay produces `duplicate_noop`. A conflicting replay for the same repository, commit, and workflow run fails closed. A message is marked read only after `candidate_created` or `duplicate_noop`; blocked messages remain unread for investigation.
+
+The monitor retains for 90 days:
+
+```text
+deployment-notification-ledger.json
+mailbox-poll-summary.json
+mailbox-notifications/
+```
+
+The retained state provides replay continuity across isolated GitHub-hosted runners. It does not create deployment evidence or release authority.
 
 ## Boundary
 
@@ -64,4 +98,4 @@ Email received != deployment verified
 Email received = governed verification candidate available
 ```
 
-Notification delivery, mailbox receipt, and next-task creation do not establish Repo Check completion, stable-release authorization, canonical status, clinical validity, regulatory authorization, or execution authority.
+Notification delivery, mailbox receipt, replay-ledger continuity, and next-task creation do not establish Repo Check completion, stable-release authorization, canonical status, clinical validity, regulatory authorization, or execution authority.
