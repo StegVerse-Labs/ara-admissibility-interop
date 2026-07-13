@@ -26,6 +26,8 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added `docs/deployment-email-monitoring.md` and linked it from the documentation index.
 - Added canonical and iOS-safe deployment-notification workflow mirrors and extended workflow parity enforcement to include them.
 - Repo Check now runs notification generation, Microsoft Graph transport configuration, and monitored-ingestion regression tests.
+- Docs Pages run `29224103644` on commit `76173b36746b548ce3b92f39c82b0ae01d36767a` passed the publication gate and Jekyll build but again failed at `Stamp built site with deployment identity` because the built artifact did not expose `_site/index.html` at the expected root.
+- Commit `486aedd1f7a9278e567743de05d9d976d87e4c5d` made `tools/stamp_built_site.py` path-robust: it accepts the required root entry point or deterministically copies exactly one nested Jekyll `index.html` to `_site/index.html`; zero or multiple candidates still fail closed with a complete built-file diagnostic.
 
 ## Current publication posture
 
@@ -51,6 +53,7 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Microsoft Graph application credentials: not configured or not yet observed
 - governed email delivery: pending configured successor-run evidence
 - mailbox monitor retrieval and invocation: pending external mailbox integration
+- path-robust built-site entry normalization: installed, successor-run verification pending
 - corrected Pages workflow live success: pending successor-run evidence
 - rendered current-commit root page: pending successor-run evidence
 - deployed publication evidence artifact inspection: pending
@@ -70,14 +73,15 @@ An `ALLOW` public-review decision and a successful technical-gate promotion do n
 ## Next tasks
 
 1. Confirm Repo Check passes the notification generation, Graph transport configuration, and monitored-ingestion tests with all prior publication, receipt, decision, bundle, and promotion suites.
-2. Confirm Docs Pages builds `_site/index.html`, deploys, verifies the exact current commit, and retains a valid `deployed-publication-evidence` artifact.
-3. Confirm Deployment Notification starts from that successful run, downloads and reverifies the artifact, regenerates the current handoff-backed message, and writes `deployment-notification-delivery.json`.
-4. Configure the five Microsoft Graph application secrets only after the Entra application has `sendMail` application permission and an appropriately restricted mailbox-access policy.
-5. Confirm the sent email contains the required handoff sections and attachments for the notification envelope and evidence-bundle manifest.
-6. Connect mailbox monitoring so a received message is passed through `tools/ingest_deployment_notification.py` and produces a verification-required next-task candidate.
-7. Retrieve and independently verify the GitHub artifact before producing or applying any gate-promotion proposal.
-8. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-9. Create a stable tag only after explicit release authorization.
-10. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+2. Confirm a successor Docs Pages run exercises commit `486aedd1f7a9278e567743de05d9d976d87e4c5d`, produces `_site/index.html`, stamps the deployment identity, deploys, verifies the exact current commit, and retains a valid `deployed-publication-evidence` artifact.
+3. Inspect the retained artifact and independently verify the publication receipt and aggregate evidence bundle.
+4. Confirm Deployment Notification starts from that successful run, downloads and reverifies the artifact, regenerates the current handoff-backed message, and writes `deployment-notification-delivery.json`.
+5. Configure the five Microsoft Graph application secrets only after the Entra application has `sendMail` application permission and an appropriately restricted mailbox-access policy.
+6. Confirm the sent email contains the required handoff sections and attachments for the notification envelope and evidence-bundle manifest.
+7. Connect mailbox monitoring so a received message is passed through `tools/ingest_deployment_notification.py` and produces a verification-required next-task candidate.
+8. Retrieve and independently verify the GitHub artifact before producing or applying any gate-promotion proposal.
+9. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
+10. Create a stable tag only after explicit release authorization.
+11. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
