@@ -30,6 +30,9 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Diagnosed Docs Pages run `29220895727` on commit `eb352100474d46a34ddb660e3943dfb29676d0db`: publication gate and Jekyll build passed; `Stamp built site with deployment identity` failed because the build did not produce `_site/index.html`.
 - Confirmed `publication-manifest.json` declares `docs` as the publish root and `docs/index.md` existed without Jekyll front matter, so it was not guaranteed to render as the root HTML page.
 - Added minimal Jekyll front matter to `docs/index.md` in commit `dc96c72622dc6064f6774aa989af968428cc48a7` without changing publication posture, authority boundaries, or release gates.
+- Diagnosed Repo Check run `29223141558` on commit `31dc1115f3591cc087793574f718fa0997a63560`: every prior validation step passed, while `tools/test_deployment_notification.py` failed only its `authority-boundary` assertion.
+- Confirmed `tools/generate_deployment_notification.py` stored the required phrase in the JSON envelope but omitted the exact phrase `signal, not release authority` from the rendered notification body.
+- Updated the rendered notification boundary sentence in commit `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3`; no publication, release, deployment, or authority state was changed.
 
 ## Current publication posture
 
@@ -54,11 +57,13 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - prior deployed root page: failed with `404` because no rendered `index.html` was present
 - Jekyll build correction and exact-commit verification: installed
 - rendered root entry-point repair: installed at `dc96c72622dc6064f6774aa989af968428cc48a7`
+- deployment-notification authority-boundary repair: installed at `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3`
 - release-gate proposal generation: installed
 - manifest mutation: explicit-write-only
 - authority-bearing gates: protected from automated promotion
 - corrected Pages workflow live success: pending successor run evidence
 - rendered current-commit root page: pending successor run evidence
+- deployment-notification regression pass: pending successor run evidence
 - deployed publication evidence artifact inspection: pending
 - deployed evidence bundle inspection: pending
 - stable release tag: blocked
@@ -73,8 +78,8 @@ An `ALLOW` public-review decision and a successful technical-gate promotion do n
 
 ## Next tasks
 
-1. Confirm the successor `Docs Pages` run for commit `dc96c72622dc6064f6774aa989af968428cc48a7` builds `_site/index.html`, stamps the deployment identity, deploys, verifies the current commit live, generates the receipt, evaluates evidence, and verifies the aggregate bundle hash.
-2. Confirm `Repo Check` passes with the release-gate-promotion and deployment-notification regression suites.
+1. Confirm the successor `Repo Check` run for commit `3b5ad40d5c4b4c6df87e3748905f96dc6ec7cde3` passes the deployment-notification regression suite together with all prior publication, receipt, decision, bundle, and gate-promotion tests.
+2. Confirm the successor `Docs Pages` run builds `_site/index.html`, stamps the deployment identity, deploys, verifies the current commit live, generates the receipt, evaluates evidence, and verifies the aggregate bundle hash.
 3. Inspect the `deployed-publication-evidence` artifact and verify all declared files.
 4. Run the receipt, decision, bundle, and gate-promotion tools against the retained evidence.
 5. Use proposal mode first; use `--write-manifest` only after the retained bundle is directly inspected.
