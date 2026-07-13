@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sys
 from pathlib import Path
 
 HEX64 = set("0123456789abcdef")
@@ -41,8 +40,17 @@ def artifact_inventory(root: Path) -> tuple[list[dict], str]:
     return files, tree_digest.hexdigest()
 
 
-def verify(receipt: dict, artifact_root: Path | None = None,
-           identity_file: Path | None = None, live_root_file: Path | None = None) -> list[str]:
+def live_identity_sha256(live: dict) -> object:
+    """Return the canonical receipt field, accepting the legacy alias."""
+    return live.get("identity_body_sha256", live.get("identity_sha256"))
+
+
+def verify(
+    receipt: dict,
+    artifact_root: Path | None = None,
+    identity_file: Path | None = None,
+    live_root_file: Path | None = None,
+) -> list[str]:
     problems: list[str] = []
     required = {
         "schema_version", "receipt_type", "repository", "commit_sha",
@@ -91,6 +99,7 @@ def verify(receipt: dict, artifact_root: Path | None = None,
     live = receipt.get("live_root_verification")
     if not isinstance(live, dict):
         problems.append("live-verification-type")
+        live = {}
     elif live.get("result") == "passed":
         if live.get("http_status") != 200:
             problems.append("live-http-status")
@@ -102,8 +111,8 @@ def verify(receipt: dict, artifact_root: Path | None = None,
             problems.append("live-body-sha256")
         if live.get("deployed_commit_sha") != receipt.get("commit_sha"):
             problems.append("live-commit-mismatch")
-        if not valid_sha256(live.get("identity_sha256")):
-            problems.append("identity-sha256")
+        if not valid_sha256(live_identity_sha256(live)):
+            problems.append("identity-body-sha256")
 
     if artifact_root is not None:
         if not artifact_root.is_dir():
@@ -120,7 +129,7 @@ def verify(receipt: dict, artifact_root: Path | None = None,
         if not identity_file.is_file():
             problems.append("identity-file-missing")
         else:
-            if sha256_file(identity_file) != live.get("identity_sha256"):
+            if sha256_file(identity_file) != live_identity_sha256(live):
                 problems.append("identity-file-hash-mismatch")
             try:
                 identity = json.loads(identity_file.read_text(encoding="utf-8"))
