@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.10.0",
+  "schema_version": "0.11.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.2.0-release-candidate",
   "status": "governed-publication-release-candidate",
@@ -19,6 +19,7 @@
     "publication_status": "docs/publication-status.md",
     "publication_evidence_verification": "docs/publication-evidence-verification.md",
     "release_evidence_decision": "docs/release-evidence-decision.md",
+    "release_gate_promotion": "docs/release-gate-promotion.md",
     "mirror_handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
   },
   "docs_site": {
@@ -43,7 +44,9 @@
       "release_evaluator": "tools/evaluate_release_evidence.py",
       "bundle_generator": "tools/generate_evidence_bundle_manifest.py",
       "bundle_verifier": "tools/verify_evidence_bundle_manifest.py",
-      "bundle_tests": "tools/test_evidence_bundle_manifest.py"
+      "bundle_tests": "tools/test_evidence_bundle_manifest.py",
+      "gate_promoter": "tools/promote_release_gates.py",
+      "gate_promotion_tests": "tools/test_release_gate_promotion.py"
     }
   },
   "dependency_policy": {
@@ -80,12 +83,17 @@
       "python3 tools/generate_publication_receipt.py",
       "python3 tools/test_publication_evidence_verifier.py",
       "python3 tools/test_release_evidence_evaluator.py",
-      "python3 tools/test_evidence_bundle_manifest.py"
+      "python3 tools/test_evidence_bundle_manifest.py",
+      "python3 tools/test_release_gate_promotion.py"
     ],
     "deployed_evidence_command": "python3 tools/evaluate_release_evidence.py --artifact-root _site --identity-file status/deployed-identity.json --live-root-file status/deployed-live-root.html --require-public-review-allow",
     "deployed_bundle_commands": [
       "python3 tools/generate_evidence_bundle_manifest.py",
       "python3 tools/verify_evidence_bundle_manifest.py status/deployed-evidence-bundle.json --root ."
+    ],
+    "release_gate_promotion_commands": [
+      "python3 tools/promote_release_gates.py",
+      "python3 tools/promote_release_gates.py --write-manifest"
     ],
     "artifact_retention": {
       "canonical_workflow": ".github/workflows/repo-check.yml",
@@ -100,6 +108,8 @@
       "captured_live_root": "status/deployed-live-root.html",
       "captured_deployment_identity": "status/deployed-identity.json",
       "deployed_evidence_bundle_manifest": "status/deployed-evidence-bundle.json",
+      "gate_promotion_proposal": "status/release-manifest.promoted.json",
+      "gate_promotion_receipt": "status/release-gate-promotion.json",
       "retained_built_site": "_site",
       "manual_artifact_retention_required": false
     }
@@ -113,6 +123,21 @@
     "bundle_verifier": "tools/verify_evidence_bundle_manifest.py",
     "bundle_tests": "tools/test_evidence_bundle_manifest.py",
     "bundle_sha256_required": true,
+    "gate_promoter": "tools/promote_release_gates.py",
+    "gate_promotion_tests": "tools/test_release_gate_promotion.py",
+    "promotable_fields": [
+      "pages_workflow_verified",
+      "https_deployment_url_verified",
+      "built_entrypoint_verified",
+      "live_root_page_verified",
+      "deployed_publication_receipt_verified",
+      "deployed_evidence_bundle_verified"
+    ],
+    "protected_fields": [
+      "repo_check_workflow_verified",
+      "stable_release_authorized"
+    ],
+    "promotion_requires_explicit_write_flag": true,
     "public_review_fail_closed": true,
     "requires_built_artifact": true,
     "requires_captured_live_root": true,
@@ -135,6 +160,7 @@
     "deployment_url_verification": "required",
     "release_evidence_decision": "required",
     "evidence_bundle_verification": "required",
+    "release_gate_promotion": "evidence-bounded-explicit-write-only",
     "stable_tag_blocked_until_live_verification": true
   },
   "claims": [
@@ -148,6 +174,7 @@
     "Hash-bound publication receipt covering the manifest and published file inventory.",
     "Independent retained-evidence verification for the built artifact, deployment identity, and captured live root.",
     "Deterministic bundle verification covering all retained deployment evidence files.",
+    "Evidence-bounded promotion of non-authority release gates with explicit write control.",
     "Bounded public-review and stable-release evidence decisions without automatic stable-release authorization.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
@@ -161,6 +188,7 @@
     "No independent review, clinical validation, or regulatory authorization is claimed.",
     "No required full JSON Schema conformance is claimed when the optional dependency is absent.",
     "No stable release is automatically authorized by a passing public-review evidence decision.",
+    "No release-gate promotion can set stable_release_authorized or prove Repo Check completion.",
     "Bundle integrity does not create authority or standing absent from the underlying evidence and governance state."
   ],
   "release_gate": {
