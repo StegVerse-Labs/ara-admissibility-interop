@@ -6,12 +6,34 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
 OUTPUT = SITE / "deployment-identity.json"
+
+
+def normalize_site_ownership() -> bool:
+    """Make the container-built artifact writable without widening scope."""
+    if not SITE.exists():
+        print("ownership_normalization=not-required-site-missing")
+        return True
+
+    uid = os.getuid()
+    gid = os.getgid()
+    command = ["sudo", "chown", "-R", f"{uid}:{gid}", str(SITE)]
+    try:
+        subprocess.run(command, check=True, capture_output=True, text=True)
+    except (OSError, subprocess.CalledProcessError) as exc:
+        print("DEPLOYMENT_IDENTITY=FAIL-CLOSED")
+        print("reason=unable to normalize _site ownership")
+        print(f"ownership_error={exc}")
+        return False
+
+    print(f"ownership_normalized={uid}:{gid}")
+    return True
 
 
 def emit_site_inventory() -> None:
@@ -56,6 +78,9 @@ def resolve_index() -> Path | None:
 
 
 def main() -> int:
+    if not normalize_site_ownership():
+        return 1
+
     emit_site_inventory()
     index = resolve_index()
     if index is None:
