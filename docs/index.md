@@ -18,6 +18,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Independent publication evidence verification](publication-evidence-verification.md)
 - [Governed release evidence decision](release-evidence-decision.md)
 - [Evidence-bounded release gate promotion](release-gate-promotion.md)
+- [Governed deployment email and monitoring](deployment-email-monitoring.md)
 
 ## Governance and boundaries
 
@@ -57,6 +58,8 @@ python3 tools/test_publication_evidence_verifier.py
 python3 tools/test_release_evidence_evaluator.py
 python3 tools/test_evidence_bundle_manifest.py
 python3 tools/test_release_gate_promotion.py
+python3 tools/test_deployment_notification.py
+python3 tools/test_deployment_notification_transport.py
 ```
 
 To inspect a retained receipt independently:
@@ -77,6 +80,12 @@ To generate a non-mutating release-gate promotion proposal:
 python3 tools/promote_release_gates.py
 ```
 
+To convert a received deployment email into a verification-required next-task candidate:
+
+```bash
+python3 tools/ingest_deployment_notification.py
+```
+
 Expected generated outputs:
 
 ```text
@@ -88,6 +97,10 @@ status/release-evidence-decision.json
 status/release-evidence-decision.md
 status/release-manifest.promoted.json
 status/release-gate-promotion.json
+status/deployment-notification-email.md
+status/deployment-notification-envelope.json
+status/deployment-notification-delivery.json
+status/deployment-next-task-candidate.json
 docs/publication-status.md
 ```
 
