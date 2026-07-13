@@ -13,6 +13,10 @@ PAIRS = [
         ROOT / ".github/workflows/deployment-notification.yml",
         ROOT / "iosnoperiod/github/workflows/deployment-notification.yml",
     ),
+    (
+        ROOT / ".github/workflows/deployment-mailbox-monitor.yml",
+        ROOT / "iosnoperiod/github/workflows/deployment-mailbox-monitor.yml",
+    ),
 ]
 
 
