@@ -20,12 +20,14 @@ FILES = {
     "monitor-workflow": ROOT / ".github" / "workflows" / "deployment-mailbox-monitor.yml",
     "ios-monitor-workflow": ROOT / "iosnoperiod" / "github" / "workflows" / "deployment-mailbox-monitor.yml",
     "builder": ROOT / "tools" / "build_governed_docs_site.py",
+    "builder-tests": ROOT / "tools" / "test_governed_docs_builder.py",
     "stamp-tool": ROOT / "tools" / "stamp_built_site.py",
     "evidence-verifier": ROOT / "tools" / "verify_publication_evidence.py",
     "release-evaluator": ROOT / "tools" / "evaluate_release_evidence.py",
     "notification-generator": ROOT / "tools" / "generate_deployment_notification.py",
     "notification-sender": ROOT / "tools" / "send_deployment_notification.py",
     "notification-ingestor": ROOT / "tools" / "ingest_deployment_notification.py",
+    "notification-processor": ROOT / "tools" / "process_deployment_notification_once.py",
     "mailbox-poller": ROOT / "tools" / "poll_deployment_notification_mailbox.py",
 }
 
@@ -97,24 +99,30 @@ REQUIRED = {
         "name: Deployment Mailbox Monitor", "schedule:", "workflow_dispatch:",
         "python3 tools/poll_deployment_notification_mailbox.py",
         "deployment-mailbox-monitor-state", "retention-days: 90",
+        "Restore durable notification ledger", "cancel-in-progress: false",
     ],
     "ios-monitor-workflow": [
         "name: Deployment Mailbox Monitor", "schedule:", "workflow_dispatch:",
         "python3 tools/poll_deployment_notification_mailbox.py",
         "deployment-mailbox-monitor-state", "retention-days: 90",
+        "Restore durable notification ledger", "cancel-in-progress: false",
     ],
-    "builder": ["def main(", "_site", "index.html", "governed"],
+    "builder": [
+        "GOVERNED_DOCS_BUILD=PASS", "dependency", "_site", "index.html",
+        "markdown_to_html", "ARA Admissibility Interop Docs",
+    ],
+    "builder-tests": ["build_governed_docs_site", "index.html", "linked-page", "asset-copy"],
     "stamp-tool": ["governed-pages-deployment-identity", "deployment-identity.json", "stegverse-deployment-commit"],
     "evidence-verifier": ["def verify(", "identity_body_sha256", "artifact-tree-mismatch", "live-root-hash-mismatch"],
     "release-evaluator": ["governed-release-evidence-decision", "public_review_decision", "stable_release_automatically_authorized"],
     "notification-generator": ["Current goal", "Current publication posture", "Current release gate", "Boundary", "Next tasks", "body_sha256"],
     "notification-sender": ["microsoft-graph-sendmail", "client_credentials", "sendMail", "delivery_status", "not_configured"],
     "notification-ingestor": ["governed-deployment-evidence-verification-candidate", "verification_required", "bundle-sha256-mismatch"],
+    "notification-processor": ["duplicate_noop", "conflicting_replay_blocked", "notification_identity", "stable_release_authorized"],
     "mailbox-poller": [
-        "https://graph.microsoft.com/.default",
-        "client_credentials",
-        '"isRead": True',
-        "process_deployment_notification_once.py",
+        "https://graph.microsoft.com/.default", "client_credentials", '"isRead": True',
+        "process_deployment_notification_once.py", "deployment-notification-email.md",
+        "deployment-notification-envelope.json", "deployed-evidence-bundle.json",
     ],
 }
 
@@ -139,8 +147,31 @@ def main() -> int:
         problems.append("missing:release-manifest.json")
     else:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        docs_site = manifest.get("docs_site", {})
+        publishing = docs_site.get("publishing", {})
+        validation = manifest.get("validation", {})
+        retention = validation.get("artifact_retention", {})
         release_evidence = manifest.get("release_evidence", {})
         notification = manifest.get("deployment_notification", {})
+        monitor = manifest.get("mailbox_monitor", {})
+        workflows = manifest.get("workflows", {})
+
+        if docs_site.get("mode") != "dependency-free-governed-static-html":
+            problems.append("manifest-docs-mode")
+        if docs_site.get("builder") != "tools/build_governed_docs_site.py":
+            problems.append("manifest-docs-builder")
+        if docs_site.get("builder_tests") != "tools/test_governed_docs_builder.py":
+            problems.append("manifest-docs-builder-tests")
+        if docs_site.get("external_site_generator_required") is not False:
+            problems.append("manifest-external-site-generator")
+        if publishing.get("docs_builder") != "tools/build_governed_docs_site.py":
+            problems.append("manifest-publishing-docs-builder")
+        if publishing.get("mailbox_poller") != "tools/poll_deployment_notification_mailbox.py":
+            problems.append("manifest-publishing-mailbox-poller")
+        if retention.get("mailbox_monitor_state_artifact") != "deployment-mailbox-monitor-state":
+            problems.append("manifest-monitor-state-artifact")
+        if retention.get("mailbox_monitor_retention_days") != 90:
+            problems.append("manifest-monitor-retention")
         if release_evidence.get("automatic_stable_authorization") is not False:
             problems.append("manifest-release-evidence-auto-stable")
         if release_evidence.get("public_review_fail_closed") is not True:
@@ -151,6 +182,23 @@ def main() -> int:
             problems.append("manifest-notification-email-authority")
         if notification.get("inbound_result") != "verification-required next-task candidate":
             problems.append("manifest-notification-inbound-result")
+        required_attachments = {
+            "status/deployment-notification-email.md",
+            "status/deployment-notification-envelope.json",
+            "status/deployed-evidence-bundle.json",
+        }
+        if set(notification.get("attachments", [])) != required_attachments:
+            problems.append("manifest-notification-attachments")
+        if monitor.get("state_artifact") != "deployment-mailbox-monitor-state":
+            problems.append("manifest-mailbox-monitor-state")
+        if monitor.get("one_task_per_notification_identity") is not True:
+            problems.append("manifest-mailbox-monitor-idempotence")
+        if monitor.get("automatic_release_authority") is not False:
+            problems.append("manifest-mailbox-monitor-authority")
+        if workflows.get("workflow_pair_count") != 4:
+            problems.append("manifest-workflow-pair-count")
+        if workflows.get("mailbox_monitoring") != "scheduled-durable-replay-protected":
+            problems.append("manifest-mailbox-monitoring")
 
     result = {
         "checked": [str(path.relative_to(ROOT)) for path in FILES.values()] + ["release-manifest.json"],
