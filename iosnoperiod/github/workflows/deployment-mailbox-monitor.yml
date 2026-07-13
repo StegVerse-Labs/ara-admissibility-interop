@@ -1,0 +1,104 @@
+name: Deployment Mailbox Monitor
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: deployment-mailbox-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Restore durable notification ledger
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p status restored-monitor-state
+          artifact_id="$(gh api \
+            "/repos/${GITHUB_REPOSITORY}/actions/artifacts?name=deployment-mailbox-monitor-state&per_page=100" \
+            --jq '.artifacts | map(select(.expired == false)) | sort_by(.created_at) | reverse | .[0].id // empty')"
+          if [ -n "$artifact_id" ]; then
+            gh api \
+              -H 'Accept: application/vnd.github+json' \
+              "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              > /tmp/deployment-mailbox-monitor-state.zip
+            unzip -oq /tmp/deployment-mailbox-monitor-state.zip -d restored-monitor-state
+            if [ -f restored-monitor-state/deployment-notification-ledger.json ]; then
+              cp restored-monitor-state/deployment-notification-ledger.json \
+                status/deployment-notification-ledger.json
+              echo "Restored notification ledger from artifact ${artifact_id}." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "No prior monitor-state artifact exists; starting with an empty ledger." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Test mailbox poller helpers
+        run: python3 tools/test_deployment_mailbox_poller.py
+
+      - name: Poll governed deployment mailbox
+        env:
+          STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
+          STEGVERSE_MAIL_CLIENT_ID: ${{ secrets.STEGVERSE_MAIL_CLIENT_ID }}
+          STEGVERSE_MAIL_CLIENT_SECRET: ${{ secrets.STEGVERSE_MAIL_CLIENT_SECRET }}
+          STEGVERSE_MONITOR_MAILBOX: ${{ secrets.STEGVERSE_MONITOR_MAILBOX }}
+        run: |
+          python3 tools/poll_deployment_notification_mailbox.py \
+            --ledger status/deployment-notification-ledger.json \
+            --work-root status/mailbox-notifications \
+            --summary status/mailbox-poll-summary.json
+
+      - name: Publish mailbox-monitor summary
+        if: always()
+        run: |
+          echo "## Governed deployment mailbox monitor" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f status/mailbox-poll-summary.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat status/mailbox-poll-summary.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Mailbox poller produced no summary." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Stage durable monitor state
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p monitor-state
+          if [ -f status/deployment-notification-ledger.json ]; then
+            cp status/deployment-notification-ledger.json monitor-state/
+          else
+            printf '%s\n' '{"schema_version":"1.0.0","ledger_type":"governed-deployment-notification-ledger","updated_at":null,"entry_count":0,"entries":[],"boundary":"Ledger continuity prevents duplicate task creation; it does not create release authority."}' \
+              > monitor-state/deployment-notification-ledger.json
+          fi
+          if [ -f status/mailbox-poll-summary.json ]; then
+            cp status/mailbox-poll-summary.json monitor-state/
+          fi
+          if [ -d status/mailbox-notifications ]; then
+            cp -R status/mailbox-notifications monitor-state/
+          fi
+
+      - name: Upload durable mailbox-monitor state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-mailbox-monitor-state
+          path: monitor-state
+          retention-days: 90
+          if-no-files-found: error
