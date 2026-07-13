@@ -111,7 +111,9 @@ REQUIRED = {
         "GOVERNED_DOCS_BUILD=PASS", "dependency", "_site", "index.html",
         "markdown_to_html", "ARA Admissibility Interop Docs",
     ],
-    "builder-tests": ["build_governed_docs_site", "index.html", "linked-page", "asset-copy"],
+    "builder-tests": [
+        "build_governed_docs_site", "index.html", "guide-html", "rendered-link", "asset-copy",
+    ],
     "stamp-tool": ["governed-pages-deployment-identity", "deployment-identity.json", "stegverse-deployment-commit"],
     "evidence-verifier": ["def verify(", "identity_body_sha256", "artifact-tree-mismatch", "live-root-hash-mismatch"],
     "release-evaluator": ["governed-release-evidence-decision", "public_review_decision", "stable_release_automatically_authorized"],
