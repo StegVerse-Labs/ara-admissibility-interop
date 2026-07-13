@@ -12,6 +12,7 @@ This documentation index is the static-site entry point for the ARA admissibilit
 - [Governed publication](governed-publication.md)
 - [Independent publication evidence verification](publication-evidence-verification.md)
 - [Governed release evidence decision](release-evidence-decision.md)
+- [Evidence-bounded release gate promotion](release-gate-promotion.md)
 
 ## Governance and boundaries
 
@@ -49,6 +50,8 @@ python3 tools/generate_publication_status.py
 python3 tools/generate_publication_receipt.py
 python3 tools/test_publication_evidence_verifier.py
 python3 tools/test_release_evidence_evaluator.py
+python3 tools/test_evidence_bundle_manifest.py
+python3 tools/test_release_gate_promotion.py
 ```
 
 To inspect a retained receipt independently:
@@ -63,6 +66,12 @@ To convert verified evidence into bounded public-review and stable-release decis
 python3 tools/evaluate_release_evidence.py
 ```
 
+To generate a non-mutating release-gate promotion proposal:
+
+```bash
+python3 tools/promote_release_gates.py
+```
+
 Expected generated outputs:
 
 ```text
@@ -72,6 +81,8 @@ status/publication-status.json
 status/publication-receipt.json
 status/release-evidence-decision.json
 status/release-evidence-decision.md
+status/release-manifest.promoted.json
+status/release-gate-promotion.json
 docs/publication-status.md
 ```
 
