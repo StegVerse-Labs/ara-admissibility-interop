@@ -27,6 +27,9 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Deployment Notification run `29225409767` successfully resolved the triggering run, checked out the exact triggering commit, downloaded `deployed-publication-evidence`, and independently reverified the retained evidence bundle before failing while regenerating the handoff-backed email notification. No notification was sent and no external authority boundary was crossed.
 - Deployment Notification run `29225962832` on commit `8e6fc46d62d8c346a1f08628b38af9a71b41133f` reproduced the same bounded failure and exposed the exact exception: the repository-relative handoff path `docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` was passed directly to `Path.relative_to(ROOT)`, producing a deterministic `ValueError` before notification generation.
 - Commit `791d4df65c1618c2acde3bc56bf35505577fb7ee` added repository-root path normalization for all generator inputs and outputs, computes the handoff-relative path only after resolution, and retains fail-closed handling for paths outside the repository root.
+- Updated `release-manifest.json` to schema `0.13.0`, replacing stale Jekyll declarations with the dependency-free governed builder, registering the builder tests, all four workflow pairs, exact notification attachments, replay processing, scheduled mailbox polling, and durable monitor-state retention.
+- Strengthened `tools/check_docs_site.py` to enforce the deterministic builder contract, four workflow pairs, three canonical email attachments, 90-day monitor-state retention, one-task-per-notification semantics, and the prohibition on automated release authority.
+- Updated `docs/deployment-email-monitoring.md` with the hourly monitor schedule, sixth monitor-mailbox secret, restricted `Mail.Send` and `Mail.ReadWrite` requirements, replay identity, mark-read sequencing, and retained cross-run state.
 - Existing exact-commit stamping, live HTTP verification, receipt generation, evidence evaluation, bundle verification, notification generation, and retained-artifact boundaries remain unchanged.
 
 ## Current publication posture
@@ -42,16 +45,16 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 
 - local architecture and checks: built
 - canonical/iOS workflow parity: built across four workflow pairs
-- deterministic dependency-free docs builder and tests: built
+- deterministic dependency-free docs builder and tests: built and declared in release manifest schema `0.13.0`
 - exact-commit deployment and live verification: observed through the retained-evidence boundary
 - independent evidence verifier canonical identity-hash compatibility: repaired, successor-run verification pending
-- docs aggregate self-check alignment: repaired through executable Graph invariants, successor-run verification pending
+- docs aggregate self-check alignment: strengthened for builder, notification, replay, and monitor invariants; successor-run verification pending
 - retained evidence bundle download and independent re-verification: observed in Deployment Notification runs `29225409767` and `29225962832`
 - handoff-backed notification regeneration: exact relative-path failure repaired in commit `791d4df65c1618c2acde3bc56bf35505577fb7ee`; successor-run verification pending
 - release-evidence evaluator and bounded gate promoter: built
 - handoff-backed email generation and Graph transport: built
 - replay ledger and one-task-per-notification processing: built
-- scheduled mailbox polling and durable state restoration: built
+- scheduled mailbox polling and durable state restoration: built and documented
 - Microsoft Graph application credentials: not configured or not yet observed
 - outbound delivery evidence: pending configured successor run
 - inbound mailbox-monitor evidence: pending configured scheduled run
@@ -66,18 +69,18 @@ Email delivery and mailbox receipt are orchestration signals, not deployment evi
 
 Replay-ledger continuity prevents duplicate task creation. It cannot promote release gates, establish Repo Check standing, set `stable_release_authorized`, or create a release tag.
 
-The dependency-free builder controls only the generated `_site` artifact. Identity-hash compatibility, self-check alignment, and path normalization do not change publication posture, release authority, canonical status, clinical or regulatory standing, or any external system.
+The dependency-free builder, manifest alignment, identity-hash compatibility, self-check alignment, and path normalization do not change publication posture, release authority, canonical status, clinical or regulatory standing, or any external system.
 
 ## Next tasks
 
-1. Confirm Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after commit `791d4df65c1618c2acde3bc56bf35505577fb7ee`.
+1. Confirm Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after the schema `0.13.0` and self-check updates.
 2. Confirm a successor Deployment Notification run regenerates the handoff-backed notification without the prior `Path.relative_to` failure and stops only at a declared credential boundary or completes delivery-receipt generation.
 3. Confirm a successor Docs Pages run passes `Evaluate deployed release evidence` using the canonical `identity_body_sha256` field.
 4. Confirm Docs Pages generates and verifies the aggregate evidence bundle, generates the handoff-backed notification, and retains `deployed-publication-evidence`.
 5. Inspect that artifact and independently verify the publication receipt and aggregate evidence bundle.
 6. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
 7. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
-8. Configure the mail and monitor secrets declared by the workflows.
+8. Configure the six mail and monitor secrets declared by the workflows.
 9. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
 10. Apply only evidence-backed technical gate promotion after direct artifact inspection.
 11. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
