@@ -108,7 +108,7 @@ REQUIRED = {
         "Restore durable notification ledger", "cancel-in-progress: false",
     ],
     "builder": [
-        "GOVERNED_DOCS_BUILD=PASS", "dependency", "_site", "index.html",
+        "GOVERNED_DOCS_BUILD=PASS", "without external runtime dependencies", "_site", "index.html",
         "markdown_to_html", "ARA Admissibility Interop Docs",
     ],
     "builder-tests": [
