@@ -86,17 +86,17 @@ def get_access_token(config: dict[str, str]) -> str:
     return token
 
 
-def attachment(name: str, path: Path) -> dict:
+def attachment(name: str, path: Path, content_type: str) -> dict:
     return {
         "@odata.type": "#microsoft.graph.fileAttachment",
         "name": name,
-        "contentType": "application/json",
+        "contentType": content_type,
         "contentBytes": base64.b64encode(path.read_bytes()).decode("ascii"),
     }
 
 
 def send_mail(config: dict[str, str], token: str, subject: str, body: str,
-              envelope_path: Path, bundle_path: Path) -> None:
+              body_path: Path, envelope_path: Path, bundle_path: Path) -> None:
     sender = urllib.parse.quote(config["STEGVERSE_MAIL_SENDER"], safe="@._+-")
     url = f"https://graph.microsoft.com/v1.0/users/{sender}/sendMail"
     payload = {
@@ -107,8 +107,9 @@ def send_mail(config: dict[str, str], token: str, subject: str, body: str,
                 "emailAddress": {"address": config["STEGVERSE_MAIL_RECIPIENT"]}
             }],
             "attachments": [
-                attachment(envelope_path.name, envelope_path),
-                attachment(bundle_path.name, bundle_path),
+                attachment(body_path.name, body_path, "text/markdown"),
+                attachment(envelope_path.name, envelope_path, "application/json"),
+                attachment(bundle_path.name, bundle_path, "application/json"),
             ],
         },
         "saveToSentItems": True,
@@ -149,11 +150,12 @@ def main() -> int:
     args = parser.parse_args()
 
     receipt = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "receipt_type": "governed-deployment-notification-delivery",
         "generated_at": utc_now(),
         "transport": "microsoft-graph-sendmail",
         "delivery_status": "failed",
+        "attached_files": [args.body.name, args.envelope.name, args.bundle.name],
         "authority_boundary": "Notification delivery is not release authority.",
     }
 
@@ -174,6 +176,7 @@ def main() -> int:
             "commit_sha": envelope.get("commit_sha"),
             "workflow_run_id": envelope.get("workflow_run_id"),
             "bundle_sha256": envelope.get("bundle_sha256"),
+            "body_sha256": envelope.get("body_sha256"),
             "subject": subject,
             "configuration_state": state,
         })
@@ -185,7 +188,7 @@ def main() -> int:
             return 1 if args.require_delivery else 0
 
         token = get_access_token(config)
-        send_mail(config, token, subject, body, args.envelope, args.bundle)
+        send_mail(config, token, subject, body, args.body, args.envelope, args.bundle)
         receipt.update({
             "delivery_status": "sent",
             "sent_at": utc_now(),
