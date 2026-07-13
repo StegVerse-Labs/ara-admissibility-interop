@@ -14,10 +14,26 @@ SITE = ROOT / "_site"
 OUTPUT = SITE / "deployment-identity.json"
 
 
+def emit_site_inventory() -> None:
+    """Emit a bounded, deterministic inventory for successor-run diagnosis."""
+    print(f"workspace_root={ROOT}")
+    print(f"site_root={SITE}")
+    print(f"site_exists={SITE.exists()}")
+    print(f"site_is_dir={SITE.is_dir()}")
+    if not SITE.is_dir():
+        return
+
+    built_files = sorted(path for path in SITE.rglob("*") if path.is_file())
+    print(f"built_file_count={len(built_files)}")
+    for built_file in built_files:
+        print(f"built_file={built_file.relative_to(ROOT)}")
+
+
 def resolve_index() -> Path | None:
     """Return a deterministic Pages entry point, normalizing one nested index."""
     root_index = SITE / "index.html"
     if root_index.is_file():
+        print(f"resolved_index={root_index.relative_to(ROOT)}")
         return root_index
 
     candidates = sorted(
@@ -29,8 +45,6 @@ def resolve_index() -> Path | None:
         print(f"nested_index_candidates={len(candidates)}")
         for candidate in candidates:
             print(f"candidate={candidate.relative_to(ROOT)}")
-        for built_file in sorted(path for path in SITE.rglob("*") if path.is_file()):
-            print(f"built_file={built_file.relative_to(ROOT)}")
         return None
 
     source = candidates[0]
@@ -42,6 +56,7 @@ def resolve_index() -> Path | None:
 
 
 def main() -> int:
+    emit_site_inventory()
     index = resolve_index()
     if index is None:
         return 1
@@ -65,7 +80,7 @@ def main() -> int:
     }
     OUTPUT.write_text(json.dumps(identity, indent=2) + "\n", encoding="utf-8")
 
-    marker = f'<meta name="stegverse-deployment-commit" content="{commit_sha}">' 
+    marker = f'<meta name="stegverse-deployment-commit" content="{commit_sha}">'
     html = index.read_text(encoding="utf-8")
     if marker not in html:
         if "</head>" in html:
