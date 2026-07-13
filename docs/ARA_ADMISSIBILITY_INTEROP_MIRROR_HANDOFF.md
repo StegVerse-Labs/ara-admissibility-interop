@@ -16,7 +16,11 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Added `.github/workflows/deployment-mailbox-monitor.yml` with hourly and explicit-dispatch triggers.
 - The monitor restores the newest non-expired `deployment-mailbox-monitor-state` artifact, runs the poller, and uploads the updated ledger, summary, processing receipts, and task candidates with 90-day retention.
 - Extended workflow parity enforcement and Repo Check to include the scheduled monitor and mailbox-poller tests.
-- Existing bounded `_site` diagnostics remain in place for the unresolved Pages entry-point layout defect.
+- Added bounded `_site` diagnostics for the unresolved Pages stamping failure.
+- Docs Pages run `29224962832` on commit `ebfbae5d59ceeb38c98d17617ada128aeb91b535` passed the publication gate and Jekyll build but failed again at `Stamp built site with deployment identity`.
+- The repeated pattern establishes that the container build completes while the following host-side Python step cannot mutate the generated artifact; the remaining defect is container-owned `_site` permissions rather than publication-gate, Jekyll-rendering, or workflow-parity failure.
+- Commit `7400398dacc1d296f83bb5f0b1d83aa92a9e22fa` updated `tools/stamp_built_site.py` to normalize ownership only for `_site` through runner `sudo chown -R`, fail closed if normalization fails, and then preserve the existing deterministic index selection, exact-commit stamping, and inventory diagnostics.
+- Repo Check run `29224927109` on commit `8a2dc7d330137243b9803c0dbcbc7db387469dd5` failed at workflow parity during the staged mailbox-monitor updates; later commits completed the canonical/iOS mirror pair, so no duplicate repair was applied.
 
 ## Current publication posture
 
@@ -41,7 +45,8 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Microsoft Graph application credentials: not configured or not yet observed
 - outbound delivery evidence: pending configured successor run
 - inbound mailbox-monitor evidence: pending configured scheduled run
-- Pages root-entry layout repair: pending observed build diagnostics and successor correction
+- Pages artifact ownership normalization: installed, successor-run verification pending
+- corrected Pages workflow live success: pending successor-run evidence
 - deployed publication evidence and bundle inspection: pending
 - stable release tag: blocked
 
@@ -53,18 +58,21 @@ Email delivery and mailbox receipt are orchestration signals, not deployment evi
 
 Replay-ledger continuity prevents duplicate task creation. It cannot promote release gates, establish Repo Check standing, set `stable_release_authorized`, or create a release tag.
 
+Ownership normalization is limited to the generated `_site` artifact inside the GitHub-hosted runner workspace. It does not modify repository ownership, permissions, publication posture, release gates, deployment authority, or external systems.
+
 ## Next tasks
 
-1. Confirm Repo Check passes all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests.
-2. Inspect the next Docs Pages build inventory and repair only the remaining `_site/index.html` discovery defect.
+1. Confirm Repo Check passes all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after the completed workflow mirror updates.
+2. Confirm a successor Docs Pages run executes commit `7400398dacc1d296f83bb5f0b1d83aa92a9e22fa`, normalizes `_site` ownership, stamps deployment identity, and passes the built-site entry verification.
 3. Confirm Docs Pages deploys and retains a valid `deployed-publication-evidence` artifact.
-4. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
-5. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
-6. Configure the six mail and monitor secrets declared by the workflows.
-7. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
-8. Independently verify the GitHub deployment artifact before applying any gate-promotion proposal.
-9. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-10. Create a stable tag only after explicit release authorization.
-11. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+4. Inspect that artifact and independently verify the publication receipt and aggregate evidence bundle.
+5. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
+6. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
+7. Configure the six mail and monitor secrets declared by the workflows.
+8. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
+9. Independently verify the GitHub deployment artifact before applying any gate-promotion proposal.
+10. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
+11. Create a stable tag only after explicit release authorization.
+12. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
