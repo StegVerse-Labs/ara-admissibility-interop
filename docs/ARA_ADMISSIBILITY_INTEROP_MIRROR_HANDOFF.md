@@ -22,6 +22,9 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Commit `92dde057ffeb682e31acc147574e4c19a5f617e3` repaired the verifier to use the canonical `identity_body_sha256` field while accepting the legacy alias for retained-evidence compatibility.
 - Repo Check run `29225254890` on commit `e26659d65c0404388c01254c76f570f17dc82658` failed at `Generate validation report` because `tools/check_docs_site.py` still required the removed Jekyll action and pre-renderer workflow structure.
 - Commit `698fd40a11f964f2a75ff6aff3c6fff8908cd528` aligned the docs self-check with the deterministic builder, all four workflow mirror pairs, current notification/replay/mailbox tests, and the canonical live identity hash field.
+- Repo Check run `29225390550` on commit `3619635c793ce4abd43f9900750f58988f465d96` exposed one remaining stale invariant: `tools/check_docs_site.py` required the literal delegated permission name `Mail.ReadWrite` inside the poller implementation even though the poller correctly uses Microsoft Graph application scope `https://graph.microsoft.com/.default` with client credentials and performs a bounded `isRead` patch only after accepted processing.
+- Commit `0796b475d82e1abbd75b3c7f40ad7dbc1ccc9380` replaced that stale literal check with executable transport invariants: Graph `.default` scope, `client_credentials`, the bounded `isRead` mutation, and the governed one-message processor.
+- Deployment Notification run `29225409767` successfully resolved the triggering run, checked out the exact triggering commit, downloaded `deployed-publication-evidence`, and independently reverified the retained evidence bundle before failing while regenerating the handoff-backed email notification. No notification was sent and no external authority boundary was crossed.
 - Existing exact-commit stamping, live HTTP verification, receipt generation, evidence evaluation, bundle verification, notification generation, and retained-artifact boundaries remain unchanged.
 
 ## Current publication posture
@@ -38,9 +41,11 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - local architecture and checks: built
 - canonical/iOS workflow parity: built across four workflow pairs
 - deterministic dependency-free docs builder and tests: built
-- exact-commit deployment and live verification: observed through the receipt-generation boundary
+- exact-commit deployment and live verification: observed through the retained-evidence boundary
 - independent evidence verifier canonical identity-hash compatibility: repaired, successor-run verification pending
-- docs aggregate self-check alignment: repaired, successor-run verification pending
+- docs aggregate self-check alignment: repaired through executable Graph invariants, successor-run verification pending
+- retained evidence bundle download and independent re-verification: observed in Deployment Notification run `29225409767`
+- handoff-backed notification regeneration: blocked in successor workflow; exact generator failure still requires inspection
 - release-evidence evaluator and bounded gate promoter: built
 - handoff-backed email generation and Graph transport: built
 - replay ledger and one-task-per-notification processing: built
@@ -48,7 +53,7 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Microsoft Graph application credentials: not configured or not yet observed
 - outbound delivery evidence: pending configured successor run
 - inbound mailbox-monitor evidence: pending configured scheduled run
-- deployed publication evidence and bundle retention: pending successor-run evidence
+- deployed publication evidence and bundle retention: observed, direct artifact inspection still pending
 - stable release tag: blocked
 
 ## Boundary
@@ -63,17 +68,18 @@ The dependency-free builder controls only the generated `_site` artifact. Identi
 
 ## Next tasks
 
-1. Confirm Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after commit `698fd40a11f964f2a75ff6aff3c6fff8908cd528`.
-2. Confirm a successor Docs Pages run passes `Evaluate deployed release evidence` using the canonical `identity_body_sha256` field.
-3. Confirm Docs Pages generates and verifies the aggregate evidence bundle, generates the handoff-backed notification, and retains `deployed-publication-evidence`.
-4. Inspect that artifact and independently verify the publication receipt and aggregate evidence bundle.
-5. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
-6. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
-7. Configure the mail and monitor secrets declared by the workflows.
-8. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
-9. Apply only evidence-backed technical gate promotion after direct artifact inspection.
-10. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-11. Create a stable tag only after explicit release authorization.
-12. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+1. Confirm Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after commit `0796b475d82e1abbd75b3c7f40ad7dbc1ccc9380`.
+2. Inspect the exact `Regenerate handoff-backed email notification` failure from Deployment Notification run `29225409767` and apply only a bounded generator or handoff-contract repair if explicitly supported by the evidence.
+3. Confirm a successor Docs Pages run passes `Evaluate deployed release evidence` using the canonical `identity_body_sha256` field.
+4. Confirm Docs Pages generates and verifies the aggregate evidence bundle, generates the handoff-backed notification, and retains `deployed-publication-evidence`.
+5. Inspect that artifact and independently verify the publication receipt and aggregate evidence bundle.
+6. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
+7. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
+8. Configure the mail and monitor secrets declared by the workflows.
+9. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
+10. Apply only evidence-backed technical gate promotion after direct artifact inspection.
+11. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
+12. Create a stable tag only after explicit release authorization.
+13. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
 
 No prior chat context is required to continue from this handoff.
