@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.12.0",
+  "schema_version": "0.13.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "candidate": "0.2.0-release-candidate",
   "status": "governed-publication-release-candidate",
@@ -27,9 +27,12 @@
     "entrypoint": "docs/index.md",
     "built_entrypoint": "_site/index.html",
     "config": "docs/_config.yml",
-    "mode": "jekyll-built-github-pages",
+    "mode": "dependency-free-governed-static-html",
     "requires_build_step": true,
-    "build_action": "actions/jekyll-build-pages@v1",
+    "builder": "tools/build_governed_docs_site.py",
+    "builder_tests": "tools/test_governed_docs_builder.py",
+    "build_runtime": "python-standard-library",
+    "external_site_generator_required": false,
     "build_output": "_site",
     "publishing": {
       "canonical_workflow": ".github/workflows/docs-pages.yml",
@@ -38,6 +41,8 @@
       "publication_manifest": "publication-manifest.json",
       "gate": "tools/check_publication_gate.py",
       "gate_tests": "tools/test_publication_gate.py",
+      "docs_builder": "tools/build_governed_docs_site.py",
+      "docs_builder_tests": "tools/test_governed_docs_builder.py",
       "status_generator": "tools/generate_publication_status.py",
       "receipt_generator": "tools/generate_publication_receipt.py",
       "receipt_schema": "publication/publication-receipt.schema.json",
@@ -51,7 +56,11 @@
       "notification_generator": "tools/generate_deployment_notification.py",
       "notification_sender": "tools/send_deployment_notification.py",
       "notification_ingestor": "tools/ingest_deployment_notification.py",
-      "notification_transport_tests": "tools/test_deployment_notification_transport.py"
+      "notification_replay_processor": "tools/process_deployment_notification_once.py",
+      "notification_transport_tests": "tools/test_deployment_notification_transport.py",
+      "notification_replay_tests": "tools/test_deployment_notification_replay_ledger.py",
+      "mailbox_poller": "tools/poll_deployment_notification_mailbox.py",
+      "mailbox_poller_tests": "tools/test_deployment_mailbox_poller.py"
     }
   },
   "dependency_policy": {
@@ -70,7 +79,8 @@
       "requiring network access during validation",
       "failing default CI because an optional package is missing",
       "silently replacing dependency-free checks with dependency-backed checks",
-      "using mailbox passwords for deployment notification transport"
+      "using mailbox passwords for deployment notification transport",
+      "claiming an external site generator is required after the governed Python builder is declared"
     ]
   },
   "validation": {
@@ -85,6 +95,8 @@
       "python3 tools/check_publication_gate.py",
       "python3 tools/test_publication_gate.py",
       "python3 tools/check_workflow_parity.py",
+      "python3 tools/build_governed_docs_site.py",
+      "python3 tools/test_governed_docs_builder.py",
       "python3 tools/generate_publication_status.py",
       "python3 tools/generate_publication_receipt.py",
       "python3 tools/test_publication_evidence_verifier.py",
@@ -92,7 +104,9 @@
       "python3 tools/test_evidence_bundle_manifest.py",
       "python3 tools/test_release_gate_promotion.py",
       "python3 tools/test_deployment_notification.py",
-      "python3 tools/test_deployment_notification_transport.py"
+      "python3 tools/test_deployment_notification_transport.py",
+      "python3 tools/test_deployment_notification_replay_ledger.py",
+      "python3 tools/test_deployment_mailbox_poller.py"
     ],
     "deployed_evidence_command": "python3 tools/evaluate_release_evidence.py --artifact-root _site --identity-file status/deployed-identity.json --live-root-file status/deployed-live-root.html --require-public-review-allow",
     "deployed_bundle_commands": [
@@ -106,7 +120,9 @@
     "notification_commands": [
       "python3 tools/generate_deployment_notification.py",
       "python3 tools/send_deployment_notification.py",
-      "python3 tools/ingest_deployment_notification.py"
+      "python3 tools/ingest_deployment_notification.py",
+      "python3 tools/process_deployment_notification_once.py",
+      "python3 tools/poll_deployment_notification_mailbox.py"
     ],
     "artifact_retention": {
       "canonical_workflow": ".github/workflows/repo-check.yml",
@@ -117,6 +133,8 @@
       "publication_receipt_artifact": "publication-receipt",
       "deployed_publication_evidence_artifact": "deployed-publication-evidence",
       "governed_deployment_notification_artifact": "governed-deployment-notification",
+      "mailbox_monitor_state_artifact": "deployment-mailbox-monitor-state",
+      "mailbox_monitor_retention_days": 90,
       "release_evidence_decision_json": "status/release-evidence-decision.json",
       "release_evidence_decision_markdown": "status/release-evidence-decision.md",
       "captured_live_root": "status/deployed-live-root.html",
@@ -127,7 +145,10 @@
       "deployment_notification_body": "status/deployment-notification-email.md",
       "deployment_notification_envelope": "status/deployment-notification-envelope.json",
       "deployment_notification_delivery": "status/deployment-notification-delivery.json",
+      "deployment_notification_ledger": "status/deployment-notification-ledger.json",
+      "deployment_notification_processing": "status/deployment-notification-processing.json",
       "deployment_next_task_candidate": "status/deployment-next-task-candidate.json",
+      "mailbox_poll_summary": "status/mailbox-poll-summary.json",
       "retained_built_site": "_site",
       "manual_artifact_retention_required": false
     }
@@ -182,14 +203,44 @@
       "Next tasks"
     ],
     "attachments": [
+      "status/deployment-notification-email.md",
       "status/deployment-notification-envelope.json",
       "status/deployed-evidence-bundle.json"
     ],
     "inbound_ingestor": "tools/ingest_deployment_notification.py",
+    "replay_processor": "tools/process_deployment_notification_once.py",
+    "mailbox_poller": "tools/poll_deployment_notification_mailbox.py",
     "inbound_result": "verification-required next-task candidate",
+    "notification_identity_fields": [
+      "repository",
+      "commit_sha",
+      "workflow_run_id",
+      "bundle_sha256",
+      "body_sha256"
+    ],
+    "duplicate_behavior": "idempotent-noop",
+    "conflicting_replay_behavior": "fail-closed",
     "email_is_authority": false,
     "delivery_verified": false,
     "mailbox_ingestion_verified": false
+  },
+  "mailbox_monitor": {
+    "canonical_workflow": ".github/workflows/deployment-mailbox-monitor.yml",
+    "ios_safe_workflow": "iosnoperiod/github/workflows/deployment-mailbox-monitor.yml",
+    "schedule": "hourly-at-minute-17",
+    "explicit_dispatch": true,
+    "required_permission": "Microsoft Graph Mail.ReadWrite application access restricted to the designated mailbox",
+    "state_artifact": "deployment-mailbox-monitor-state",
+    "state_retention_days": 90,
+    "restore_strategy": "newest-non-expired-state-artifact",
+    "mark_read_after": [
+      "candidate_created",
+      "duplicate_noop"
+    ],
+    "blocked_messages_remain_unread": true,
+    "one_task_per_notification_identity": true,
+    "automatic_release_authority": false,
+    "configured_execution_verified": false
   },
   "workflows": {
     "repo_check_canonical_path": ".github/workflows/repo-check.yml",
@@ -198,7 +249,10 @@
     "docs_pages_ios_safe_path": "iosnoperiod/github/workflows/docs-pages.yml",
     "deployment_notification_canonical_path": ".github/workflows/deployment-notification.yml",
     "deployment_notification_ios_safe_path": "iosnoperiod/github/workflows/deployment-notification.yml",
+    "deployment_mailbox_monitor_canonical_path": ".github/workflows/deployment-mailbox-monitor.yml",
+    "deployment_mailbox_monitor_ios_safe_path": "iosnoperiod/github/workflows/deployment-mailbox-monitor.yml",
     "workflow_parity_check": "tools/check_workflow_parity.py",
+    "workflow_pair_count": 4,
     "summary_output": true,
     "manual_docs_publish_required": false,
     "manual_artifact_retention_required": false,
@@ -210,13 +264,14 @@
     "release_gate_promotion": "evidence-bounded-explicit-write-only",
     "notification_delivery": "post-successor-verification",
     "notification_ingestion": "verification-candidate-only",
+    "mailbox_monitoring": "scheduled-durable-replay-protected",
     "stable_tag_blocked_until_live_verification": true
   },
   "claims": [
     "Independent interoperability prototype for evaluating ARA-style artifacts as commitment candidates.",
-    "Dependency-free validation path for local schemas, examples, evaluator fixtures, and negative fixtures.",
+    "Dependency-free validation and governed documentation build paths using the Python standard library.",
     "Optional stricter JSON Schema validation path when jsonschema is installed.",
-    "Jekyll-built GitHub Pages documentation site with verified index.html entry point.",
+    "Repository-controlled static GitHub Pages documentation build with a verified index.html entry point.",
     "Manifest-governed automated docs publishing workflow for GitHub Pages.",
     "Fail-closed publication gate with executable negative tests.",
     "Automated validation, publication-status, publication-receipt, release-evidence, and evidence-bundle artifact retention.",
@@ -225,7 +280,8 @@
     "Deterministic bundle verification covering all retained deployment evidence files.",
     "Evidence-bounded promotion of non-authority release gates with explicit write control.",
     "Handoff-backed deployment notifications with Microsoft Graph application transport and retained delivery receipts.",
-    "Monitored notification ingestion that creates verification-required next-task candidates.",
+    "Replay-protected monitored notification ingestion that creates verification-required next-task candidates.",
+    "Scheduled mailbox monitoring with durable cross-run ledger restoration and one-task-per-notification semantics.",
     "Bounded public-review and stable-release evidence decisions without automatic stable-release authorization.",
     "Commit-time standing-result examples for ALLOW, DENY, and FAIL-CLOSED."
   ],
@@ -240,8 +296,8 @@
     "No required full JSON Schema conformance is claimed when the optional dependency is absent.",
     "No stable release is automatically authorized by a passing public-review evidence decision.",
     "No release-gate promotion can set stable_release_authorized or prove Repo Check completion.",
-    "No email notification, delivery receipt, or mailbox receipt is deployment evidence or release authority.",
-    "Bundle integrity does not create authority or standing absent from the underlying evidence and governance state."
+    "No email notification, delivery receipt, mailbox receipt, or monitor ledger is deployment evidence or release authority.",
+    "Bundle integrity and replay continuity do not create authority or standing absent from the underlying evidence and governance state."
   ],
   "release_gate": {
     "repo_check_workflow_verified": false,
@@ -257,7 +313,6 @@
     "make full JSON Schema validation required if dependency policy changes",
     "external example package with explicit permission",
     "richer evaluator semantics beyond the current stub",
-    "mailbox monitor implementation with durable deduplication and replay protection",
     "optional governed Site mirroring after Site handoff review"
   ]
 }
