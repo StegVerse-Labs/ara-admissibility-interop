@@ -26,6 +26,7 @@ jobs:
         id: source
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
           EVENT_NAME: ${{ github.event_name }}
           AUTOMATIC_RUN_ID: ${{ github.event.workflow_run.id }}
           AUTOMATIC_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -42,8 +43,6 @@ jobs:
           test -n "$head_sha" || { echo "Missing source head SHA"; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Checkout triggering commit
         uses: actions/checkout@v4
