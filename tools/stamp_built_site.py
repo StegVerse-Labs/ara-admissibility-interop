@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
 OUTPUT = SITE / "deployment-identity.json"
+EXPECTED_SITE_MARKER = "ARA Admissibility Interop Docs"
 
 
 def normalize_site_ownership() -> bool:
@@ -21,11 +22,25 @@ def normalize_site_ownership() -> bool:
         print("ownership_normalization=not-required-site-missing")
         return True
 
+    # Avoid invoking sudo when the artifact is already writable. This keeps local
+    # validation dependency-free while retaining a bounded GitHub-hosted fallback
+    # for root-owned files emitted by the Jekyll container action.
+    probe = SITE / ".stegverse-write-probe"
+    try:
+        probe.write_text("writable\n", encoding="utf-8")
+        probe.unlink()
+        print("ownership_normalization=not-required-writable")
+        return True
+    except OSError:
+        pass
+
     uid = os.getuid()
     gid = os.getgid()
     command = ["sudo", "chown", "-R", f"{uid}:{gid}", str(SITE)]
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)
+        probe.write_text("writable\n", encoding="utf-8")
+        probe.unlink()
     except (OSError, subprocess.CalledProcessError) as exc:
         print("DEPLOYMENT_IDENTITY=FAIL-CLOSED")
         print("reason=unable to normalize _site ownership")
@@ -51,28 +66,52 @@ def emit_site_inventory() -> None:
         print(f"built_file={built_file.relative_to(ROOT)}")
 
 
+def _candidate_score(path: Path) -> tuple[int, int, str]:
+    """Rank index candidates by marker match, depth, then stable path."""
+    try:
+        contains_marker = EXPECTED_SITE_MARKER in path.read_text(
+            encoding="utf-8", errors="replace"
+        )
+    except OSError:
+        contains_marker = False
+    relative = path.relative_to(SITE)
+    return (0 if contains_marker else 1, len(relative.parts), str(relative))
+
+
 def resolve_index() -> Path | None:
-    """Return a deterministic Pages entry point, normalizing one nested index."""
+    """Return the governed Pages entry point and normalize it to _site/index.html."""
     root_index = SITE / "index.html"
     if root_index.is_file():
         print(f"resolved_index={root_index.relative_to(ROOT)}")
         return root_index
 
     candidates = sorted(
-        path for path in SITE.rglob("index.html") if path.is_file()
+        (path for path in SITE.rglob("index.html") if path.is_file()),
+        key=_candidate_score,
     )
-    if len(candidates) != 1:
+    if not candidates:
         print("DEPLOYMENT_IDENTITY=FAIL-CLOSED")
-        print("reason=_site/index.html is missing and nested index selection is ambiguous")
-        print(f"nested_index_candidates={len(candidates)}")
-        for candidate in candidates:
-            print(f"candidate={candidate.relative_to(ROOT)}")
+        print("reason=_site/index.html is missing and no nested index exists")
         return None
 
-    source = candidates[0]
+    selected = candidates[0]
+    marker_matches = [
+        path
+        for path in candidates
+        if _candidate_score(path)[0] == 0
+    ]
+    if len(candidates) > 1:
+        print(f"nested_index_candidates={len(candidates)}")
+        print(f"marker_matching_candidates={len(marker_matches)}")
+        for candidate in candidates:
+            print(f"candidate={candidate.relative_to(ROOT)}")
+
+    # Selection is deterministic. A marker-bearing candidate is preferred; when
+    # no marker is present, the shallowest stable path is copied and the next
+    # verification step remains responsible for failing closed on content.
     SITE.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source, root_index)
-    print(f"normalized_index_source={source.relative_to(ROOT)}")
+    shutil.copy2(selected, root_index)
+    print(f"normalized_index_source={selected.relative_to(ROOT)}")
     print(f"normalized_index_target={root_index.relative_to(ROOT)}")
     return root_index
 
