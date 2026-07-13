@@ -9,6 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PAIRS = [
     (ROOT / ".github/workflows/repo-check.yml", ROOT / "iosnoperiod/github/workflows/repo-check.yml"),
     (ROOT / ".github/workflows/docs-pages.yml", ROOT / "iosnoperiod/github/workflows/docs-pages.yml"),
+    (
+        ROOT / ".github/workflows/deployment-notification.yml",
+        ROOT / "iosnoperiod/github/workflows/deployment-notification.yml",
+    ),
 ]
 
 
