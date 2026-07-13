@@ -2,13 +2,13 @@ name: Docs Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'docs/**'
       - 'publication/**'
       - 'publication-manifest.json'
       - 'release-manifest.json'
+      - 'tools/build_governed_docs_site.py'
       - 'tools/check_publication_gate.py'
       - 'tools/test_publication_gate.py'
       - 'tools/check_workflow_parity.py'
@@ -37,36 +37,19 @@ concurrency:
 jobs:
   publication-gate:
     runs-on: ubuntu-latest
-    outputs:
-      publish_root: ${{ steps.manifest.outputs.publish_root }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-
       - name: Evaluate governed publication gate
         run: python3 tools/check_publication_gate.py
-
       - name: Test publication gate failures
         run: python3 tools/test_publication_gate.py
-
       - name: Test handoff-backed deployment notification
         run: python3 tools/test_deployment_notification.py
-
       - name: Verify workflow mirror parity
         run: python3 tools/check_workflow_parity.py
-
-      - name: Read publish root
-        id: manifest
-        shell: bash
-        run: |
-          root="$(python3 -c 'import json; print(json.load(open("publication-manifest.json"))["publish_root"])')"
-          echo "publish_root=$root" >> "$GITHUB_OUTPUT"
-          echo "Governed publication root: $root" >> "$GITHUB_STEP_SUMMARY"
 
   publish-docs:
     needs: publication-gate
@@ -75,11 +58,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -92,10 +72,7 @@ jobs:
           enablement: true
 
       - name: Build governed documentation site
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./${{ needs.publication-gate.outputs.publish_root }}
-          destination: ./_site
+        run: python3 tools/build_governed_docs_site.py
 
       - name: Stamp built site with deployment identity
         run: python3 tools/stamp_built_site.py
@@ -103,32 +80,18 @@ jobs:
       - name: Verify built site entry point and identity
         shell: bash
         run: |
-          test -f _site/index.html || {
-            echo "Built Pages artifact has no _site/index.html"
-            find _site -maxdepth 2 -type f -print || true
-            exit 1
-          }
-          test -f _site/deployment-identity.json || {
-            echo "Built Pages artifact has no deployment-identity.json"
-            exit 1
-          }
-          grep -Fq "ARA Admissibility Interop Docs" _site/index.html || {
-            echo "Built Pages entry point lacks the expected site marker"
-            exit 1
-          }
+          test -f _site/index.html
+          test -f _site/deployment-identity.json
+          grep -Fq 'ARA Admissibility Interop Docs' _site/index.html
+          grep -Fq "content=\"${GITHUB_SHA}\"" _site/index.html
           python3 - <<'PY'
           import json, os
           identity = json.load(open('_site/deployment-identity.json', encoding='utf-8'))
           expected = os.environ['GITHUB_SHA']
-          actual = identity.get('commit_sha')
-          if actual != expected:
-              raise SystemExit(f'built deployment identity mismatch: expected {expected}, got {actual}')
+          if identity.get('commit_sha') != expected:
+              raise SystemExit('built deployment identity mismatch')
           PY
-          grep -Fq "content=\"${GITHUB_SHA}\"" _site/index.html || {
-            echo "Built Pages entry point lacks the current commit marker"
-            exit 1
-          }
-          echo "Built Pages entry point, content marker, and commit identity verified." >> "$GITHUB_STEP_SUMMARY"
+          echo 'Built Pages entry point and exact commit identity verified.' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload governed site artifact
         uses: actions/upload-pages-artifact@v3
@@ -144,111 +107,55 @@ jobs:
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
-          case "$PAGE_URL" in
-            https://*) ;;
-            *) echo "Deployment URL is missing or not HTTPS: $PAGE_URL"; exit 1 ;;
-          esac
-
-          expected_marker="ARA Admissibility Interop Docs"
-          expected_commit="$GITHUB_SHA"
+          case "$PAGE_URL" in https://*) ;; *) echo "Invalid Pages URL: $PAGE_URL"; exit 1 ;; esac
+          expected_marker='ARA Admissibility Interop Docs'
           verified=false
-          final_status=""
-          final_url=""
-          identity_status=""
-          identity_url=""
-
-          for attempt in $(seq 1 12); do
+          for attempt in $(seq 1 18); do
             probe_url="${PAGE_URL}?commit=${GITHUB_SHA}&attempt=${attempt}"
             identity_probe_url="${PAGE_URL%/}/deployment-identity.json?commit=${GITHUB_SHA}&attempt=${attempt}"
-
-            mapfile -t curl_meta < <(
-              curl --silent --show-error --location --max-time 30 \
-                -H 'Cache-Control: no-cache' \
-                -o /tmp/ara-pages-root.html \
-                -w '%{http_code}\n%{url_effective}\n' \
-                "$probe_url" || true
-            )
-            final_status="${curl_meta[0]:-000}"
-            final_url="${curl_meta[1]:-$probe_url}"
-
-            mapfile -t identity_meta < <(
-              curl --silent --show-error --location --max-time 30 \
-                -H 'Cache-Control: no-cache' \
-                -o /tmp/ara-deployment-identity.json \
-                -w '%{http_code}\n%{url_effective}\n' \
-                "$identity_probe_url" || true
-            )
-            identity_status="${identity_meta[0]:-000}"
-            identity_url="${identity_meta[1]:-$identity_probe_url}"
-
-            identity_matches=false
-            if [ "$identity_status" = "200" ]; then
-              if python3 - "$expected_commit" <<'PY'
+            final_status="$(curl --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' -o /tmp/ara-pages-root.html -w '%{http_code}' "$probe_url" || true)"
+            final_url="$(curl --silent --show-error --location --max-time 30 -o /dev/null -w '%{url_effective}' "$probe_url" || true)"
+            identity_status="$(curl --silent --show-error --location --max-time 30 -H 'Cache-Control: no-cache' -o /tmp/ara-deployment-identity.json -w '%{http_code}' "$identity_probe_url" || true)"
+            identity_url="$(curl --silent --show-error --location --max-time 30 -o /dev/null -w '%{url_effective}' "$identity_probe_url" || true)"
+            if [ "$final_status" = 200 ] && [ "$identity_status" = 200 ] \
+              && grep -Fq "$expected_marker" /tmp/ara-pages-root.html \
+              && grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/ara-pages-root.html \
+              && python3 - "$GITHUB_SHA" <<'PY'
           import json, sys
-          expected = sys.argv[1]
           try:
               identity = json.load(open('/tmp/ara-deployment-identity.json', encoding='utf-8'))
           except Exception:
               raise SystemExit(1)
-          raise SystemExit(0 if identity.get('commit_sha') == expected else 1)
+          raise SystemExit(0 if identity.get('commit_sha') == sys.argv[1] else 1)
           PY
-              then
-                identity_matches=true
-              fi
-            fi
-
-            if [ "$final_status" = "200" ] \
-              && grep -Fq "$expected_marker" /tmp/ara-pages-root.html \
-              && grep -Fq "content=\"${expected_commit}\"" /tmp/ara-pages-root.html \
-              && [ "$identity_matches" = true ]; then
+            then
               verified=true
               break
             fi
-
-            echo "Live deployment not ready on attempt ${attempt}: root=${final_status}; identity=${identity_status}; retrying..."
             sleep 5
           done
-
-          test "$verified" = true || {
-            echo "Live Pages deployment did not return the expected rendered site and current commit identity."
-            echo "Root status: $final_status"
-            echo "Root URL: $final_url"
-            echo "Identity status: $identity_status"
-            echo "Identity URL: $identity_url"
-            sed -n '1,80p' /tmp/ara-pages-root.html 2>/dev/null || true
-            cat /tmp/ara-deployment-identity.json 2>/dev/null || true
-            exit 1
-          }
-
+          test "$verified" = true || { echo 'Live Pages verification failed'; exit 1; }
           body_sha256="$(sha256sum /tmp/ara-pages-root.html | awk '{print $1}')"
           body_size_bytes="$(wc -c < /tmp/ara-pages-root.html | tr -d ' ')"
           identity_sha256="$(sha256sum /tmp/ara-deployment-identity.json | awk '{print $1}')"
           verified_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-
           {
-            echo "LIVE_ROOT_VERIFICATION=passed"
+            echo 'LIVE_ROOT_VERIFICATION=passed'
             echo "LIVE_ROOT_VERIFIED_AT=$verified_at"
             echo "LIVE_ROOT_HTTP_STATUS=$final_status"
             echo "LIVE_ROOT_FINAL_URL=$final_url"
             echo "LIVE_ROOT_EXPECTED_MARKER=$expected_marker"
-            echo "LIVE_ROOT_MARKER_FOUND=true"
+            echo 'LIVE_ROOT_MARKER_FOUND=true'
             echo "LIVE_ROOT_BODY_SHA256=$body_sha256"
             echo "LIVE_ROOT_BODY_SIZE_BYTES=$body_size_bytes"
-            echo "LIVE_ROOT_DEPLOYED_COMMIT_SHA=$expected_commit"
+            echo "LIVE_ROOT_DEPLOYED_COMMIT_SHA=$GITHUB_SHA"
             echo "LIVE_IDENTITY_HTTP_STATUS=$identity_status"
             echo "LIVE_IDENTITY_FINAL_URL=$identity_url"
             echo "LIVE_IDENTITY_BODY_SHA256=$identity_sha256"
           } >> "$GITHUB_ENV"
-
           mkdir -p status
           cp /tmp/ara-pages-root.html status/deployed-live-root.html
           cp /tmp/ara-deployment-identity.json status/deployed-identity.json
-
-          echo "Live Pages root verified: $final_url" >> "$GITHUB_STEP_SUMMARY"
-          echo "Verified deployed commit: $expected_commit" >> "$GITHUB_STEP_SUMMARY"
-          echo "HTTP status: $final_status" >> "$GITHUB_STEP_SUMMARY"
-          echo "Response body SHA-256: $body_sha256" >> "$GITHUB_STEP_SUMMARY"
-          echo "Identity SHA-256: $identity_sha256" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Generate deployed publication status and receipt
         env:
@@ -270,8 +177,7 @@ jobs:
       - name: Generate and verify deployed evidence bundle
         run: |
           python3 tools/generate_evidence_bundle_manifest.py
-          python3 tools/verify_evidence_bundle_manifest.py \
-            status/deployed-evidence-bundle.json --root .
+          python3 tools/verify_evidence_bundle_manifest.py status/deployed-evidence-bundle.json --root .
 
       - name: Generate handoff-backed deployment notification
         run: python3 tools/generate_deployment_notification.py
@@ -279,14 +185,8 @@ jobs:
       - name: Publish deployment summary
         run: |
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
           cat status/release-evidence-decision.md >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Deployment evidence bundle SHA-256:" >> "$GITHUB_STEP_SUMMARY"
-          python3 -c 'import json; print("`" + json.load(open("status/deployed-evidence-bundle.json"))["bundle_sha256"] + "`")' >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Deployment email notification subject:" >> "$GITHUB_STEP_SUMMARY"
-          python3 -c 'import json; print(json.load(open("status/deployment-notification-envelope.json"))["subject"])' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload deployed publication evidence
         uses: actions/upload-artifact@v4
