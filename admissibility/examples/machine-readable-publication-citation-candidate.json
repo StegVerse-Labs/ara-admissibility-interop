@@ -1,0 +1,85 @@
+{
+  "schema_version": "0.1.0",
+  "candidate_id": "candidate-machine-readable-citation-001",
+  "transition_id": "transition-discovery-to-citation-001",
+  "artifact_reference": {
+    "artifact_id": "artifact-17",
+    "artifact_type": "ara-style-artifact",
+    "uri": "https://example.org/research/artifact-17",
+    "digest": "illustrative-sha256-digest",
+    "digest_algorithm": "sha256"
+  },
+  "requested_action": {
+    "action_type": "cite",
+    "description": "Cite the machine-readable artifact in an automated research summary limited to the declared claim boundary."
+  },
+  "actor": {
+    "actor_id": "agent-research-assistant-01",
+    "actor_type": "agent",
+    "display_name": "Example Research Assistant"
+  },
+  "target": {
+    "target_id": "summary-output-2026-001",
+    "target_type": "publication",
+    "description": "An automatically generated research summary intended for public review."
+  },
+  "scope": {
+    "scope_id": "citation-only-public-review",
+    "description": "Permit citation and bounded summary during public review only.",
+    "limitations": [
+      "No execution authority is granted.",
+      "No claim of independent replication is permitted.",
+      "The citation must retain the canonical artifact URI and version.",
+      "The summary must preserve the declared non-claims."
+    ]
+  },
+  "claim_boundary": {
+    "claims": [
+      "The artifact is published at the declared canonical URI.",
+      "The artifact exposes machine-readable citation and manifest links.",
+      "The requested use is limited to citation and bounded summarization."
+    ],
+    "non_claims": [
+      "The artifact is scientifically correct.",
+      "The artifact has been independently replicated.",
+      "The artifact is authorized for execution or operational deployment.",
+      "Publication metadata alone establishes standing."
+    ]
+  },
+  "policy_reference": {
+    "policy_id": "policy-machine-readable-citation-public-review-v1",
+    "uri": "https://example.org/policies/machine-readable-citation-public-review-v1"
+  },
+  "delegation_reference": null,
+  "evidence_references": [
+    {
+      "evidence_id": "canonical-page",
+      "evidence_type": "summary",
+      "uri": "https://example.org/research/artifact-17"
+    },
+    {
+      "evidence_id": "citation-bibtex",
+      "evidence_type": "other",
+      "uri": "https://example.org/research/artifact-17/citation.bib"
+    },
+    {
+      "evidence_id": "artifact-manifest",
+      "evidence_type": "trace",
+      "uri": "https://example.org/research/artifact-17/artifact-manifest.json"
+    }
+  ],
+  "execution_context": {
+    "context_id": "public-review-automated-citation",
+    "evaluated_at": "2026-07-27T15:00:00Z",
+    "network_resolution_required": true,
+    "publication_metadata_resolved": true
+  },
+  "validity_window": {
+    "not_before": "2026-07-27T00:00:00Z",
+    "not_after": "2026-08-27T00:00:00Z"
+  },
+  "recoverability_profile": {
+    "recoverability_class": "remediable",
+    "description": "The citation can be corrected or withdrawn if the artifact, version, policy, or claim boundary changes."
+  }
+}
