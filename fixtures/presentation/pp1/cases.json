@@ -1,0 +1,25 @@
+{
+  "schema_version":"steggate.fixtures.v1",
+  "profile_id":"SG-PRESENTATION-ENTITLEMENT-v1",
+  "fixtures":[
+    {"fixture_id":"presentation.pp1.allow.entitled_text_sink","input":{"recipient":"alice","source_entitlements":[["alice","bob"],["alice"]],"sink":{"verified":true,"modality":"text","exclusivity":"claimed_single"}},"expected":{"decision":"ALLOW"}},
+    {"fixture_id":"presentation.pp1.fail_closed.sink_unverified","input":{"recipient":"alice","source_entitlements":[["alice"]],"sink":{"verified":false,"modality":"text"}},"expected":{"decision":"FAIL_CLOSED","reason_code":"SINK_UNVERIFIED"}},
+    {"fixture_id":"presentation.pp1.deny.derived_unauthorized","input":{"actor_can_retrieve":true,"recipient":"alice","source_entitlements":[["alice","bob"],["bob"]]},"expected":{"decision":"DENY","reason_code":"RECIPIENT_NOT_AUTHORIZED"}},
+    {"fixture_id":"presentation.pp1.allow.composed_entitlement","input":{"source_entitlements":[["alice","bob"],["alice","carol"]]},"expected":{"effective_entitlements":["alice"]}},
+    {"fixture_id":"presentation.pp1.deny.composition_broadening","input":{"source_entitlements":[["alice","bob"],["alice"]],"proposed_effective_entitlements":["alice","bob"]},"expected":{"decision":"DENY","reason_code":"PRESENTATION_CONSTRAINT_BROADENING"}},
+    {"fixture_id":"presentation.pp1.fail_closed.incomparable_vocab","input":{"constraint_vocabularies":["corp-v1","gov-v1"],"mapping_ref":null},"expected":{"decision":"FAIL_CLOSED","reason_code":"COMPOSITION_NOT_COMPARABLE"}},
+    {"fixture_id":"presentation.pp1.fail_closed.transitive_provenance_unknown","input":{"own":"complete","sources":["complete","unknown"]},"expected":{"provenance_completeness":"unknown","decision":"FAIL_CLOSED","reason_code":"DERIVATION_PROVENANCE_INCOMPLETE"}},
+    {"fixture_id":"presentation.pp1.deny.stale_derivation_entitlement","input":{"derivation_time_entitlements":["alice"],"decision_time_entitlements":[],"recipient":"alice"},"expected":{"decision":"DENY","reason_code":"RECIPIENT_NOT_AUTHORIZED"}},
+    {"fixture_id":"presentation.pp1.fail_closed.source_constraint_unresolvable","input":{"source_constraint_resolvable":false},"expected":{"decision":"FAIL_CLOSED","reason_code":"SOURCE_CONSTRAINT_UNRESOLVABLE"}},
+    {"fixture_id":"presentation.pp1.allow.rendered","input":{"decision":"ALLOW","render_result":"complete"},"expected":{"observation":"RENDERED","reversibility":"irreversible"}},
+    {"fixture_id":"presentation.pp1.deny.partial_not_not_rendered","input":{"render_result":"partial"},"expected":{"observation":"PARTIALLY_RENDERED","not_allowed_observation":"NOT_RENDERED"}},
+    {"fixture_id":"presentation.pp1.allow.retain_restricted_store","input":{"artifact_entitlements":["alice"],"store_readership":["alice"],"derivation_metadata_preserved":true},"expected":{"decision":"ALLOW"}},
+    {"fixture_id":"presentation.pp1.deny.retain_broad_store","input":{"artifact_entitlements":["alice"],"store_readership":["alice","bob"],"derivation_metadata_preserved":true},"expected":{"decision":"DENY","reason_code":"STORE_READERSHIP_TOO_BROAD"}},
+    {"fixture_id":"presentation.pp1.fail_closed.store_strips_derivation","input":{"artifact_entitlements":["alice"],"store_readership":["alice"],"derivation_metadata_preserved":false},"expected":{"decision":"FAIL_CLOSED","reason_code":"DERIVATION_METADATA_NOT_PRESERVABLE"}},
+    {"fixture_id":"presentation.pp1.allow.claimed_single_sink","input":{"sink":{"verified":true,"exclusivity":"claimed_single"}},"expected":{"valid":true,"assurance":"claimed"}},
+    {"fixture_id":"presentation.pp1.fail_closed.unknown_sink_exclusivity","input":{"sink":{"verified":true,"exclusivity":"unknown"}},"expected":{"decision":"FAIL_CLOSED","reason_code":"SINK_EXCLUSIVITY_UNVERIFIABLE"}},
+    {"fixture_id":"presentation.pp1.allow.deterministic_label","input":{"label_evidence":{"origin":"ASSERTED","character":"DETERMINISTIC","coverage":1.0,"fresh":true}},"expected":{"valid":true}},
+    {"fixture_id":"presentation.pp1.fail_closed.unlabeled_default_deny","input":{"label":null,"unlabeled_posture":"deny"},"expected":{"decision":"FAIL_CLOSED","reason_code":"LABEL_EVIDENCE_INSUFFICIENT"}},
+    {"fixture_id":"presentation.pp1.deny.glomar_response","input":{"decision":"DENY","decision_disclosure_policy":"neither_confirm_nor_deny","internal_reason":"RECIPIENT_NOT_AUTHORIZED"},"expected":{"recipient_reason":"NOT_AVAILABLE","internal_reason_preserved":true}}
+  ]
+}
