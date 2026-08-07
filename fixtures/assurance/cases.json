@@ -1,0 +1,29 @@
+{
+  "schema_version":"steggate.assurance-fixtures.v1",
+  "fixtures":[
+    {
+      "fixture_id":"assurance.allow.exact_observed",
+      "claimed":{"identity":"cryptographically_verified","signatures":"cryptographically_verified","trust_anchor":"independently_verified","source_evidence":"self_reported","capability_construction":"host_attested"},
+      "observed":{"identity":"cryptographically_verified","signatures":"cryptographically_verified","trust_anchor":"independently_verified","source_evidence":"self_reported","capability_construction":"host_attested"},
+      "expected":{"decision":"ALLOW","reason_code":null}
+    },
+    {
+      "fixture_id":"assurance.allow.claim_below_observed",
+      "claimed":{"identity":"self_reported","signatures":"cryptographically_verified","trust_anchor":"cryptographically_verified","source_evidence":"self_reported","capability_construction":"constructor_attested"},
+      "observed":{"identity":"independently_verified","signatures":"independently_verified","trust_anchor":"independently_verified","source_evidence":"cryptographically_verified","capability_construction":"hardware_attested"},
+      "expected":{"decision":"ALLOW","reason_code":null}
+    },
+    {
+      "fixture_id":"assurance.fail_closed.identity_overclaim",
+      "claimed":{"identity":"independently_verified","signatures":"self_reported","trust_anchor":"self_reported","source_evidence":"self_reported","capability_construction":"self_reported"},
+      "observed":{"identity":"cryptographically_verified","signatures":"self_reported","trust_anchor":"self_reported","source_evidence":"self_reported","capability_construction":"self_reported"},
+      "expected":{"decision":"FAIL_CLOSED","reason_code":"ASSURANCE_OVERCLAIMED"}
+    },
+    {
+      "fixture_id":"assurance.fail_closed.capability_overclaim",
+      "claimed":{"identity":"self_reported","signatures":"self_reported","trust_anchor":"self_reported","source_evidence":"self_reported","capability_construction":"hardware_attested"},
+      "observed":{"identity":"self_reported","signatures":"self_reported","trust_anchor":"self_reported","source_evidence":"self_reported","capability_construction":"host_attested"},
+      "expected":{"decision":"FAIL_CLOSED","reason_code":"ASSURANCE_OVERCLAIMED"}
+    }
+  ]
+}
