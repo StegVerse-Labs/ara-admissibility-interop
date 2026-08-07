@@ -14,12 +14,12 @@
       "repository": "StegVerse-Labs/ara-admissibility-interop",
       "handoff": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
       "role": "canonical interop/schema implementation",
-      "authority_boundary": "mainline handoff currently limits release/publication/deployment/evaluator replacement; implementation remains draft/unmerged"
+      "authority_boundary": "feature-branch integration and repository-local validation/documentation only; no release/publication/deployment/evaluator replacement authority"
     },
     {
       "repository": "StegVerse-Labs/StegCore",
       "handoff": "STEGCORE_MIRROR_HANDOFF.md",
-      "role": "runtime/commit-coherence dependency; existing PR #18 must not be duplicated",
+      "role": "runtime/commit-coherence dependency; PR #18 remains canonical and must not be duplicated",
       "coordination_issue": 54
     }
   ],
@@ -27,62 +27,32 @@
     {
       "task_id": "STEGGATE-GOAL0",
       "origin_goal": "ST-016 decision reconciliation and CL-SG-003/SPE live binding",
-      "destination": "StegVerse-Labs/StegCore + StegVerse-Labs/ara-admissibility-interop",
-      "branch": "existing StegCore canonical lane / feat/steggate-v46-schema-foundation consumer",
-      "location": "StegCore issue #54; ara issue #2 and #65",
-      "owner": "StegCore coordination lane; ara consumer lane",
-      "claim_state": "BLOCKED",
-      "completion_state": "canonical artifact references not yet located",
-      "validation_state": "repository/issue sweep performed; no named ST-016 or CL-SG-003 issue found",
-      "integration_state": "NOT_INTEGRATED",
-      "archive_dependency": "none for chat once durable issues exist; blocks semantic freeze/merge, not session archival",
-      "evidence": ["StegCore issue #54", "ara issue #2", "ara issue #65"],
-      "next_action": "StegCore issue #54 supplies canonical refs or explicit artifact mapping; ara installs compatibility fixtures without guessing"
+      "destination": "StegVerse-Labs/ara-admissibility-interop consuming canonical StegCore refs",
+      "branch": "feat/steggate-v46-schema-foundation",
+      "location": "compatibility/stegcore-goal0.v1.json; fixtures/compatibility/stegcore-goal0.json; invariants/profile-stegcore-interop.yaml; StegCore issue #54; ara issues #2/#65",
+      "owner": "ara integration lane; StegCore PR #18 remains independent runtime owner",
+      "claim_state": "CLAIMED_FOR_VALIDATION",
+      "completion_state": "CANONICAL_REFS_IDENTIFIED_AND_COMPATIBILITY_INSTALLED",
+      "validation_state": "PENDING_HOSTED_VALIDATION_ON_FINAL_HEAD",
+      "integration_state": "DRAFT_PR_UNMERGED",
+      "archive_dependency": "hosted validation receipt and durable issue/handoff reconciliation only",
+      "evidence": ["StegCore src/stegcore/decision.py DecisionValue", "StegCore docs/COMMIT_COHERENCE.md", "StegCore src/stegcore/commit_governance.py", "compatibility/stegcore-goal0.v1.json", "fixtures/compatibility/stegcore-goal0.json", "invariants/profile-stegcore-interop.yaml"],
+      "next_action": "observe hosted validation; if green, record receipts and leave semantic-freeze/merge authority with PR #1 review lane"
     },
     {
       "task_id": "STEGGATE-AUDITKIT-001",
       "origin_goal": "Track 1A Audit Kit and v4.6 exit from prose into fixtures/schemas",
       "destination": "StegVerse-Labs/ara-admissibility-interop",
       "branch": "feat/steggate-v46-schema-foundation",
-      "location": "draft PR #1; invariants/, schemas/, algebra/, fixtures/, profiles/, claims/, tools/",
+      "location": "draft PR #1; invariants/, schemas/, algebra/, fixtures/, profiles/, claims/, canonicalization/, compatibility/, tools/",
       "owner": "ara-admissibility-interop implementation lane",
       "claim_state": "CLAIMED_FOR_INTEGRATION",
-      "completion_state": "schema foundation implemented; canonicalization/verifier/evidence-pack/reason-registry slices remain",
-      "validation_state": "StegGate Schema Foundation and Repo Check hosted workflows passed on prior/current validated branch heads",
+      "completion_state": "schema foundation, canonicalization profile, and Goal0 compatibility implemented; verifier/evidence-pack/reason-registry slices remain in linked issues",
+      "validation_state": "prior hosted validation green; final-head validation pending",
       "integration_state": "DRAFT_PR_UNMERGED",
-      "archive_dependency": "durable continuation installed; session need not own merge observation",
+      "archive_dependency": "none after final-head validation because all remaining work has durable issue ownership",
       "evidence": ["PR #1", "issue #2", "issue #10", "issue #30", "issue #31", "issue #61", "issue #62", "issue #67"],
-      "next_action": "complete canonicalization and legacy compatibility, then reconcile Goal 0 before semantic freeze"
-    },
-    {
-      "task_id": "STEGGATE-TRACK1B-001",
-      "origin_goal": "independent second-language canonicalizer/verifier",
-      "destination": "StegVerse-Labs/ara-admissibility-interop",
-      "branch": "unclaimed until release condition",
-      "location": "issue #12",
-      "owner": "ara future independent implementation lane",
-      "claim_state": "BLOCKED",
-      "completion_state": "NOT_STARTED",
-      "validation_state": "NOT_STARTED",
-      "integration_state": "NOT_STARTED",
-      "archive_dependency": "none; release condition is durable",
-      "evidence": ["issue #12"],
-      "next_action": "start only after issue #10 vectors are hosted-green and Goal 0 semantics are bounded"
-    },
-    {
-      "task_id": "STEGGATE-FIRST-BOUNDARY-001",
-      "origin_goal": "first real consequential boundary before final protocol freeze",
-      "destination": "ara Audit Kit + StegCore reference runtime consumer",
-      "branch": "future pilot lane",
-      "location": "issue #13",
-      "owner": "named boundary-audit lane when prerequisites release",
-      "claim_state": "BLOCKED",
-      "completion_state": "NOT_STARTED",
-      "validation_state": "NOT_STARTED",
-      "integration_state": "NOT_STARTED",
-      "archive_dependency": "none; machine-observable release conditions recorded",
-      "evidence": ["issue #13"],
-      "next_action": "name real target/authority model after Audit Kit + Track1B are usable"
+      "next_action": "validate final branch head; keep PR #1 draft until maintainer review/authority reconciliation"
     },
     {
       "task_id": "STEGGATE-PRESENTATION-CORE-001",
@@ -92,12 +62,12 @@
       "location": "issue #3; invariants/profile-presentation.yaml; profiles/presentation-entitlement.v1.yaml; fixtures/presentation/pp1/cases.json",
       "owner": "PR #1 canonical workstream",
       "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-      "completion_state": "foundation/fixtures implemented; executable evaluator not yet implemented",
-      "validation_state": "hosted schema-foundation validation passed",
+      "completion_state": "foundation/fixtures implemented; executable evaluator is a durable later task",
+      "validation_state": "hosted schema-foundation validation previously passed",
       "integration_state": "DRAFT_PR_UNMERGED",
-      "archive_dependency": "none; all unique presentation requirements transferred to issues #3, #24, #34-#36, #42-#50, #56-#59",
+      "archive_dependency": "none",
       "evidence": ["issue #3", "PR #1"],
-      "next_action": "after shared Audit Kit/Goal0, implement deterministic PP-1 evaluator and label coverage report"
+      "next_action": "linked issues own evaluator and coverage-report work after shared Audit Kit prerequisites"
     },
     {
       "task_id": "STEGGATE-CONTINUITY-RELATIONSHIP-001",
@@ -108,11 +78,11 @@
       "owner": "PR #1 canonical workstream",
       "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
       "completion_state": "schema/fixture foundation implemented",
-      "validation_state": "hosted validation passed",
+      "validation_state": "hosted validation previously passed",
       "integration_state": "DRAFT_PR_UNMERGED",
-      "archive_dependency": "none; definition and result semantics durable",
+      "archive_dependency": "none",
       "evidence": ["issue #4", "PR #1"],
-      "next_action": "integrate compatibility with canonical continuity evidence consumers when available"
+      "next_action": "future compatibility remains issue-owned"
     },
     {
       "task_id": "STEGGATE-LEAST-STABLE-001",
@@ -127,7 +97,7 @@
       "integration_state": "DEFERRED_BY_DESIGN",
       "archive_dependency": "none",
       "evidence": ["issue #5", "issue #19"],
-      "next_action": "freeze fixture-backed runtime conformance after first real boundary evidence"
+      "next_action": "freeze runtime conformance after first real boundary evidence"
     },
     {
       "task_id": "STEGGATE-PROTOCOL-001",
@@ -142,7 +112,7 @@
       "integration_state": "NOT_STARTED",
       "archive_dependency": "none",
       "evidence": ["issues #14, #15, #21, #22, #26, #27, #33, #53, #55"],
-      "next_action": "activate only after first real boundary informs final profiles"
+      "next_action": "activate after first real boundary informs final profiles"
     },
     {
       "task_id": "STEGGATE-LEDGERS-LATENCY-001",
@@ -172,7 +142,7 @@
       "integration_state": "OFF_CRITICAL_PATH",
       "archive_dependency": "none",
       "evidence": ["issue #6"],
-      "next_action": "prove multiple substrates then fully StegVerse-controlled substrate without semantic change"
+      "next_action": "prove multiple substrates then controlled substrate without semantic change"
     },
     {
       "task_id": "STEGGATE-DEFERRED-CONFORMANCE",
@@ -187,15 +157,15 @@
       "integration_state": "NOT_STARTED",
       "archive_dependency": "none",
       "evidence": ["issues #38-#41"],
-      "next_action": "activate in critical-path order only after independent runtime conformance"
+      "next_action": "activate in critical-path order after independent runtime conformance"
     }
   ],
   "duplicate_cleanup": {
     "superseded_issue_range": "#68-#101",
     "unique_requirements": false,
     "canonical_replacements": ["issue #23", "issue #66", "draft PR #1"],
-    "required_action": "close as duplicate/not_planned after this inventory is committed"
+    "required_action": "close as duplicate/not_planned where still open after final-head validation"
   },
-  "session_state": "MERGED_INTO_CANONICAL_WORKSTREAM_PENDING_FINAL_HANDOFF_UPDATE_AND_VALIDATION",
-  "archive_condition": "candidate mirror handoff and task record reference this inventory; duplicate admin issues closed; hosted validation green on final branch head; then no chat-only execution responsibility remains"
+  "session_state": "MERGED_INTO_CANONICAL_WORKSTREAM_PENDING_FINAL_VALIDATION",
+  "archive_condition": "final branch head hosted validation green; handoff/task state reference exact receipts; archive gate issue can then close without relying on chat history"
 }
