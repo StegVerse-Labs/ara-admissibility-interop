@@ -1,0 +1,59 @@
+{
+  "schema_version": "stegverse.jcs.v1-vectors",
+  "profile": "stegverse.jcs.v1",
+  "fixtures": [
+    {
+      "fixture_id": "canonical.simple_order",
+      "kind": "positive",
+      "input": {"b": 2, "a": 1},
+      "expected_canonical_utf8": "{\"a\":1,\"b\":2}",
+      "expected_sha256": "sha256:43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777"
+    },
+    {
+      "fixture_id": "canonical.nested",
+      "kind": "positive",
+      "input": {"z": [3, {"b": false, "a": null}], "a": "é"},
+      "expected_canonical_utf8": "{\"a\":\"é\",\"z\":[3,{\"a\":null,\"b\":false}]}",
+      "expected_sha256": "sha256:de7f2d136d2317b1ef5e7aa2f1b9dc86567d436fd7571bf94b35aa2446fadcaa"
+    },
+    {
+      "fixture_id": "canonical.unicode_no_normalization",
+      "kind": "positive",
+      "input": {"composed": "é", "decomposed": "é"},
+      "expected_canonical_utf8": "{\"composed\":\"é\",\"decomposed\":\"é\"}",
+      "expected_sha256": "sha256:7f04a9b0f36600f4b530afbb2601cb43068497f57b6ac5e07b2c173534c523ab"
+    },
+    {
+      "fixture_id": "canonical.safe_integer_bounds",
+      "kind": "positive",
+      "input": {"min": -9007199254740991, "max": 9007199254740991},
+      "expected_canonical_utf8": "{\"max\":9007199254740991,\"min\":-9007199254740991}",
+      "expected_sha256": "sha256:63546eb60913dcb1cdd5118f7bf4885beed344af930c8a9d5f38fad243fd4819"
+    },
+    {
+      "fixture_id": "canonical.utf16_member_order",
+      "kind": "positive",
+      "input": {"😀": 1, "a": 2, "": 3},
+      "expected_canonical_utf8": "{\"a\":2,\"😀\":1,\"\":3}",
+      "expected_sha256": "sha256:1a2ca2e262b24634fdefdb54f29503c59e9a41d86d83c34bee7043a658f53e50"
+    },
+    {
+      "fixture_id": "canonical.reject_float",
+      "kind": "negative",
+      "input": {"value": 1.5},
+      "expected_error_contains": "floating-point values are outside stegverse.jcs.v1"
+    },
+    {
+      "fixture_id": "canonical.reject_integer_overflow",
+      "kind": "negative",
+      "input": {"value": 9007199254740992},
+      "expected_error_contains": "integer exceeds stegverse.jcs.v1 interoperable range"
+    },
+    {
+      "fixture_id": "canonical.reject_unpaired_surrogate",
+      "kind": "negative",
+      "input": {"value": "\ud800"},
+      "expected_error_contains": "unpaired surrogate is outside stegverse.jcs.v1"
+    }
+  ]
+}
