@@ -1,60 +1,75 @@
 {
   "schema_version": "stegverse.task-state.v1",
   "task_id": "STEGGATE-AUDITKIT-001-SCHEMA-FOUNDATION",
-  "origin_goal": "StegGate Product Review v4.6 exit criteria: translate normative prose into invariant registries, schemas, algebra vectors, fixtures, and a mechanical linter; do not create v4.7.",
+  "origin_goal": "StegGate Product Review v4.6 exit criteria: translate normative prose into invariant registries, schemas, algebra vectors, fixtures, canonicalization, and Goal 0 compatibility without creating a new product version.",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "branch": "feat/steggate-v46-schema-foundation",
-  "claim_state": "CLAIMED_FOR_INTEGRATION",
-  "owner": "ara-admissibility-interop implementation lane",
-  "completion_state": "IMPLEMENTED_AND_HOSTED_VALIDATED",
-  "validation_state": "PASS",
+  "claim_state": "CLAIMED_FOR_VALIDATION",
+  "owner": "ara-admissibility-interop integration lane",
+  "completion_state": "IMPLEMENTED_PENDING_FINAL_HEAD_VALIDATION",
+  "validation_state": "PENDING_FINAL_HEAD",
   "integration_state": "DRAFT_PR_OPEN_NOT_MERGED",
   "activation_state": "NOT_ACTIVATED",
+  "canonical_dependencies": {
+    "stegcore_decision_enum": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/decision.py#DecisionValue",
+    "stegcore_commit_contract": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md",
+    "stegcore_commit_runtime": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/commit_governance.py"
+  },
   "validation_receipts": [
     {
       "workflow": "StegGate Schema Foundation",
-      "run_id": 31212845853,
-      "job_id": 92979475028,
-      "head_sha": "751786d36dce4777d23bb4aba874f6790b72f552",
-      "conclusion": "success"
+      "run_id": 31215301992,
+      "head_sha": "26b416d609d42d8ac2e32e41713a28bfb5f57c2e",
+      "conclusion": "success",
+      "scope": "pre-Goal0-reconciliation head"
     },
     {
       "workflow": "Repo Check",
-      "run_id": 31212844007,
-      "job_id": 92979469632,
-      "head_sha": "751786d36dce4777d23bb4aba874f6790b72f552",
-      "conclusion": "success"
+      "run_id": 31215301955,
+      "head_sha": "26b416d609d42d8ac2e32e41713a28bfb5f57c2e",
+      "conclusion": "success",
+      "scope": "pre-Goal0-reconciliation head"
     }
   ],
   "authority_boundaries": [
     "No release or tag authority claimed.",
     "No deployment or publication authority claimed.",
     "No evaluator replacement authority claimed.",
+    "No StegCore runtime mutation authority is claimed by this ara integration lane.",
     "Changes remain on a feature branch pending review and repository policy."
   ],
   "implemented_paths": [
     "invariants/core.yaml",
     "invariants/profile-continuity.yaml",
     "invariants/profile-presentation.yaml",
+    "invariants/profile-stegcore-interop.yaml",
     "schemas/transition.v1.json",
     "schemas/derivation.v1.json",
     "schemas/receipt.v1.json",
     "algebra/compose.v1.md",
     "algebra/compose-vectors.json",
+    "canonicalization/STEGVERSE_JCS_V1.md",
+    "compatibility/stegcore-goal0.v1.json",
     "profiles/presentation-entitlement.v1.yaml",
     "claims/presentation-entitlement.yaml",
     "fixtures/core/cases.json",
     "fixtures/continuity/cases.json",
     "fixtures/presentation/pp1/cases.json",
+    "fixtures/compatibility/stegcore-goal0.json",
     "tools/lint_invariants.py",
-    ".github/workflows/steggate-schema-foundation.yml"
+    ".github/workflows/steggate-schema-foundation.yml",
+    "management/steggate-v46-session-inventory.json"
   ],
+  "goal0_reconciliation": {
+    "ST-016": "StegCore allow/deny/defer projects to StegGate ALLOW/DENY/REVIEW; defer is explicitly not FAIL_CLOSED.",
+    "CL-SG-003": "SG-CORE-002 exact candidate binding is preserved by candidate_id plus canonical candidate_hash equality at consequence/retry; StegCore commit coherence remains a separate later boundary after admissibility.",
+    "legacy_contracts": ["admissibility/commitment-candidate.schema.json", "admissibility/standing-result.schema.json"]
+  },
   "next_actions": [
-    "Reconcile the canonical root handoff with this user-authorized implementation lane before merge.",
-    "Reconcile the invariant registry with ST-016 and CL-SG-003 before semantic freeze.",
-    "Review schema semantics against existing commitment-candidate and standing-result schemas for compatible migration rather than silent replacement.",
-    "Add remaining federation and capability registries only when their normative fixtures are defined.",
-    "Keep PR #1 draft until the integration authority boundary is resolved."
+    "Observe StegGate Schema Foundation and Repo Check on the final reconciliation head.",
+    "Record exact passing run receipts in this task state and the candidate mirror handoff.",
+    "Keep PR #1 draft until maintainer review and repository authority reconciliation.",
+    "Leave verifier/evidence-pack/reason-registry and later evaluator work with their existing durable issues."
   ],
-  "archive_dependency": "Retain until PR #1 is either merged into the canonical workstream or explicitly superseded with all unique requirements transferred."
+  "archive_dependency": "After final-head hosted validation and handoff receipt update, this chat session has no unique execution dependency; remaining product work is owned by PR #1 and linked issues."
 }
