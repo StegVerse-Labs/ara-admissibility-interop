@@ -1,0 +1,23 @@
+{
+  "profile_id": "SG-PRESENTATION-ENTITLEMENT-v1",
+  "consequence_class": "presentation",
+  "evidence_character": "deterministic-first",
+  "recipient_required": true,
+  "sink_required": true,
+  "allowed_sink_modalities": ["text"],
+  "required_sink_exclusivity": ["attested_single","claimed_single"],
+  "unlabeled_posture": "deny",
+  "composition_profile": "SG-PRESENTATION-COMPOSE-v1",
+  "constraint_types": {
+    "recipient_entitlement_set": "intersection",
+    "resource_prefix": "prefix_extension",
+    "time_interval": "containment",
+    "boolean_requirement": "and"
+  },
+  "decision_time_recheck": true,
+  "retention_is_governed": true,
+  "derivation_metadata_required_for_derived_artifacts": true,
+  "decision_disclosure_default": "acknowledge",
+  "claims_file": "claims/presentation-entitlement.yaml",
+  "invariant_registry": "invariants/profile-presentation.yaml"
+}
