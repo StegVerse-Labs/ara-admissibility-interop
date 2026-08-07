@@ -1,0 +1,11 @@
+{
+  "registry_version": "steggate.invariants.v1",
+  "profile": "continuity",
+  "status": "review-candidate",
+  "invariants": [
+    {"invariant_id":"SG-CONT-001","normative_statement":"Continuity is an established governed relationship between two states, not temporal adjacency or persistence.","required_fixture_ids":["continuity.established.identity_authority","continuity.not_established.identity_mismatch"],"expected_outcome":"RELATIONAL_CONTINUITY","failure_reason_code":"REQUIRED_CONTINUITY_RELATION_NOT_ESTABLISHED"},
+    {"invariant_id":"SG-CONT-002","normative_statement":"Lineage is required only when inheritance is claimed; an independent state may originate without a predecessor.","required_fixture_ids":["continuity.allow.independent_origin","continuity.fail_closed.inheritance_without_lineage"],"expected_outcome":"LINEAGE_SCOPED_TO_INHERITANCE","failure_reason_code":"CLAIMED_LINEAGE_MISSING"},
+    {"invariant_id":"SG-CONT-003","normative_statement":"NOT_ESTABLISHED is a positive determination that a claimed relationship does not hold; INDETERMINATE means evidence is insufficient to determine whether it holds.","required_fixture_ids":["continuity.not_established.authority_violation","continuity.indeterminate.authority_unresolvable"],"expected_outcome":"DISTINCT_RELATIONSHIP_RESULTS","failure_reason_code":"CONTINUITY_RESULT_COLLAPSED"},
+    {"invariant_id":"SG-CONT-004","normative_statement":"No established lineage relationship means no continuation-dependent authority, identity, intent, data, custody, or claim may be inherited from that lineage.","required_fixture_ids":["continuity.deny.inheritance_not_established"],"expected_outcome":"DENY_INHERITANCE","failure_reason_code":"REQUIRED_CONTINUITY_RELATION_NOT_ESTABLISHED"}
+  ]
+}
