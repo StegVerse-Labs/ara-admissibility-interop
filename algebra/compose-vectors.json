@@ -1,0 +1,13 @@
+{
+  "schema_version": "steggate.compose.v1",
+  "vectors": [
+    {"fixture_id":"algebra.entitlement.associative","operator":"intersection","a":["alice","bob"],"b":["alice","carol"],"c":["alice","dana"],"expected":["alice"]},
+    {"fixture_id":"algebra.entitlement.commutative","operator":"intersection","a":["alice","bob"],"b":["alice","carol"],"expected":["alice"]},
+    {"fixture_id":"algebra.entitlement.idempotent","operator":"intersection","a":["alice","bob"],"b":["alice","bob"],"expected":["alice","bob"]},
+    {"fixture_id":"algebra.entitlement.lower_bound","operator":"intersection","a":["alice","bob"],"b":["alice"],"expected":["alice"]},
+    {"fixture_id":"algebra.numeric_ceiling.associative","operator":"min","a":500,"b":450,"c":400,"expected":400},
+    {"fixture_id":"algebra.numeric_ceiling.idempotent","operator":"min","a":450,"b":450,"expected":450},
+    {"fixture_id":"algebra.embargo.commutative","operator":"latest","a":"2026-09-01T00:00:00Z","b":"2026-10-01T00:00:00Z","expected":"2026-10-01T00:00:00Z"},
+    {"fixture_id":"algebra.boolean_requirements.associative","operator":"and","a":true,"b":true,"c":false,"expected":false}
+  ]
+}
