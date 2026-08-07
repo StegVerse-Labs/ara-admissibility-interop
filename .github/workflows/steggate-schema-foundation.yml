@@ -1,0 +1,30 @@
+name: StegGate Schema Foundation
+
+on:
+  pull_request:
+    paths:
+      - 'invariants/**'
+      - 'profiles/**'
+      - 'schemas/**'
+      - 'algebra/**'
+      - 'fixtures/**'
+      - 'claims/**'
+      - 'tools/lint_invariants.py'
+      - '.github/workflows/steggate-schema-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate invariant registry, fixtures, algebra, and schema foundation
+        run: python tools/lint_invariants.py
+      - name: Compile linter
+        run: python -m py_compile tools/lint_invariants.py
