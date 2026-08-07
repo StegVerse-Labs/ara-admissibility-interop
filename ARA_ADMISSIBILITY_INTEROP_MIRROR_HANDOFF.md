@@ -4,81 +4,111 @@ Repository: `StegVerse-Labs/ara-admissibility-interop`
 
 ## Source-of-truth rule
 
-Read this file before continuing repository work. This handoff authorizes only bounded, repository-local validation and documentation repairs. It does not authorize releases, tags, deployments, external repository changes, policy changes, evaluator replacement, publication, or authority expansion.
+Read this file before continuing repository work. On `main`, authority remains limited to bounded repository-local validation and documentation repairs. This feature branch additionally carries the user-authorized StegGate v4.6 integration candidate, but it does **not** authorize release, tag, deployment, publication, evaluator replacement, standards claims, external-repository mutation, or authority expansion.
 
-## Current state
+## Active goal
 
-- Goal activation remains repository-local validation readiness only.
-- Formal release and publication remain policy-gated.
-- Latest bounded repair commit: `279f17e7f657f1df2fbd5ec6717792dbff68ea81` on `main`.
-- Latest observed Repo Check failure: run `29224927109` on commit `8a2dc7d330137243b9803c0dbcbc7db387469dd5`.
-- Latest observed Docs Pages failure: run `29224962832` on commit `ebfbae5...`.
-- Repo Check passed validation generation, publication-boundary checks, and negative tests, then failed at workflow mirror parity on the observed predecessor commit.
-- Docs Pages passed the publication gate, workflow parity, publish-root read, status generation, Pages configuration, and Jekyll build, then failed at `Stamp built site with deployment identity`.
+- Goal ID: `STEGGATE-AUDITKIT-001`
+- Originating goal: translate StegGate v4.0-v4.6 review conclusions into fixture-backed, mechanically validated interop artifacts and durably transfer all remaining work out of chat history.
+- Canonical branch: `feat/steggate-v46-schema-foundation`
+- Draft PR: #1
+- Parent task: issue #2
+- Session consolidation: issue #23
+- Archive gate: issue #66
+- Canonical session inventory: `management/steggate-v46-session-inventory.json`
+- Task state: `management/steggate-v46-implementation.json`
 
-## Failure classification
+## Current claim
 
-The canonical and iOS-safe `repo-check.yml` files now have identical blob SHA `3847601f642f737c79cc9b26c7d4798630247184`, so the previously observed parity failure is superseded pending a successor run.
+```text
+Task: STEGGATE-AUDITKIT-001-SCHEMA-FOUNDATION
+Claim: CLAIMED_FOR_VALIDATION
+Owner: ara-admissibility-interop integration lane
+Collision boundary: do not modify or duplicate StegCore PR #18 runtime work
+Release condition: final branch head receives hosted StegGate Schema Foundation + Repo Check success and receipts are recorded; merge/release remains maintainer-controlled
+```
 
-The Pages build successfully produced the governed Jekyll artifact before the stamping step failed. The prior stamping implementation required either a root `_site/index.html` or exactly one nested `index.html`. A valid generated site may contain more than one nested index while still having a uniquely identifiable governed entry point.
+## Implemented candidate scope
 
-These remain repository-local validation and generated-artifact normalization failures. They do not authorize publication, release, deployment, tagging, or authority expansion.
+PR #1 contains:
 
-## Applied bounded repairs
+- core, continuity, presentation, and StegCore-interop invariant registries;
+- transition, derivation, and receipt schema foundations;
+- least-permissive composition algebra and vectors;
+- PP-1 entitlement profile, fixtures, and claims boundary;
+- Audit Kit canonicalization profile and vectors;
+- stdlib-only linter and hosted validation workflow;
+- machine-readable implementation/task records;
+- complete session inventory preserving the v4.0-v4.6 design lineage and linked issue ownership.
 
-### Validation and workflow parity repair
+## Goal 0 reconciliation
 
-Commit `bb8977531f59f61f82cab5d60fdcd40206011453` updated `tools/check_docs_site.py` to require:
+The previously unnamed `ST-016` / `CL-SG-003` dependencies are now reconciled against live canonical StegCore artifacts without changing StegCore PR #18.
 
-- `actions/jekyll-build-pages@v1`;
-- source `${{ needs.publication-gate.outputs.publish_root }}`;
-- destination `./_site`;
-- `actions/upload-pages-artifact@v3` with path `./_site`;
-- the existing manifest-derived publication root;
-- canonical and iOS-safe workflow validation.
+Canonical references:
 
-### Built-site identity stamping repair
+- `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/decision.py#DecisionValue` — canonical existing StegCore outcomes are `allow`, `deny`, `defer`.
+- `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md` — admissibility precedes the coherence gate and state transition.
+- `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/commit_governance.py` — capability/action/state/authority bindings and receipt integrity at the consequence boundary.
 
-Commit `279f17e7f657f1df2fbd5ec6717792dbff68ea81` updates `tools/stamp_built_site.py` to:
+Installed ara reconciliation artifacts:
 
-- avoid unconditional `sudo` when `_site` is already writable;
-- retain a bounded ownership-normalization fallback for root-owned container output;
-- enumerate generated files for deterministic diagnosis;
-- rank nested `index.html` candidates by the expected governed site marker, path depth, and stable path order;
-- normalize the selected governed entry point to `_site/index.html`;
-- leave the following workflow verification step responsible for failing closed if the selected document lacks the expected marker or commit identity.
+- `compatibility/stegcore-goal0.v1.json`
+- `fixtures/compatibility/stegcore-goal0.json`
+- `invariants/profile-stegcore-interop.yaml`
 
-No release, tag, deployment, external repository, dependency-policy, evaluator, or publication-authority change was made.
+Binding rules:
 
-## Verification requirement
+- StegCore `allow` -> StegGate `ALLOW`.
+- StegCore `deny` -> StegGate `DENY`.
+- StegCore `defer` -> StegGate `REVIEW`; `defer` MUST NOT be collapsed into `FAIL_CLOSED`.
+- legacy ARA `FAIL-CLOSED` maps only to v4.6 `FAIL_CLOSED`.
+- exact consequence candidate binding is preserved by `candidate_id` plus canonical `candidate_hash`; mismatch on initial execution, retry, or reconstruction is `DENY / CANDIDATE_BINDING_MISMATCH`.
+- existing `admissibility/commitment-candidate.schema.json` and `admissibility/standing-result.schema.json` remain compatibility surfaces rather than being silently replaced.
 
-Observe the `Repo Check` and `Docs Pages` runs on commit `279f17e7f657f1df2fbd5ec6717792dbff68ea81` or a direct successor containing both bounded repairs. Completion requires:
+StegCore issue #54 is coordination-only and remains the durable cross-repository reference. StegCore PR #18 retains runtime ownership.
 
-- the complete generated-status check set to pass;
-- publication-gate validation to pass;
-- negative publication-gate tests to pass;
-- canonical/iOS workflow parity to pass;
-- the governed publish-root output to be read successfully;
-- the Jekyll build to complete;
-- built-site identity stamping to complete;
-- `_site/index.html` and `_site/deployment-identity.json` verification to pass.
+## Validation state
 
-A successful gate does not itself authorize deployment or formal publication beyond the repository's existing workflow policy.
+Pre-reconciliation branch head `26b416d609d42d8ac2e32e41713a28bfb5f57c2e` passed:
 
-## Next task after verification
+- `StegGate Schema Foundation` run `31215301992`;
+- `Repo Check` run `31215301955`.
 
-If and only if the full repository check and publication gate pass, record the passing commit and run receipts here. Do not begin a formal release or publication task without a maintainer release decision.
+The current reconciliation head must receive the same hosted validation before this claim is released. The linter automatically enumerates the new compatibility fixtures and interop invariant registry, so missing fixture references or duplicate IDs fail closed.
 
-## Remaining modules or work
+## Mainline/publication state
 
-- Pending verification: `StegVerse-Labs/ara-admissibility-interop` — `Repo Check` on `279f17e7...` or successor.
-- Pending verification: `StegVerse-Labs/ara-admissibility-interop` — `Docs Pages` publication gate, built-site stamping, artifact verification, and workflow parity on `279f17e7...` or successor.
-- Policy-gated full JSON Schema dependency decision.
-- Permission-gated external examples.
-- Explicitly scoped evaluator replacement, if later authorized.
-- Maintainer-controlled release checklist and release decision.
-- After release readiness is explicitly authorized, verify whether pertinent information must be propagated to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+The previous bounded mainline repairs remain recorded:
 
-## Archive readiness
+- workflow parity repair `bb8977531f59f61f82cab5d60fdcd40206011453`;
+- built-site identity stamping repair `279f17e7f657f1df2fbd5ec6717792dbff68ea81`.
 
-This handoff records the current failures, bounded validator and built-site stamping repairs, preserved authority boundaries, exact verification conditions, and blocked later work. The complete thread is ready for archiving without any additional context needed to move forward.
+Formal release/publication is still policy-gated. A green feature-branch check does not authorize deployment or publication.
+
+## Remaining work and durable owners
+
+- PR #1 semantic review/merge decision: maintainer-controlled, draft PR #1.
+- Audit Kit verifier/evidence-pack/reason-registry follow-ons: linked ara issues referenced by issue #2 and the session inventory.
+- PP-1 executable evaluator and coverage reporting: issue-owned later lane; foundation already installed in PR #1.
+- independent second-language implementation: issue #12, blocked until canonical vectors/semantics are stable.
+- first real consequential boundary: issue #13, blocked on usable Audit Kit + independent implementation.
+- final protocol/profile freeze and chained/latency work: linked issues recorded in `management/steggate-v46-session-inventory.json`.
+- propagation to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`: only after release readiness is explicitly authorized.
+
+No unresolved task depends on reconstructing this chat; each remaining action has a repository/issue owner and release condition.
+
+## Session consolidation
+
+The v4.0-v4.6 session goal inventory is durably preserved in `management/steggate-v46-session-inventory.json`. Duplicate implementation is prohibited where PR #1, StegCore PR #18, or linked issues already own the work.
+
+Candidate session state: `MERGED_INTO_CANONICAL_WORKSTREAM_PENDING_FINAL_VALIDATION`.
+
+Archive condition: hosted validation is green on the final reconciliation head, exact receipts are written into the task state/handoff, and issues #23/#66 can close without relying on chat history.
+
+## Completion percentages for current candidate goal
+
+- Developed files: 22/22 required candidate-foundation/control artifacts present; no known stub among those 22.
+- Validation: pre-reconciliation validation passed; final-head hosted validation pending.
+- Integration: compatibility with legacy ARA contracts and StegCore Goal 0 references installed; PR remains intentionally unmerged.
+- Goal activation: candidate implementation active on feature branch; release/publication activation not authorized.
