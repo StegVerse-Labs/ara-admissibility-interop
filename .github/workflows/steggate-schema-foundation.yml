@@ -16,6 +16,8 @@ on:
       - 'tools/canonicalize_steggate.py'
       - 'tools/validate_canonicalization_vectors.py'
       - 'tools/validate_assurance_fixtures.py'
+      - 'tools/build_evidence_pack.py'
+      - 'tools/verify_evidence_pack.py'
       - 'management/steggate-v46-*.json'
       - 'docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md'
       - '.github/workflows/steggate-schema-foundation.yml'
@@ -38,5 +40,9 @@ jobs:
         run: python tools/validate_canonicalization_vectors.py
       - name: Validate achieved assurance ordering and overclaim refusal
         run: python tools/validate_assurance_fixtures.py
+      - name: Validate content-bounded Audit Kit evidence pack
+        run: |
+          python tools/build_evidence_pack.py --check
+          python tools/verify_evidence_pack.py --self-test
       - name: Compile StegGate Python tooling
-        run: python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py
+        run: python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py
