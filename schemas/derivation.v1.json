@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse-labs.github.io/ara-admissibility-interop/schemas/derivation.v1.json",
+  "title": "StegGate Derivation Record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","derivation_id","artifact_ref","generator","sources","provenance_completeness","composition_profile","derivation_constraints_hash"],
+  "properties": {
+    "schema_version": {"const":"steggate.derivation.v1"},
+    "derivation_id": {"type":"string","minLength":1},
+    "artifact_ref": {"type":"string","minLength":1},
+    "generator": {"type":"object","additionalProperties":false,"required":["id","version","build_hash"],"properties":{"id":{"type":"string","minLength":1},"version":{"type":"string","minLength":1},"build_hash":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}}},
+    "sources": {"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["ref","constraint_ref","contributed"],"properties":{"ref":{"type":"string","minLength":1},"constraint_ref":{"type":"string","minLength":1},"derivation_ref":{"type":"string","minLength":1},"contributed":{"type":"boolean"}}}},
+    "provenance_completeness": {"enum":["complete","partial","unknown"]},
+    "composition_profile": {"type":"string","minLength":1},
+    "derivation_constraints_hash": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$","description":"Audit snapshot of constraints at derivation time. This is never sufficient as decision-time admission input."},
+    "constraint_provenance_refs": {"type":"array","items":{"type":"string","minLength":1},"uniqueItems":true},
+    "persisted_sidecar_ref": {"type":"string","minLength":1}
+  }
+}
