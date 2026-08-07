@@ -9,7 +9,11 @@ on:
       - 'algebra/**'
       - 'fixtures/**'
       - 'claims/**'
+      - 'canonicalization/**'
       - 'tools/lint_invariants.py'
+      - 'tools/canonicalize_steggate.py'
+      - 'management/steggate-v46-*.json'
+      - 'docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md'
       - '.github/workflows/steggate-schema-foundation.yml'
   workflow_dispatch:
 
@@ -26,5 +30,5 @@ jobs:
           python-version: '3.12'
       - name: Validate invariant registry, fixtures, algebra, and schema foundation
         run: python tools/lint_invariants.py
-      - name: Compile linter
-        run: python -m py_compile tools/lint_invariants.py
+      - name: Compile StegGate Python tooling
+        run: python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py
