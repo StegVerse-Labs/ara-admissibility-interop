@@ -19,6 +19,7 @@
     "reversibility": {"enum":["reversible","compensable","irreversible"]},
     "presentation_observation": {"enum":["RENDERED","NOT_RENDERED","PARTIALLY_RENDERED","UNKNOWN"]},
     "capability_assurance": {"enum":["self_reported","constructor_attested","host_attested","hardware_attested","externally_observed"]},
+    "achieved_assurance": {"$ref":"assurance-report.v1.json"},
     "authorization_externally_determined": {"type":"boolean"},
     "decision_disclosure_mode": {"enum":["acknowledge","neither_confirm_nor_deny","silent"]},
     "observed_at": {"type":"string","format":"date-time"}
