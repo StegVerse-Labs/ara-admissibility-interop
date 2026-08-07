@@ -1,0 +1,35 @@
+{
+  "schema_version": "steggate.fixtures.v1",
+  "fixtures": [
+    {
+      "fixture_id": "compat.stegcore.allow_to_allow",
+      "input": {"stegcore_decision": "allow"},
+      "expected": {"steggate_decision": "ALLOW"}
+    },
+    {
+      "fixture_id": "compat.stegcore.deny_to_deny",
+      "input": {"stegcore_decision": "deny"},
+      "expected": {"steggate_decision": "DENY"}
+    },
+    {
+      "fixture_id": "compat.stegcore.defer_to_review",
+      "input": {"stegcore_decision": "defer"},
+      "expected": {"steggate_decision": "REVIEW", "not": "FAIL_CLOSED"}
+    },
+    {
+      "fixture_id": "compat.legacy.fail_closed_spelling",
+      "input": {"legacy_decision": "FAIL-CLOSED"},
+      "expected": {"steggate_decision": "FAIL_CLOSED"}
+    },
+    {
+      "fixture_id": "compat.candidate_binding.same_hash",
+      "input": {"admitted_candidate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "consequence_candidate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+      "expected": {"decision": "ALLOW"}
+    },
+    {
+      "fixture_id": "compat.candidate_binding.retry_mismatch",
+      "input": {"admitted_candidate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "consequence_candidate_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "retry": true},
+      "expected": {"decision": "DENY", "reason_code": "CANDIDATE_BINDING_MISMATCH"}
+    }
+  ]
+}
