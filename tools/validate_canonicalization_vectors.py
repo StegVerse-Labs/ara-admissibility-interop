@@ -16,7 +16,10 @@ CANON = ROOT / "tools" / "canonicalize_steggate.py"
 
 def run_cli(value: object, *, hash_only: bool) -> subprocess.CompletedProcess[str]:
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json", delete=False) as tmp:
-        json.dump(value, tmp, ensure_ascii=False)
+        # ensure_ascii=True is intentional: negative vectors may contain escaped
+        # surrogate code points that are invalid as raw UTF-8 but valid JSON input
+        # for the canonicalizer to reject explicitly.
+        json.dump(value, tmp, ensure_ascii=True)
         path = Path(tmp.name)
     try:
         cmd = [sys.executable, str(CANON), str(path)]
