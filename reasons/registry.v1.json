@@ -14,6 +14,7 @@
     {"code":"CONSEQUENCE_AUTHORITY_MISSING","class":"core","description":"A later consequence lacks authority distinct from generation, acquisition, derivation, or processing."},
     {"code":"DECISION_DISCLOSURE_POLICY_VIOLATION","class":"core","description":"The decision response violates its governed disclosure policy."},
     {"code":"CANONICALIZATION_PROFILE_VIOLATION","class":"core","description":"Input or output violates the declared stegverse.jcs.v1 canonicalization profile."},
+    {"code":"ASSURANCE_OVERCLAIMED","class":"core","description":"Claimed achieved assurance exceeds the independently observed level in at least one declared dimension."},
     {"code":"REQUIRED_CONTINUITY_RELATION_NOT_ESTABLISHED","class":"continuity","description":"A continuity relationship required for inheritance is not established."},
     {"code":"CLAIMED_LINEAGE_MISSING","class":"continuity","description":"Inheritance is claimed without the required lineage relationship."},
     {"code":"CONTINUITY_RESULT_COLLAPSED","class":"continuity","description":"Distinct continuity outcomes such as NOT_ESTABLISHED and INDETERMINATE were collapsed."},
