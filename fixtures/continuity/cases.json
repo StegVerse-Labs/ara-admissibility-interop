@@ -1,0 +1,12 @@
+{
+  "schema_version":"steggate.fixtures.v1",
+  "fixtures":[
+    {"fixture_id":"continuity.established.identity_authority","input":{"claimed_lineage":true,"identity_link":"verified","authority_path":"verified"},"expected":{"identity":"ESTABLISHED","authority":"ESTABLISHED"}},
+    {"fixture_id":"continuity.not_established.identity_mismatch","input":{"claimed_lineage":true,"identity_link":"positive_mismatch"},"expected":{"identity":"NOT_ESTABLISHED"}},
+    {"fixture_id":"continuity.allow.independent_origin","input":{"lineage_claim_state":"NONE","inherits":[]},"expected":{"valid":true}},
+    {"fixture_id":"continuity.fail_closed.inheritance_without_lineage","input":{"lineage_claim_state":"NONE","inherits":["authority"]},"expected":{"decision":"FAIL_CLOSED","reason_code":"CLAIMED_LINEAGE_MISSING"}},
+    {"fixture_id":"continuity.not_established.authority_violation","input":{"claimed_lineage":true,"authority_path":"revoked"},"expected":{"authority":"NOT_ESTABLISHED"}},
+    {"fixture_id":"continuity.indeterminate.authority_unresolvable","input":{"claimed_lineage":true,"authority_path":"unresolvable"},"expected":{"authority":"INDETERMINATE"}},
+    {"fixture_id":"continuity.deny.inheritance_not_established","input":{"inherits":["authority"],"authority_result":"NOT_ESTABLISHED"},"expected":{"decision":"DENY","reason_code":"REQUIRED_CONTINUITY_RELATION_NOT_ESTABLISHED"}}
+  ]
+}
