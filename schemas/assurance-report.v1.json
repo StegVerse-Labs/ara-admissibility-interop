@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://stegverse-labs.github.io/ara-admissibility-interop/schemas/assurance-report.v1.json",
+  "title":"StegGate Achieved Assurance Report v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["profile_ref","identity","signatures","trust_anchor","source_evidence","capability_construction","assumptions"],
+  "properties":{
+    "profile_ref":{"const":"steggate.assurance-profile.v1"},
+    "identity":{"enum":["unverified","self_reported","cryptographically_verified","independently_verified"]},
+    "signatures":{"enum":["unverified","self_reported","cryptographically_verified","independently_verified"]},
+    "trust_anchor":{"enum":["unverified","self_reported","cryptographically_verified","independently_verified"]},
+    "source_evidence":{"enum":["unverified","self_reported","cryptographically_verified","independently_verified"]},
+    "capability_construction":{"enum":["self_reported","constructor_attested","host_attested","hardware_attested","externally_observed"]},
+    "assumptions":{"type":"array","items":{"type":"string","minLength":1},"uniqueItems":true}
+  }
+}
