@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the bounded real repository-governance boundary before consequence execution."""
+"""Validate the bounded real repository-governance boundary and its observed consequence."""
 from __future__ import annotations
 
 import copy
@@ -16,9 +16,11 @@ CANDIDATE_PATH = ROOT / "real-boundary" / "candidate.json"
 AUTH_EVIDENCE_PATH = ROOT / "real-boundary" / "authority-evidence.json"
 DECISION_PATH = ROOT / "real-boundary" / "decision.json"
 RECEIPT_PATH = ROOT / "real-boundary" / "admission-receipt.json"
+OBSERVATION_PATH = ROOT / "real-boundary" / "consequence-observation.json"
 TARGET_PATH = ROOT / "management" / "first-boundary-target.json"
 AUTH_MODEL_PATH = ROOT / "management" / "first-boundary-authority-model.json"
 ACTIVATION_PATH = ROOT / "management" / "first-boundary-activation.json"
+TASK_STATE_PATH = ROOT / "management" / "steggate-v46-implementation.json"
 REASONS_PATH = ROOT / "reasons" / "registry.v1.json"
 EXPECTED_HASH = "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3"
 
@@ -48,13 +50,15 @@ def main() -> int:
     authority = load(AUTH_EVIDENCE_PATH)
     decision = load(DECISION_PATH)
     receipt = load(RECEIPT_PATH)
+    observation = load(OBSERVATION_PATH)
     target = load(TARGET_PATH)
     authority_model = load(AUTH_MODEL_PATH)
     activation = load(ACTIVATION_PATH)
+    task_state = load(TASK_STATE_PATH)
     reasons = load(REASONS_PATH)
 
-    require(activation.get("state") == "CLAIMED", "real-boundary pilot must be CLAIMED")
-    require(activation.get("claim_state") == "CLAIMED_FOR_IMPLEMENTATION", "claim state mismatch")
+    require(activation.get("state") == "COMPLETE", "real-boundary pilot must be COMPLETE")
+    require(activation.get("claim_state") == "COMPLETE", "completed claim state mismatch")
     require(activation.get("candidate", {}).get("candidate_id") == candidate.get("candidate_id"), "activation candidate id mismatch")
     require(activation.get("candidate", {}).get("candidate_hash") == EXPECTED_HASH, "activation candidate hash mismatch")
 
@@ -96,55 +100,51 @@ def main() -> int:
     require(receipt.get("decision") == "ALLOW", "receipt decision mismatch")
     require(receipt.get("candidate_id") == candidate.get("candidate_id"), "receipt candidate id mismatch")
     require(receipt.get("candidate_hash") == EXPECTED_HASH, "receipt candidate hash mismatch")
-    require(receipt.get("authorized_consequence", {}).get("target_path") == candidate.get("target_path"), "receipt target path mismatch")
-    require(receipt.get("authorized_consequence", {}).get("target_field") == candidate.get("target_field"), "receipt target field mismatch")
-    require(receipt.get("authorized_consequence", {}).get("target_value") == candidate.get("target_value"), "receipt target value mismatch")
-    require(receipt.get("consequence_observed") is False, "pre-consequence receipt cannot claim observation")
-    require(receipt.get("observation_ref") is None, "pre-consequence receipt observation_ref must be null")
+    require(receipt.get("consequence_observed") is True, "completed receipt must observe consequence")
+    require(receipt.get("observation_ref") == "real-boundary/consequence-observation.json", "receipt observation ref mismatch")
+    require(receipt.get("consequence_commit_sha") == observation.get("consequence_commit_sha"), "receipt consequence commit mismatch")
     require(receipt.get("authority_effect") is False, "receipt authority_effect must remain false")
+
+    require(observation.get("candidate_id") == candidate.get("candidate_id"), "observation candidate id mismatch")
+    require(observation.get("candidate_hash") == EXPECTED_HASH, "observation candidate hash mismatch")
+    require(observation.get("target_path") == candidate.get("target_path"), "observation path mismatch")
+    require(observation.get("target_field") == candidate.get("target_field"), "observation field mismatch")
+    require(observation.get("admitted_target_value") == candidate.get("target_value"), "observation admitted value mismatch")
+    require(observation.get("observed_target_value") == candidate.get("target_value"), "observation value mismatch")
+    require(observation.get("observation_result") == "MATCH", "consequence observation did not match")
+    require(observation.get("broader_authority_exercised") is False, "broader authority was exercised")
+    require(task_state.get("first_real_boundary_pilot") == "COMPLETE", "canonical task-state consequence is not present")
 
     registered = {item["code"] for item in reasons.get("reasons", [])}
     require("CANDIDATE_BINDING_MISMATCH" in registered, "candidate mismatch reason not registered")
     require("CONSEQUENCE_AUTHORITY_MISSING" in registered, "authority missing reason not registered")
 
-    # Mutation proof: same candidate id with a changed target field cannot retain the admitted hash.
     mutated = copy.deepcopy(candidate)
     mutated["target_field"] = "release_candidate"
-    mutated_hash = content_id(mutated)
-    require(mutated_hash != EXPECTED_HASH, "mutated candidate unexpectedly retained admitted hash")
-    mutated_decision = "DENY"
-    mutated_reason = "CANDIDATE_BINDING_MISMATCH"
+    require(content_id(mutated) != EXPECTED_HASH, "mutated candidate unexpectedly retained admitted hash")
 
-    # Authority mutation proof: exact candidate without verified authority fails closed.
     authority_mutated = copy.deepcopy(authority)
     authority_mutated["authority_verified"] = False
-    authority_mutated_decision = "FAIL_CLOSED"
-    authority_mutated_reason = "CONSEQUENCE_AUTHORITY_MISSING"
     require(authority_mutated["authority_verified"] is False, "authority negative setup failed")
 
-    # Retry/reconstruction proof: loading the exact candidate again must reproduce the admitted hash.
     retry_candidate = load(CANDIDATE_PATH)
-    retry_py_hash = content_id(retry_candidate)
-    retry_js_hash = node_hash(CANDIDATE_PATH)
-    require(retry_py_hash == EXPECTED_HASH == retry_js_hash, "exact-candidate retry hash instability")
+    require(content_id(retry_candidate) == EXPECTED_HASH == node_hash(CANDIDATE_PATH), "exact-candidate retry hash instability")
 
     print(json.dumps({
         "status": "PASS",
         "task_id": "STEGGATE-FIRST-BOUNDARY-001",
         "candidate_id": candidate["candidate_id"],
         "candidate_hash": EXPECTED_HASH,
-        "target_path": candidate["target_path"],
-        "target_field": candidate["target_field"],
-        "target_value": candidate["target_value"],
         "python_node_hash_agreement": True,
         "positive_decision": "ALLOW",
-        "mutated_candidate_decision": mutated_decision,
-        "mutated_candidate_reason": mutated_reason,
-        "mutated_candidate_hash_differs": True,
-        "authority_missing_decision": authority_mutated_decision,
-        "authority_missing_reason": authority_mutated_reason,
+        "mutated_candidate_decision": "DENY",
+        "mutated_candidate_reason": "CANDIDATE_BINDING_MISMATCH",
+        "authority_missing_decision": "FAIL_CLOSED",
+        "authority_missing_reason": "CONSEQUENCE_AUTHORITY_MISSING",
         "retry_hash_stable": True,
-        "consequence_ready": True,
+        "consequence_observed": True,
+        "consequence_commit_sha": observation["consequence_commit_sha"],
+        "observed_target_value": task_state["first_real_boundary_pilot"],
         "authority_effect": False,
     }, sort_keys=True))
     return 0
