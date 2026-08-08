@@ -51,9 +51,7 @@ Multiple independently operated gates may successively constrain a transition. E
 
 A downstream governance boundary MAY preserve or narrow effective authority. It MUST NOT silently broaden authority beyond the authenticated upstream grant.
 
-For authority sets A0..An:
-
-A1 must be a subset of A0; A2 must be a subset of A1; and so on.
+For authority sets A0..An, each downstream effective authority must remain a subset of the authenticated authority presented to that boundary.
 
 Permitted narrowing includes lower monetary ceilings, shorter TTL, narrower resources, stronger evidence requirements, added review, or stricter receiver policy.
 
@@ -65,11 +63,21 @@ Examples of prohibited silent broadening:
 - one resource -> all resources
 - one hour -> indefinite
 
-If broader authority is required, a new authority artifact from an entity capable of granting the broader authority is required. An attempted unproven expansion must fail closed with a stable reason code such as AUTHORITY_BROADENING_ATTEMPT.
+If broader authority is required, a new authority artifact from an entity capable of granting the broader authority is required.
+
+Canonical existing implementation mapping discovered during integration:
+
+- invariant: `SG-CORE-004` in `invariants/core.yaml`;
+- broadening reason: `AUTHORITY_BROADENING`;
+- incomparability reason: `AUTHORITY_NOT_COMPARABLE`;
+- fixtures: `core.allow.authority_narrowing`, `core.deny.authority_broadening`, `core.fail_closed.authority_not_comparable`;
+- execution profile also uses `AUTHORITY_BROADENING` for capability broadening.
+
+Do not introduce a duplicate `AUTHORITY_BROADENING_ATTEMPT` reason unless a future version proves materially different semantics and explicitly versions the registry.
 
 ## Decision vocabulary
 
-Target canonical decision set, subject to ST-016 reconciliation:
+Canonical v1 decision values used by the current decision-state interop are:
 
 - ALLOW
 - DENY
@@ -78,7 +86,7 @@ Target canonical decision set, subject to ST-016 reconciliation:
 
 REVIEW is not admission and approval after REVIEW creates a new authority artifact and a new transition.
 
-ADMISSION_LAPSED should be modeled as lifecycle state unless ST-016 explicitly decides otherwise.
+ADMISSION_LAPSED should be modeled as lifecycle state unless the canonical decision-state owner explicitly decides otherwise.
 
 ## Candidate and intent binding
 
@@ -96,28 +104,39 @@ The admission token must be single-use, TTL-bound, and cryptographically bound t
 
 The artifact rendered to the human and the artifact hashed for admission must derive from the same canonical candidate. Human approval must cryptographically bind the candidate hash and rendered-form hash. Material fields required by policy must be visible in the deterministic rendering; omission is FAIL_CLOSED.
 
-## Canonicalization correction
+## Canonicalization correction and existing implementation mapping
 
-Use RFC 8785 JCS for the JSON canonicalization profile.
+Use RFC 8785 JCS-compatible deterministic JSON canonicalization semantics as implemented by the canonical repository profile.
 
 StegGate JCS implementations MUST NOT perform Unicode normalization inside the canonicalizer. RFC 8785 requires parsed string content to be preserved as-is. Any application-level normalization must occur before candidate construction and must be explicitly profiled.
 
-Required v1 profile properties:
+The current repository already enforces this through:
+
+- `SG-CORE-009` in `invariants/core.yaml`;
+- `fixtures/canonicalization/vectors.json`, including `canonical.unicode_no_normalization`;
+- `tools/canonicalize_steggate.py`;
+- `tools/canonicalize_steggate_node.mjs`;
+- `tools/validate_canonicalization_vectors.py`;
+- `tools/validate_track1b_parity.mjs`.
+
+Required profile properties:
 
 - duplicate object member names rejected;
 - JCS-compatible input;
 - strings preserved as parsed;
-- deterministic property ordering per JCS;
-- no floating-point representation for money;
-- canonicalization_profile recorded in every relevant receipt;
+- deterministic property ordering;
+- no floating-point representation for money in governed application profiles;
+- canonicalization profile recorded in relevant receipts;
 - hash algorithm identifier recorded;
-- canonicalizer build/profile mismatch at commit is FAIL_CLOSED.
+- canonicalizer profile/build mismatch at commit fails closed.
 
-Golden cross-language canonicalization vectors are required before protocol activation.
+Do not create a competing canonicalizer; extend the existing golden vectors when new protocol field classes require coverage.
 
 ## Authorization-details correction
 
 RFC 9396 Rich Authorization Requests may be used as the semantic vocabulary for fine-grained authorization_details. RFC 9396 is not itself a signed portable delegation credential.
+
+The v1 ara profile is `profiles/authority-rar-bound.v1.yaml`.
 
 A StegGate authority profile must bind authorization details to independently resolvable authority evidence, for example a signed COSE/JWS authority artifact, an OAuth token with cryptographically bound authorization details, or another approved profile.
 
@@ -150,7 +169,9 @@ A missing required snapshot or unresolved required evidence is FAIL_CLOSED.
 
 The verifier must be distributed independently of the evidence pack. The pack may state verifier version/digest and trust-anchor references, but must not make a key embedded solely in the pack the root of trust.
 
-Required assurance profile semantics:
+Existing ara assurance surfaces already distinguish identity, signatures, trust anchor, source evidence, and capability construction and refuse assurance overclaim. The protocol-specific L0-L3 packaging remains an additive delta and must reuse rather than replace those semantics.
+
+Target assurance profile semantics:
 
 - L0 deployment-signed: deployment key resolved independently;
 - L1 timestamped: L0 plus RFC 3161 or equivalent trusted timestamp evidence;
@@ -175,31 +196,32 @@ Hash-chained decision logs, signed checkpoints, sequence numbers, gap detection,
 
 A reconciliation delta is a finding and must not be normalized into success.
 
+The existing decision-state reconstruction contract already preserves that an ALLOW receipt alone does not prove complete mediation/coverage; the protocol envelope adds explicit coverage-mode semantics rather than changing that invariant.
+
 ## Replay protection and idempotency
 
 Transition replay prevention and consequence idempotency are distinct requirements.
 
 Each admitted transition needs a unique transition/admission identifier. Consequential target calls should carry an idempotency key where the target supports it. If the target does not support idempotency, policy must explicitly classify the retry/double-consequence risk.
 
-## Governed transition envelope — required semantic fields
+## Governed transition envelope — canonical additive schema
 
-The canonical v1 schema must represent at minimum:
+`schemas/governed-transition-envelope.v1.json` extends the existing `schemas/transition.v1.json` semantics without replacing it.
+
+The additive envelope represents:
 
 - protocol/schema version;
-- transition_id;
-- origin node or origin context;
-- actor subject and actor key reference;
-- delegator/authority references;
-- action;
-- target/resource;
-- candidate canonicalization profile, hash algorithm, and candidate hash;
-- policy references;
-- evidence snapshot reference;
-- intent-binding reference where human approval is material;
+- existing transition object;
 - topology;
-- requested/achieved assurance profile;
-- lifecycle timestamps;
-- prior gate / prior receipt references for chained transitions.
+- origin context;
+- candidate canonicalization/hash binding;
+- authority chain;
+- evidence snapshot reference;
+- requested/achieved assurance;
+- coverage mode;
+- idempotency posture;
+- gate path;
+- critical extensions.
 
 Adapter-specific fields must not become required core protocol semantics unless they are consequence-governance primitives.
 
@@ -214,31 +236,31 @@ Each gate in a federated/chained path must preserve:
 - which material constraints changed;
 - confirmation that no authority broadening occurred;
 - decision state;
-- candidate hash;
+- candidate hash where applicable;
 - prior gate/receipt pointer where applicable.
 
-If effective authority cannot be proven to remain within authenticated input authority, the transition fails closed.
+If effective authority cannot be proven to remain within authenticated input authority, the transition is DENY when broadening is positively established and FAIL_CLOSED when comparability cannot be established, consistent with the existing canonical core fixtures.
 
-## Discovery profile — required future schema
+## Discovery profile — implemented additive schema
 
-A node must be able to discover or configure which gate controls a target and which protocol/trust profiles are supported.
-
-A discovery profile should represent:
+`schemas/gateway-discovery.v1.json` represents:
 
 - gateway identity;
 - protocol versions;
 - decision states;
 - canonicalization profiles;
-- identity/authority profiles;
+- identity profiles;
+- authority profiles;
 - assurance profiles;
 - trust-anchor references;
-- endpoint or local-runtime bindings.
+- endpoint or local-runtime bindings;
+- optional chain-depth and critical-extension declarations.
 
-A network representation may use a .well-known resource, but the core protocol must also support local/offline discovery/configuration.
+A network representation may use a `.well-known` resource, but the core protocol must also support local/offline discovery/configuration.
 
 ## Protocol versioning
 
-Every protocol object must identify its major/minor profile.
+Every protocol object must identify its major profile/version.
 
 Required behavior:
 
@@ -247,6 +269,8 @@ Required behavior:
 - unknown extension may be ignored only when explicitly marked non-critical;
 - critical extensions must be understood or the transition fails closed.
 
+`fixtures/protocol/governed-transition-cases.json` and `tools/validate_governed_transition_protocol.py` provide the initial executable unsupported-major refusal case.
+
 ## Privacy and selective disclosure
 
 Bare SHA-256 hashing of low-entropy fields is not sufficient privacy protection.
@@ -254,6 +278,8 @@ Bare SHA-256 hashing of low-entropy fields is not sufficient privacy protection.
 Profiles should use salted commitments and/or Merkleized field commitments so a party can selectively reveal fields while keeping a root commitment bound to the full candidate. Raw PII and large evidence may remain externally referenced where policy permits.
 
 Protocol semantics should distinguish data that is hidden, committed, disclosed, or externally referenced.
+
+This remains an unimplemented additive protocol delta unless an existing canonical privacy/commitment profile is later identified and adopted.
 
 ## Availability doctrine
 
@@ -269,23 +295,43 @@ Permitted resilience patterns include:
 
 An explicitly ungoverned non-consequential action class is not the same as fail-open and must not be counted in coverage claims for a governed class.
 
-## Conformance requirement
+## Conformance requirement and existing evidence
 
 Protocol credibility requires executable conformance, not prose alone.
 
-STEGGATE-PROTOCOL-001 activation requires:
+Existing hosted-green independent evidence already includes:
+
+- Python and Node canonicalizers sharing vectors but not implementation code;
+- independent Python and Node Audit Kit verification;
+- Track 1B parity proving identical canonical hashes and verifier decisions for the existing scope.
+
+The new protocol-specific second implementation must extend this independent-conformance property to governed-transition envelope/discovery semantics; existing parity is reused as foundation but not overstated as complete proof of the new envelope.
+
+STEGGATE-PROTOCOL-001 activation target remains:
 
 1. versioned canonical schemas;
 2. JCS-correct golden vectors;
 3. positive and negative decision vectors;
 4. monotonic-authority-narrowing vectors;
-5. intent-binding vectors;
+5. intent-binding vectors or an explicitly adopted existing equivalent;
 6. trust-anchor verification vectors;
 7. independent verifier distribution;
-8. a second implementation that shares test vectors but not runtime/canonicalization code;
-9. 100% agreement on required canonical hashes and required decision semantics.
+8. second implementation for the new protocol semantics without shared runtime/canonicalization code;
+9. hosted conformance success.
 
 Independent conformance does not authorize the claim "industry standard".
+
+## Current executable protocol validation
+
+`tools/validate_governed_transition_protocol.py` validates the additive v1 delta and is wired into `.github/workflows/steggate-schema-foundation.yml`.
+
+Hosted evidence at head `5ebeac84bda82b88df7beaa5f3ba680de9d0ebba`:
+
+- StegGate Schema Foundation run `31260489746`: SUCCESS;
+- validation job `93110434515`: SUCCESS;
+- Repo Check run `31260489761`: SUCCESS.
+
+The same hosted run re-proved the existing JCS vectors, assurance overclaim refusal, Audit Kit verification, Python/Node parity, first real boundary, REVIEW consequence separation, deterministic execution profile, and complete decision-state reconstruction.
 
 ## Required public claim discipline
 
@@ -293,10 +339,10 @@ Permitted when directly supported:
 
 - implementation-neutral governed-transition protocol;
 - reference implementation;
-- independent conformance demonstrated;
+- independent conformance demonstrated for the explicitly named tested scope;
 - portable execution-governance evidence;
 - commit-time admissibility;
-- local, organizational, and federated deployment profiles.
+- local, organizational, and federated deployment profiles as protocol semantics.
 
 Prohibited without independent evidence/authority:
 
@@ -313,7 +359,7 @@ Prohibited without independent evidence/authority:
 
 Canonical interop/schema requirements: StegVerse-Labs/ara-admissibility-interop.
 
-Policy semantics, reason-code governance, and regulatory mappings: StegVerse-Labs/Governance where assigned by its handoff.
+Policy semantics and regulatory mappings: StegVerse-Labs/Governance where assigned by its handoff.
 
 Runtime adapters, HTTP/API transport, runtime decision-state producer, receipt-chain runtime binding: StegVerse-Labs/StegCore#21. This document MUST NOT create a competing runtime lane.
 
@@ -325,7 +371,7 @@ Public propagation: Site, Publisher, admissibility-wiki, stegguardian-wiki only 
 
 ## Session-originating requirements transferred
 
-The following session-specific insights are now durable here:
+The following session-specific insights are durable here and in the specialized handoff/inventory:
 
 - StegVerse Node is the user/entity-facing interface to StegGate;
 - StegGate may be local, organizational, or federated;
@@ -338,10 +384,10 @@ The following session-specific insights are now durable here:
 - protocol discovery/versioning/trust profiles are required;
 - second-implementation conformance is the proof target.
 
-MERGED INTO: StegVerse-Labs/ara-admissibility-interop/admissibility/steggate-governed-transition-protocol-v1.md
+MERGED INTO: StegVerse-Labs/ara-admissibility-interop/admissibility/steggate-governed-transition-protocol-v1.md; STEGGATE_PROTOCOL_MIRROR_HANDOFF.md; management/steggate-protocol-session-inventory.json.
 
 ## Activation boundary
 
-This requirements file is complete when committed. STEGGATE-PROTOCOL-001 is not activated merely because this file exists.
+Requirements transfer and the current additive protocol slice are implemented and hosted-green for their stated scope. Full STEGGATE-PROTOCOL-001 activation is not claimed.
 
-Activation requires the executable schemas, validators, vectors, independent verifier/conformance evidence, and handoff/task-state updates defined above.
+Remaining activation deltas are durably assigned in `management/steggate-protocol-session-inventory.json`, principally L0-L3 trust-profile completion, protocol-specific second-implementation conformance, portable-node integration after its runtime owner is resolved, and release-gated publication.
