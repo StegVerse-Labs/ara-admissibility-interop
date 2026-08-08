@@ -104,7 +104,8 @@ def main() -> int:
     require(observation.get("task_id") == "STEGGATE-FIRST-BOUNDARY-001", "real-boundary observation task mismatch")
     require(observation.get("candidate_id") == "rb-ara-taskstate-001", "real-boundary candidate mismatch")
     require(observation.get("candidate_hash") == "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3", "real-boundary hash mismatch")
-    require(observation.get("observed_value") == "COMPLETE", "real-boundary consequence not observed complete")
+    require(observation.get("observed_target_value") == "COMPLETE", "real-boundary consequence not observed complete")
+    require(observation.get("observation_result") == "MATCH", "real-boundary observation did not match admitted consequence")
     require(observation.get("authority_effect") is False, "real-boundary observation authority_effect must remain false")
 
     print(json.dumps({
