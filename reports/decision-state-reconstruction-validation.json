@@ -1,0 +1,44 @@
+{
+  "schema_version": "steggate.decision-state-validation.v1",
+  "task_id": "STEGGATE-DECISION-STATE-RECONSTRUCTION-001",
+  "status": "PASS",
+  "authority_effect": false,
+  "validated_head": "4d861c9a1dc86f4f879187394f001109f113e505",
+  "schema": "schemas/decision-state.v1.json",
+  "fixtures": "fixtures/decision-state/reconstruction-cases.json",
+  "validator": "tools/validate_decision_state_reconstruction.py",
+  "semantic_contract": "admissibility/decision-state-reconstruction.md",
+  "workflow": ".github/workflows/steggate-schema-foundation.yml",
+  "schema_foundation_run": 31242496468,
+  "schema_foundation_job": 93065680897,
+  "repo_check_run": 31242494602,
+  "terminal_dispositions": ["ALLOW", "DENY", "FAIL_CLOSED", "REVIEW"],
+  "fixtures_total": 5,
+  "validated_properties": {
+    "complete_material_decision_state_required": true,
+    "non_allow_non_execution": true,
+    "fail_closed_distinct_from_deny": true,
+    "review_successor_distinct": true,
+    "decision_execution_observation_planes_distinct": true,
+    "divergence_preserved": true,
+    "governance_bypass_detectable": true,
+    "allow_receipt_not_complete_mediation_proof": true
+  },
+  "downstream_continuity": {
+    "repository": "StegVerse-Labs/Continuity",
+    "issue": 5,
+    "issue_state": "CLOSED_COMPLETED",
+    "workflow_run": 31242432042,
+    "python_311_job": 93065513964,
+    "python_312_job": 93065513976,
+    "artifact_311": 9017444663,
+    "artifact_312": 9017445027
+  },
+  "runtime_continuation": {
+    "repository": "StegVerse-Labs/StegCore",
+    "issue": 21,
+    "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+    "duplicate_runtime_implementation_authorized_here": false
+  },
+  "release_publication_deployment_authorized": false
+}
