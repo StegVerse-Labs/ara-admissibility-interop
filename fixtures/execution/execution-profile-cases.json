@@ -1,0 +1,76 @@
+{
+  "schema_version": "steggate.execution-fixtures.v1",
+  "profile_ref": "SG-EXECUTION-DETERMINISTIC-v1",
+  "fixtures": [
+    {
+      "fixture_id": "execution.allow.exact_bound_request",
+      "candidate_binding_match": true,
+      "credential_binding_match": true,
+      "action_exposed": true,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"ALLOW","reason_code":null}
+    },
+    {
+      "fixture_id": "execution.deny.candidate_mismatch",
+      "candidate_binding_match": false,
+      "credential_binding_match": true,
+      "action_exposed": true,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"DENY","reason_code":"CANDIDATE_BINDING_MISMATCH"}
+    },
+    {
+      "fixture_id": "execution.deny.credential_mismatch",
+      "candidate_binding_match": true,
+      "credential_binding_match": false,
+      "action_exposed": true,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"DENY","reason_code":"CREDENTIAL_BINDING_MISMATCH"}
+    },
+    {
+      "fixture_id": "execution.deny.action_not_exposed",
+      "candidate_binding_match": true,
+      "credential_binding_match": true,
+      "action_exposed": false,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"DENY","reason_code":"CAPABILITY_ACTION_NOT_EXPOSED"}
+    },
+    {
+      "fixture_id": "execution.deny.parameter_out_of_bounds",
+      "candidate_binding_match": true,
+      "credential_binding_match": true,
+      "action_exposed": true,
+      "parameters_within_bounds": false,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"DENY","reason_code":"PARAMETER_OUT_OF_BOUNDS"}
+    },
+    {
+      "fixture_id": "execution.deny.capability_broadening",
+      "candidate_binding_match": true,
+      "credential_binding_match": true,
+      "action_exposed": true,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": true,
+      "downstream_capability_narrows_or_equals_upstream": false,
+      "expected": {"decision":"DENY","reason_code":"AUTHORITY_BROADENING"}
+    },
+    {
+      "fixture_id": "execution.fail_closed.ungoverned_commit",
+      "candidate_binding_match": true,
+      "credential_binding_match": true,
+      "action_exposed": true,
+      "parameters_within_bounds": true,
+      "requires_governed_commit": false,
+      "downstream_capability_narrows_or_equals_upstream": true,
+      "expected": {"decision":"FAIL_CLOSED","reason_code":"GOVERNED_COMMIT_REQUIRED"}
+    }
+  ]
+}
