@@ -1,0 +1,49 @@
+{
+  "registry_version": "steggate.invariants.v1",
+  "profile": "execution",
+  "status": "review-candidate",
+  "invariants": [
+    {
+      "invariant_id": "SG-EXEC-001",
+      "normative_statement": "Consequence-time execution candidate binding must exactly equal the admitted candidate binding.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.deny.candidate_mismatch"],
+      "expected_outcome": "DENY_ON_CANDIDATE_MISMATCH",
+      "failure_reason_code": "CANDIDATE_BINDING_MISMATCH"
+    },
+    {
+      "invariant_id": "SG-EXEC-002",
+      "normative_statement": "Execution credential identity, credential hash, and subject binding must match the admitted credential binding.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.deny.credential_mismatch"],
+      "expected_outcome": "DENY_ON_CREDENTIAL_MISMATCH",
+      "failure_reason_code": "CREDENTIAL_BINDING_MISMATCH"
+    },
+    {
+      "invariant_id": "SG-EXEC-003",
+      "normative_statement": "An execution action must be exposed by the effective capability surface and its parameters must remain within admitted bounds.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.deny.action_not_exposed", "execution.deny.parameter_out_of_bounds"],
+      "expected_outcome": "DENY_OUTSIDE_CAPABILITY",
+      "failure_reason_code": "CAPABILITY_ACTION_NOT_EXPOSED"
+    },
+    {
+      "invariant_id": "SG-EXEC-004",
+      "normative_statement": "A downstream execution capability may preserve or narrow upstream capability but must not broaden it.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.deny.capability_broadening"],
+      "expected_outcome": "DENY_ON_BROADENING",
+      "failure_reason_code": "AUTHORITY_BROADENING"
+    },
+    {
+      "invariant_id": "SG-EXEC-005",
+      "normative_statement": "Execution must preserve a governed commit boundary; loss of that boundary fails closed.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.fail_closed.ungoverned_commit"],
+      "expected_outcome": "FAIL_CLOSED_WITHOUT_GOVERNED_COMMIT",
+      "failure_reason_code": "GOVERNED_COMMIT_REQUIRED"
+    },
+    {
+      "invariant_id": "SG-EXEC-006",
+      "normative_statement": "Execution parameters outside admitted bounds are denied even when action, candidate, credential, and authority bindings otherwise match.",
+      "required_fixture_ids": ["execution.allow.exact_bound_request", "execution.deny.parameter_out_of_bounds"],
+      "expected_outcome": "DENY_OUT_OF_BOUNDS",
+      "failure_reason_code": "PARAMETER_OUT_OF_BOUNDS"
+    }
+  ]
+}
