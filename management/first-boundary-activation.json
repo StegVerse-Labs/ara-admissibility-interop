@@ -8,10 +8,10 @@
   "owner": "StegVerse-Labs/ara-admissibility-interop#13 first-boundary pilot authority",
   "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
   "release_inputs": {
-    "consequential_target_ref": "management/first-boundary-target.json#ara-issue-13-close-completed",
-    "authority_model_ref": "management/first-boundary-authority-model.json#ara-issue-13-owner-bounded-authority"
+    "consequential_target_ref": "management/first-boundary-target.json#ara-taskstate-real-boundary",
+    "authority_model_ref": "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority"
   },
-  "machine_release_condition": "SATISFIED: durable bounded repository-governance target and StegVerse-authored authority model are present and READY validation passed before claim creation.",
+  "machine_release_condition": "SATISFIED: bounded canonical task-state target and StegVerse-authored authority model are present; prior issue-close transport was superseded after platform refusal.",
   "completed_prerequisites": {
     "goal0_reconciliation": true,
     "canonicalization_conformance_issue_10": true,
@@ -25,16 +25,20 @@
     "decision_reconstruction_issue_64": true
   },
   "active_claim": {
-    "claim_id": "STEGGATE-FIRST-BOUNDARY-001-RB-ARA-ISSUE13",
+    "claim_id": "STEGGATE-FIRST-BOUNDARY-001-RB-ARA-TASKSTATE",
     "claimed_at": "2026-08-07T22:23:00-05:00",
     "expires_at": "2026-08-14T22:23:00-05:00",
-    "expected_evidence": "exact candidate/authority binding; independent candidate hash reconstruction; ALLOW positive path; mutated-candidate refusal; exact-candidate retry/reconstruction stability; actual issue #13 closed/completed observation; #65 candidate-binding evidence",
-    "collision_boundaries": "issue #13 state transition only; no PR merge/release/deploy/publication; no StegCore mutation; no customer/standards claim"
+    "expected_evidence": "exact canonical task-state candidate/authority binding; independent candidate hash reconstruction; ALLOW positive path; mutated-candidate refusal; missing-authority fail-closed refusal; exact-candidate retry/reconstruction stability; post-mutation fetch proving first_real_boundary_pilot=COMPLETE; #65 candidate-binding evidence",
+    "collision_boundaries": "management/steggate-v46-implementation.json:first_real_boundary_pilot only; no PR merge/release/deploy/publication; no StegCore mutation; no customer/standards claim"
   },
   "candidate": {
-    "candidate_id": "rb-ara-issue13-close-001",
-    "candidate_hash": "sha256:ff1ed6c8c64d179e00ca518b7a9dbecc8fe0ba9005d760b914c2b2777664fb14"
+    "candidate_id": "rb-ara-taskstate-001",
+    "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3"
   },
-  "next_action_when_ready": "Build and host-validate real-boundary candidate/evidence/decision/receipt records including positive, mutation, and retry/reconstruction binding; execute only the admitted issue #13 close/completed consequence; verify observed GitHub state; release claim COMPLETE.",
+  "superseded_candidate": {
+    "candidate_id": "rb-ara-issue13-close-001",
+    "status": "SUPERSEDED_AFTER_PLATFORM_MUTATION_REFUSAL"
+  },
+  "next_action_when_ready": "Host-validate the rebound task-state candidate; execute only the admitted first_real_boundary_pilot=COMPLETE canonical task-state mutation; verify by post-mutation fetch; release #13/#65 as evidence permits.",
   "authority_effect": false
 }
