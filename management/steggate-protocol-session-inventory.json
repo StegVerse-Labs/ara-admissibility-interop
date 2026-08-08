@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "goal_id": "STEGGATE-PROTOCOL-001",
+  "originating_session_goal": "Convert the StegGate product review and portable StegVerse-node architecture into a durable implementation-neutral governed-transition protocol without duplicating StegCore runtime ownership.",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "branch": "feat/steggate-v46-schema-foundation",
+  "canonical_handoff": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+  "requirements_file": "admissibility/steggate-governed-transition-protocol-v1.md",
+  "canonical_owner": "StegVerse-Labs/ara-admissibility-interop#1",
+  "claim": {
+    "state": "CLAIMED_FOR_INTEGRATION",
+    "role": "canonical interop/schema integration only; no runtime adapter ownership",
+    "claim_created_at": "2026-08-08T08:43:00-05:00",
+    "release_condition": "STEGGATE-PROTOCOL-001 schemas, validators, golden vectors, trust/discovery profiles, narrowing fixtures, and independent conformance evidence are committed and hosted-green, or each remaining item is transferred to a named durable owner with a machine-observable release condition.",
+    "collision_boundaries": [
+      "Do not implement competing runtime adapters or runtime producer semantics owned by StegVerse-Labs/StegCore#21.",
+      "Do not duplicate Continuity decision-state consumer work completed under StegVerse-Labs/Continuity#5.",
+      "Do not create a competing external-evidence governance authority boundary already owned by StegVerse-Labs/Governance.",
+      "Do not claim public propagation, release, deployment, standards status, or compliance from schema-branch work alone."
+    ],
+    "expected_evidence": [
+      "versioned protocol schemas",
+      "RFC 8785/JCS golden vectors",
+      "authority-narrowing positive/negative fixtures",
+      "intent-binding fixtures",
+      "discovery/trust profile fixtures",
+      "independent verifier evidence",
+      "second implementation conformance evidence",
+      "hosted workflow success",
+      "updated mirror handoff"
+    ],
+    "next_task_after_release": "StegVerse-Labs/StegCore#21 consumes the stable canonical protocol profile for runtime adapter conformance without transferring runtime authority back to ara."
+  },
+  "goals": [
+    {
+      "id": "SGP-001",
+      "task": "Durably transfer v3 product/protocol architecture and standards corrections.",
+      "destination": "admissibility/steggate-governed-transition-protocol-v1.md",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE",
+      "validation_state": "COMMITTED; hosted branch validation pending observation",
+      "integration_state": "INTEGRATED_INTO_CANONICAL_SCHEMA_BRANCH",
+      "archival_dependency": false,
+      "evidence": "commit f5715e98f6edfa438a3d97456dc47f13e34d1803",
+      "next_executable_action": "Observe hosted validation for the committed requirements transfer."
+    },
+    {
+      "id": "SGP-002",
+      "task": "Define executable governed-transition core schema and protocol version/profile fields.",
+      "destination": "schemas/ under ara-admissibility-interop",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "CLAIMED_FOR_INTEGRATION",
+      "completion_state": "PARTIAL_EXISTING_FOUNDATION",
+      "validation_state": "existing v4.6 schemas hosted-green; v3 protocol delta not yet implemented",
+      "integration_state": "PENDING",
+      "archival_dependency": false,
+      "evidence": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md existing v4.6 execution/decision-state evidence",
+      "next_executable_action": "Extend canonical schemas only after reconciling against current schema files and ST-016 decision vocabulary."
+    },
+    {
+      "id": "SGP-003",
+      "task": "Publish JCS-correct canonicalization profile and cross-language golden vectors; no Unicode normalization inside JCS.",
+      "destination": "profiles/ and fixtures/ under ara-admissibility-interop",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "CLAIMED_FOR_INTEGRATION",
+      "completion_state": "MISSING_PROTOCOL_DELTA",
+      "validation_state": "NOT_RUN",
+      "integration_state": "PENDING",
+      "archival_dependency": false,
+      "evidence": "requirements in admissibility/steggate-governed-transition-protocol-v1.md",
+      "next_executable_action": "Inspect existing canonicalization implementation before adding vectors to avoid duplicate semantics."
+    },
+    {
+      "id": "SGP-004",
+      "task": "Define monotonic multi-gate authority narrowing schema/fixtures and AUTHORITY_BROADENING_ATTEMPT fail-closed semantics.",
+      "destination": "schemas/, fixtures/, invariants/ under ara-admissibility-interop",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "CLAIMED_FOR_INTEGRATION",
+      "completion_state": "MISSING_PROTOCOL_DELTA",
+      "validation_state": "NOT_RUN",
+      "integration_state": "PENDING",
+      "archival_dependency": false,
+      "evidence": "requirements in admissibility/steggate-governed-transition-protocol-v1.md",
+      "next_executable_action": "Add invariant only after checking the current invariant registry/reason-code registry for compatible names."
+    },
+    {
+      "id": "SGP-005",
+      "task": "Define node/gateway discovery, trust-anchor, and assurance-profile schemas/fixtures.",
+      "destination": "schemas/, profiles/, fixtures/ under ara-admissibility-interop",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "CLAIMED_FOR_INTEGRATION",
+      "completion_state": "MISSING_PROTOCOL_DELTA",
+      "validation_state": "NOT_RUN",
+      "integration_state": "PENDING",
+      "archival_dependency": false,
+      "evidence": "requirements in admissibility/steggate-governed-transition-protocol-v1.md",
+      "next_executable_action": "Implement after existing Audit Kit assurance semantics are inspected and reused rather than duplicated."
+    },
+    {
+      "id": "SGP-006",
+      "task": "Demonstrate independent protocol conformance with a second implementation sharing vectors but no runtime/canonicalization code.",
+      "destination": "canonical conformance evidence location to be assigned within ara or an explicitly named independent consumer repo",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1 until transferred",
+      "claim_state": "BLOCKED",
+      "completion_state": "NOT_STARTED",
+      "validation_state": "NOT_RUN",
+      "integration_state": "BLOCKED_ON_PROTOCOL_FIXTURES",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "Required v1 protocol schemas and golden vectors are committed and hosted-green.",
+      "next_executable_action": "After release condition, install or assign a second implementation and record exact repository/branch in this inventory."
+    },
+    {
+      "id": "SGP-007",
+      "task": "Runtime adapter enforcement and HTTP/API bounded transport.",
+      "destination": "StegVerse-Labs/StegCore#21",
+      "owner": "StegVerse-Labs/StegCore#21",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "ACTIVE_ELSEWHERE",
+      "validation_state": "release condition defined by StegCore #21",
+      "integration_state": "PENDING_CANONICAL_OWNER",
+      "archival_dependency": false,
+      "evidence": "StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md and issue #21",
+      "next_executable_action": "Do not duplicate from ara; consume stable schema/profile outputs when #21 integrates them."
+    },
+    {
+      "id": "SGP-008",
+      "task": "Portable StegVerse node client integration for local/organizational/federated gate modes.",
+      "destination": "portable-node runtime repository to be resolved from its authoritative handoff before mutation",
+      "owner": "UNASSIGNED_PENDING_HANDOFF_RESOLUTION",
+      "claim_state": "BLOCKED",
+      "completion_state": "NOT_STARTED",
+      "validation_state": "NOT_RUN",
+      "integration_state": "BLOCKED_ON_PROTOCOL_PROFILE",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "STEGGATE-PROTOCOL-001 core transition/discovery/trust profiles are committed and hosted-green and the portable-node canonical runtime repository is identified from a live handoff.",
+      "next_executable_action": "Resolve the portable-node canonical runtime owner from live handoffs after protocol core reaches the release condition; do not infer Site presentation branch is the runtime owner."
+    },
+    {
+      "id": "SGP-009",
+      "task": "Public propagation to Site, Publisher, admissibility-wiki, and stegguardian-wiki.",
+      "destination": "release/publication surfaces named by live handoffs",
+      "owner": "existing release/publication authority",
+      "claim_state": "BLOCKED",
+      "completion_state": "NOT_AUTHORIZED",
+      "validation_state": "NOT_RUN",
+      "integration_state": "BLOCKED_BY_RELEASE_AUTHORITY",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "Applicable release/publication handoffs authorize propagation after implementation/conformance evidence exists.",
+      "next_executable_action": "No publication mutation before release condition."
+    }
+  ],
+  "session_consolidation": {
+    "total_session_goals": 9,
+    "transferred_or_complete": 9,
+    "unique_chat_only_requirements_remaining": 0,
+    "canonical_merge_record": "MERGED INTO: StegVerse-Labs/ara-admissibility-interop/admissibility/steggate-governed-transition-protocol-v1.md; management/steggate-protocol-session-inventory.json; ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md; StegVerse-Labs/StegCore#21",
+    "archive_condition": "This originating session is archive-safe after the requirements file, this inventory, and the canonical handoff reference are committed and their branch validation state is inspected. Remaining implementation is repository-owned and does not require chat history."
+  }
+}
