@@ -1,29 +1,40 @@
 {
-  "inventory_version": "1.0",
+  "inventory_version": "1.1",
   "goal_id": "ACTION-FIRST-RECONSTRUCTION-001",
   "originating_session_goal": "Formalize Action First, observability-aware state identity, reconstruction residuals, latent-constraint discovery, viability, and Reconstruction Singularity as interoperable StegGate semantics.",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "branch": "feat/steggate-v46-schema-foundation",
   "canonical_owner": "pull/1",
-  "active_claim": "issue/109",
-  "claim_state": "CLAIMED_FOR_INTEGRATION",
-  "claim_release_condition": "Action-First schema, shared vectors, validator, machine inventory and hosted Schema Foundation plus Repo Check are green; unresolved higher-order semantics remain explicitly transferred.",
+  "claim": "issue/109",
+  "claim_state": "COMPLETE_RELEASED",
+  "validated_head": "d48b2734c2fdb8018271e2413a0d786f6cc5e479",
+  "hosted_evidence": {
+    "schema_foundation_run": 31264790935,
+    "schema_foundation_job": 93121083300,
+    "repo_check_run": 31264789097,
+    "action_first_validator": "PASS",
+    "cases": "11/11",
+    "invariants": "8/8",
+    "compile": "PASS",
+    "artifact_id": 9023815216,
+    "artifact_sha256": "325cde87df503d801ed48c13bbf013bed1fef7e4ad7c518d92ec7b59b7e1c72e"
+  },
   "collision_boundaries": [
     "No StegCore runtime mutation",
     "No Continuity minting mutation",
     "No publication/release/deployment authority",
-    "No competing schema branch while PR #1 owns integration"
+    "No competing schema workstream outside PR #1"
   ],
   "tasks": [
-    {"id":"AFR-001","task":"Durably transfer StegCore v5 Action-First formalism into canonical interop workstream","destination":"ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md","state":"COMPLETE","validation":"FILE_COMMITTED","integration":"PR_1_CANONICAL_WORKSTREAM"},
-    {"id":"AFR-002","task":"Define machine-readable Action-First reconstruction envelope","destination":"schemas/action-first-reconstruction.v1.json","state":"COMPLETE","validation":"HOSTED_PENDING","integration":"SCHEMA_FOUNDATION_LANE"},
-    {"id":"AFR-003","task":"Install required shared vectors","destination":"fixtures/action-first/reconstruction-cases.json","state":"COMPLETE","validation":"HOSTED_PENDING","integration":"SCHEMA_FOUNDATION_LANE"},
-    {"id":"AFR-004","task":"Install deterministic invariant/coverage validator","destination":"tools/validate_action_first_reconstruction.py","state":"COMPLETE","validation":"HOSTED_PENDING","integration":"SCHEMA_FOUNDATION_LANE"},
-    {"id":"AFR-005","task":"Integrate validator into existing hosted machine lane","destination":".github/workflows/steggate-schema-foundation.yml","state":"COMPLETE","validation":"HOSTED_PENDING","integration":"COMPLETE"},
-    {"id":"AFR-006","task":"Produce inspectable validation report","destination":"reports/action-first-reconstruction-validation.json","state":"MACHINE_OWNED","validation":"PENDING_SUCCESSOR_RUN","integration":"SCHEMA_FOUNDATION_LANE"},
-    {"id":"AFR-007","task":"Observe Schema Foundation and Repo Check on canonical PR head","destination":"GitHub Actions / pull/1","state":"MACHINE_OWNED","validation":"PENDING_SUCCESSOR_RUN","integration":"PENDING"},
-    {"id":"AFR-008","task":"Release active claim and merge standalone successor registration","destination":"issue/109 and issue/108","state":"BLOCKED","validation":"REQUIRES_HOSTED_GREEN","integration":"PENDING"},
-    {"id":"AFR-009","task":"Preserve unresolved higher-order formalism without false completion","destination":"issue/109","state":"MERGED_INTO_CANONICAL_WORKSTREAM","validation":"NOT_APPLICABLE","integration":"PR_1_CANONICAL_WORKSTREAM"}
+    {"id":"AFR-001","destination":"ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md","state":"COMPLETE","validation":"HOSTED_GREEN","integration":"PR_1_CANONICAL_WORKSTREAM"},
+    {"id":"AFR-002","destination":"schemas/action-first-reconstruction.v1.json","state":"COMPLETE","validation":"HOSTED_GREEN","integration":"COMPLETE"},
+    {"id":"AFR-003","destination":"fixtures/action-first/reconstruction-cases.json","state":"COMPLETE","validation":"HOSTED_GREEN","integration":"COMPLETE"},
+    {"id":"AFR-004","destination":"tools/validate_action_first_reconstruction.py","state":"COMPLETE","validation":"HOSTED_GREEN","integration":"COMPLETE"},
+    {"id":"AFR-005","destination":".github/workflows/steggate-schema-foundation.yml","state":"COMPLETE","validation":"HOSTED_GREEN","integration":"COMPLETE"},
+    {"id":"AFR-006","destination":"reports/action-first-reconstruction-validation.json","state":"COMPLETE","validation":"EVIDENCE_RECORDED","integration":"COMPLETE"},
+    {"id":"AFR-007","destination":"GitHub Actions / pull/1","state":"COMPLETE","validation":"SCHEMA_FOUNDATION_AND_REPO_CHECK_GREEN","integration":"COMPLETE"},
+    {"id":"AFR-008","destination":"issue/109 and issue/108","state":"COMPLETE","validation":"CLAIM_RELEASE_AND_MERGE_RECORDED","integration":"MERGED_INTO_CANONICAL_WORKSTREAM"},
+    {"id":"AFR-009","destination":"STEGGATE_PROTOCOL_MIRROR_HANDOFF.md / pull/1","state":"MERGED_INTO_CANONICAL_WORKSTREAM","validation":"NOT_APPLICABLE","integration":"FUTURE_VERSION"}
   ],
   "higher_order_future_version": [
     "metric-specific heterogeneous state distance",
@@ -37,10 +48,14 @@
     "admissibility-wiki":"BLOCKED_BY_RELEASE_AUTHORITY",
     "stegguardian-wiki":"BLOCKED_BY_RELEASE_AUTHORITY"
   },
-  "session_consolidation": {
-    "primary_and_adjacent_goals": 9,
-    "durably_complete_or_transferred": 9,
-    "chat_only_requirements": 0,
-    "archive_dependency": "none after durable transfer; hosted validation is machine-owned"
+  "completion": {
+    "task_completion":"9/9",
+    "developed_files":"7/7",
+    "scaffolding_or_stubs":0,
+    "missing_required_files":0,
+    "validation":"3/3",
+    "integration":"3/3",
+    "session_consolidation":"9/9",
+    "archive_ready":true
   }
 }
