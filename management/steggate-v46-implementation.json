@@ -1,28 +1,38 @@
 {
-  "schema_version": "stegverse.task-state.v1",
+  "schema_version": "stegverse.task-state.v2",
   "task_id": "STEGGATE-AUDITKIT-001-SCHEMA-FOUNDATION",
-  "origin_goal": "StegGate Product Review v4.6 exit criteria: translate normative prose into executable, independently verifiable interop evidence without changing runtime authority.",
+  "origin_goal": "StegGate Product Review v4.6 exit criteria: translate normative prose into executable, independently verifiable interop evidence without changing runtime authority and durably transfer all continuation state out of chat history.",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "branch": "feat/steggate-v46-schema-foundation",
   "pull_request": 1,
   "first_real_boundary_pilot": "COMPLETE",
   "execution_profile": "COMPLETE_HOSTED_GREEN",
+  "sequencing_guard": "COMPLETE_CLOSED",
+  "http_transport_requirement": "MERGED_INTO_STEGCORE_21",
   "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-  "owner": "repository-native issue and blocker records",
-  "completion_state": "COMPLETE_AUDIT_KIT_TRACK1B_DECISION_SEMANTICS_REAL_BOUNDARY_AND_EXECUTION_PROFILE",
-  "validation_state": "HOSTED_GREEN",
-  "integration_state": "DRAFT_PR_OPEN_NOT_MERGED; ARA_EXECUTION_PROFILE_COMPLETE; STEGCORE_RUNTIME_OWNER_PRESERVED",
-  "activation_state": "AUDIT_KIT_ACTIVE; REAL_BOUNDARY_OBSERVED; EXECUTION_PROFILE_ACTIVE; MERGE_RELEASE_PUBLICATION_NOT_AUTHORIZED",
+  "owner": "repository-native issue/handoff/task-state owners",
+  "completion_state": "COMPLETE_AND_SESSION_TRANSFERRED",
+  "validation_state": "HOSTED_GREEN_FOR_IMPLEMENTED_ARA_SCOPE",
+  "integration_state": "ARA_PROFILE_COMPLETE; RUNTIME_ADAPTER_REQUIREMENT_TRANSFERRED_TO_STEGCORE_21; PR_1_DRAFT_UNMERGED",
+  "activation_state": "AUDIT_KIT_ACTIVE; REAL_BOUNDARY_OBSERVED; EXECUTION_PROFILE_ACTIVE; SESSION_ARCHIVE_SAFE; MERGE_RELEASE_PUBLICATION_NOT_AUTHORIZED",
   "latest_validated_head": "63af5b2568aa206e571f53fb172ab840fe97b7cc",
   "canonical_dependencies": {
-    "stegcore_decision_enum": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/decision.py#DecisionValue",
-    "stegcore_commit_contract": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md",
-    "stegcore_commit_runtime": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/commit_governance.py",
+    "stegcore_decision_enum": "StegVerse-Labs/StegCore@main:src/stegcore/decision.py#DecisionValue",
+    "stegcore_commit_contract": "StegVerse-Labs/StegCore@main:docs/COMMIT_COHERENCE.md",
+    "stegcore_commit_runtime": "StegVerse-Labs/StegCore@main:src/stegcore/commit_governance.py",
+    "stegcore_governed_runtime": "StegVerse-Labs/StegCore@main:src/stegcore/runtime.py#governed_execute",
+    "stegcore_pr18_merge": "5f78b489c51a99af7b76b0b9e3979da820c9a296",
+    "stegcore_pr20_merge": "8d5178507c86efe98c359f957ab20475e55ca9f2",
     "stegcore_coordination_issue": "StegVerse-Labs/StegCore#54",
+    "stegcore_adapter_owner_issue": "StegVerse-Labs/StegCore#21",
+    "stegcore_http_transfer_comment": 5224430822,
+    "stegcore_handoff_commit": "865e23945060343d8c28f322d315d88d56746dce",
     "first_boundary_activation": "management/first-boundary-activation.json",
-    "execution_profile_receipt": "reports/execution-profile-validation.json"
+    "execution_profile_receipt": "reports/execution-profile-validation.json",
+    "session_inventory": "management/steggate-v46-session-inventory.json"
   },
-  "completed_issues": [2, 10, 12, 23, 30, 31, 61, 62, 63, 64, 65, 66, 67, 72],
+  "completed_issues": [2, 8, 10, 12, 23, 30, 31, 61, 62, 63, 64, 65, 66, 67, 72],
+  "administrative_open_complete_issues": [13],
   "first_real_boundary_evidence": {
     "candidate_id": "rb-ara-taskstate-001",
     "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
@@ -49,6 +59,8 @@
     "schema_foundation_job": 93055293539,
     "repo_check_run": 31238487749,
     "repo_check_job": 93055293490,
+    "artifact_id": 9016228721,
+    "artifact_digest": "sha256:c2ae3df5efd11cadd707b441bbf522c8a21dbc7f3649f76b62509fbf68fae8a5",
     "fixtures_total": 7,
     "allow": 1,
     "deny": 5,
@@ -61,12 +73,14 @@
     "stegcore_runtime_owner_preserved": true,
     "authority_effect": false
   },
-  "latest_artifact": {
-    "name": "steggate-audit-kit-fixture-001",
-    "artifact_id": 9016228721,
-    "size_bytes": 7555,
-    "digest": "sha256:c2ae3df5efd11cadd707b441bbf522c8a21dbc7f3649f76b62509fbf68fae8a5",
-    "classification": "fixture_only_not_customer_validation"
+  "runtime_transfer": {
+    "task_id": "STEGGATE-HTTP-ALLOW-TRANSPORT-001",
+    "classification": "MERGED_INTO_CANONICAL_WORKSTREAM",
+    "destination": "StegVerse-Labs/StegCore#21",
+    "durable_transfer_comment": 5224430822,
+    "runtime_boundary": "StegVerse-Labs/StegCore@main:src/stegcore/runtime.py#governed_execute",
+    "release_condition": "StegCore #21 commits HTTP/API adapter code and deterministic dedicated hosted CI proving the mutation callback is unreachable before admissibility and coherence both ALLOW and that required bound observation/previous-receipt-pointer fields are preserved.",
+    "ara_runtime_work_remaining": false
   },
   "authority_boundaries": [
     "No release or tag authority claimed.",
@@ -78,15 +92,18 @@
   ],
   "continuation": {
     "canonical_handoff": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
-    "sequencing_guard_issue": 8,
+    "session_inventory": "management/steggate-v46-session-inventory.json",
     "first_boundary_issue": 13,
     "first_boundary_implementation_state": "COMPLETE_ADMINISTRATIVELY_OPEN_DUE_PLATFORM_CLOSE_REFUSAL",
     "candidate_binding_issue": 65,
     "candidate_binding_state": "COMPLETE_CLOSED",
     "execution_profile_issue": 72,
-    "execution_profile_state": "COMPLETE_HOSTED_GREEN",
-    "next_action": "Reconcile sequencing guard issue #8 and activate the next nonconflicting substantive protocol/runtime lane without duplicating StegCore PR #18."
+    "execution_profile_state": "COMPLETE_CLOSED_HOSTED_GREEN",
+    "sequencing_guard_issue": 8,
+    "sequencing_guard_state": "COMPLETE_CLOSED",
+    "runtime_adapter_owner": "StegVerse-Labs/StegCore#21",
+    "next_action": "Repository-native continuation proceeds under StegCore #21 and the other named substantive issues; this session has no unique next implementation task."
   },
-  "collision_policy": "Do not duplicate PR #1 interop work or StegCore PR #18 runtime work. Follow-on changes require their issue-owned claim or successor durable claim record.",
-  "archive_dependency": "STEGGATE_SLICE_DURABLY_TRANSFERRED: no StegGate-originating continuation requires reconstructing chat history; whole-conversation archival depends only on any other unique session goals outside this durable workstream."
+  "collision_policy": "Do not duplicate PR #1 interop/profile work or StegCore merged runtime/issue #21 adapter work. Follow-on changes require the named issue-owned claim or successor durable claim record.",
+  "archive_dependency": "SATISFIED: all session-specific implementation state, evidence, unresolved work, owners, release conditions, and cross-repository continuation have durable repository locations; chat history is not required to continue."
 }
