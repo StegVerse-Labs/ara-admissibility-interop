@@ -20,7 +20,7 @@ TARGET_PATH = ROOT / "management" / "first-boundary-target.json"
 AUTH_MODEL_PATH = ROOT / "management" / "first-boundary-authority-model.json"
 ACTIVATION_PATH = ROOT / "management" / "first-boundary-activation.json"
 REASONS_PATH = ROOT / "reasons" / "registry.v1.json"
-EXPECTED_HASH = "sha256:ff1ed6c8c64d179e00ca518b7a9dbecc8fe0ba9005d760b914c2b2777664fb14"
+EXPECTED_HASH = "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3"
 
 
 def load(path: Path):
@@ -64,10 +64,11 @@ def main() -> int:
     require(js_hash == EXPECTED_HASH, f"Node candidate hash mismatch: {js_hash}")
 
     require(candidate.get("repository") == target.get("repository"), "candidate repository does not match target")
-    require(candidate.get("issue_number") == target.get("issue_number") == 13, "candidate issue does not match target")
-    require(candidate.get("action") == "close_issue", "candidate action mismatch")
-    require(candidate.get("target_state") == target.get("authorized_consequence", {}).get("state") == "closed", "target state mismatch")
-    require(candidate.get("state_reason") == target.get("authorized_consequence", {}).get("state_reason") == "completed", "state reason mismatch")
+    require(candidate.get("branch") == target.get("branch_context"), "candidate branch does not match target")
+    require(candidate.get("action") == "update_canonical_task_state", "candidate action mismatch")
+    require(candidate.get("target_path") == target.get("target_path") == "management/steggate-v46-implementation.json", "target path mismatch")
+    require(candidate.get("target_field") == target.get("authorized_consequence", {}).get("target_field") == "first_real_boundary_pilot", "target field mismatch")
+    require(candidate.get("target_value") == target.get("authorized_consequence", {}).get("target_value") == "COMPLETE", "target value mismatch")
     require(candidate.get("authority_model_ref") == activation.get("release_inputs", {}).get("authority_model_ref"), "candidate authority model ref mismatch")
     require(candidate.get("target_ref") == activation.get("release_inputs", {}).get("consequential_target_ref"), "candidate target ref mismatch")
 
@@ -76,8 +77,11 @@ def main() -> int:
     require(authority.get("authority_verified") is True, "authority not verified")
     require(authority.get("scope_bounded") is True, "authority scope is not bounded")
     require(authority.get("authorized_repository") == candidate.get("repository"), "authority repository mismatch")
-    require(authority.get("authorized_issue_number") == candidate.get("issue_number"), "authority issue mismatch")
+    require(authority.get("authorized_branch") == candidate.get("branch"), "authority branch mismatch")
     require(authority.get("authorized_action") == candidate.get("action"), "authority action mismatch")
+    require(authority.get("authorized_target_path") == candidate.get("target_path"), "authority target path mismatch")
+    require(authority.get("authorized_target_field") == candidate.get("target_field"), "authority target field mismatch")
+    require(authority.get("authorized_target_value") == candidate.get("target_value"), "authority target value mismatch")
     require(authority.get("durable_authority_record") == authority_model.get("durable_authority_record"), "authority durable record mismatch")
     require(authority_model.get("durable_authority_comment_id") == 5224288597, "unexpected authority comment id")
 
@@ -92,6 +96,9 @@ def main() -> int:
     require(receipt.get("decision") == "ALLOW", "receipt decision mismatch")
     require(receipt.get("candidate_id") == candidate.get("candidate_id"), "receipt candidate id mismatch")
     require(receipt.get("candidate_hash") == EXPECTED_HASH, "receipt candidate hash mismatch")
+    require(receipt.get("authorized_consequence", {}).get("target_path") == candidate.get("target_path"), "receipt target path mismatch")
+    require(receipt.get("authorized_consequence", {}).get("target_field") == candidate.get("target_field"), "receipt target field mismatch")
+    require(receipt.get("authorized_consequence", {}).get("target_value") == candidate.get("target_value"), "receipt target value mismatch")
     require(receipt.get("consequence_observed") is False, "pre-consequence receipt cannot claim observation")
     require(receipt.get("observation_ref") is None, "pre-consequence receipt observation_ref must be null")
     require(receipt.get("authority_effect") is False, "receipt authority_effect must remain false")
@@ -100,9 +107,9 @@ def main() -> int:
     require("CANDIDATE_BINDING_MISMATCH" in registered, "candidate mismatch reason not registered")
     require("CONSEQUENCE_AUTHORITY_MISSING" in registered, "authority missing reason not registered")
 
-    # Mutation proof: same candidate id with a changed issue target cannot retain the admitted hash.
+    # Mutation proof: same candidate id with a changed target field cannot retain the admitted hash.
     mutated = copy.deepcopy(candidate)
-    mutated["issue_number"] = 65
+    mutated["target_field"] = "release_candidate"
     mutated_hash = content_id(mutated)
     require(mutated_hash != EXPECTED_HASH, "mutated candidate unexpectedly retained admitted hash")
     mutated_decision = "DENY"
@@ -126,6 +133,9 @@ def main() -> int:
         "task_id": "STEGGATE-FIRST-BOUNDARY-001",
         "candidate_id": candidate["candidate_id"],
         "candidate_hash": EXPECTED_HASH,
+        "target_path": candidate["target_path"],
+        "target_field": candidate["target_field"],
+        "target_value": candidate["target_value"],
         "python_node_hash_agreement": True,
         "positive_decision": "ALLOW",
         "mutated_candidate_decision": mutated_decision,
