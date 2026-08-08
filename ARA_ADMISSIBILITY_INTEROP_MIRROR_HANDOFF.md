@@ -6,114 +6,159 @@ Repository: `StegVerse-Labs/ara-admissibility-interop`
 
 Read this file before continuing repository work. On `main`, authority remains limited to bounded repository-local validation and documentation repairs. This feature branch carries the user-authorized StegGate v4.6 integration candidate, but it does **not** authorize release, tag, deployment, publication, evaluator replacement, standards claims, external-repository mutation, or authority expansion.
 
-## Completed session goal
+## Active goal and canonical continuation
 
-- Goal ID: `STEGGATE-AUDITKIT-001`
-- Originating goal: translate StegGate v4.0-v4.6 review conclusions into fixture-backed, mechanically validated interop artifacts and durably transfer all remaining work out of chat history.
+- Originating goal: translate StegGate v4.0-v4.6 review conclusions into executable, independently verifiable interop artifacts and durably transfer all remaining work out of chat history.
 - Canonical branch: `feat/steggate-v46-schema-foundation`
 - Draft PR: #1
-- Completed parent task: issue #2
-- Completed session consolidation: issue #23
-- Completed archive gate: issue #66
-- Canonical session inventory: `management/steggate-v46-session-inventory.json`
-- Task state: `management/steggate-v46-implementation.json`
+- Completed session parent: #2
+- Completed session consolidation: #23
+- Completed archive gate: #66
+- Completed StegCore coordination: `StegVerse-Labs/StegCore#54`
+- Canonical inventory: `management/steggate-v46-session-inventory.json`
+- Canonical task state: `management/steggate-v46-implementation.json`
+- Current critical-path blocker: issue #13 + `management/first-boundary-activation.json`
+- Blocker validator: `tools/validate_first_boundary_activation.py`
 
-## Released session claim
+## Claim state
 
-```text
-Task: STEGGATE-AUDITKIT-001-SCHEMA-FOUNDATION
-Claim: COMPLETE / MERGED_INTO_CANONICAL_WORKSTREAM
-Former owner: ara-admissibility-interop integration lane
-Collision boundary preserved: do not modify or duplicate StegCore PR #18 runtime work
-Continuation: PR #1 plus linked substantive issues; merge/release remains maintainer-controlled
-```
+The originating session/integration claim is released as `MERGED_INTO_CANONICAL_WORKSTREAM`.
+
+Completed finite claims:
+- #10 canonicalization conformance — COMPLETE.
+- #31 reason registry — COMPLETE.
+- #67 achieved-assurance reporting — COMPLETE.
+- #62 evidence pack — COMPLETE.
+- #61 first-language offline reconstruction — COMPLETE.
+- #12 independent second-language canonicalizer/verifier — COMPLETE.
+- #30 assembled fixture Audit Kit package/report — COMPLETE.
+
+Current #13 state: `BLOCKED / UNCLAIMED`. No real-boundary implementation claim may be created until both a named non-synthetic consequential target and its authority model are durably recorded and `management/first-boundary-activation.json` is transitioned to `READY`.
 
 ## Implemented candidate scope
 
-PR #1 contains:
+PR #1 now contains:
 
 - core, continuity, presentation, and StegCore-interop invariant registries;
-- transition, derivation, receipt, assurance-report, and evidence-pack schema foundations;
+- transition, derivation, receipt, assurance-report, and evidence-pack schemas;
 - least-permissive composition algebra and vectors;
-- PP-1 entitlement profile, fixtures, and claims boundary;
-- Audit Kit canonicalization profile and vectors;
-- machine-readable reason registry and achieved-assurance reporting;
-- content-bounded evidence-pack manifest/generator/offline integrity verifier fixtures;
-- stdlib-only linter and hosted validation workflow;
-- machine-readable implementation/task records;
-- complete session inventory preserving the v4.0-v4.6 design lineage and linked issue ownership.
+- deterministic PP-1 entitlement profile, fixtures, and claims boundary;
+- `stegverse.jcs.v1` canonicalization profile and 5-positive/3-negative golden vectors;
+- machine-readable reason registry with fail-closed membership enforcement;
+- dimensioned achieved-assurance reporting and overclaim refusal;
+- content-bounded evidence-pack manifest/generator/offline integrity verification;
+- first-language Python Audit Kit receipt/evidence reconstruction;
+- independent JavaScript/Node canonicalizer and Audit Kit verifier with no shared Python implementation code;
+- cross-language parity gate requiring identical canonical bytes/hashes and matching decision/tamper/legacy outcomes;
+- deterministic fixture Audit Kit report/package generator + package verifier;
+- human-readable Audit Kit report template;
+- machine-observable first-real-boundary activation blocker and validator;
+- hosted workflow validation and uploaded fixture Audit Kit artifact.
 
-## Goal 0 reconciliation
+## Goal 0 / StegCore boundary
 
-The former `ST-016` decision-reconciliation / `CL-SG-003` live-binding dependencies are reconciled against live canonical StegCore artifacts without binding to the unrelated repo-standards `ST-016` identifier and without changing StegCore PR #18.
-
-Canonical references:
+Canonical StegCore references remain:
 
 - `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/decision.py#DecisionValue` — `allow`, `deny`, `defer`.
-- `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md` — existing admissibility precedes coherence and state transition.
+- `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md` — admissibility precedes coherence/state transition.
 - `StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/commit_governance.py` — consequence-bound capability/action/state/authority and receipt-integrity binding.
 
-Installed ara artifacts:
+Ara preserves:
+- `allow -> ALLOW`;
+- `deny -> DENY`;
+- `defer -> REVIEW` and never `FAIL_CLOSED`;
+- legacy `FAIL-CLOSED -> FAIL_CLOSED` only;
+- exact candidate binding by `candidate_id` + canonical `candidate_hash`;
+- mismatch -> `DENY / CANDIDATE_BINDING_MISMATCH`.
 
-- `compatibility/stegcore-goal0.v1.json`
-- `fixtures/compatibility/stegcore-goal0.json`
-- `invariants/profile-stegcore-interop.yaml`
+StegCore PR #18 remains the runtime owner. No duplicate runtime implementation is authorized here.
 
-Binding rules:
+## Strongest current validation evidence
 
-- StegCore `allow` -> StegGate `ALLOW`.
-- StegCore `deny` -> StegGate `DENY`.
-- StegCore `defer` -> StegGate `REVIEW`; `defer` is not `FAIL_CLOSED`.
-- legacy ARA `FAIL-CLOSED` -> v4.6 `FAIL_CLOSED` only.
-- exact consequence candidate binding uses `candidate_id` plus canonical `candidate_hash`; mismatch on execution, retry, or reconstruction is `DENY / CANDIDATE_BINDING_MISMATCH`.
-- `admissibility/commitment-candidate.schema.json` and `admissibility/standing-result.schema.json` remain compatibility surfaces pending the issue-owned verifier/migration work.
+### Track 1B independent agreement
 
-StegCore issue #54 is completed and closed. StegCore PR #18 remains the runtime owner.
+Head `5d963c08911f245a782501ae63a45a4e1749aa7f`:
+- StegGate Schema Foundation run `31232657300`, job `93039379885`: SUCCESS.
+- Repo Check run `31232657303`, job `93039378592`: SUCCESS.
+- canonical positive agreement: 5/5;
+- canonical negative rejection agreement: 3/3;
+- verifier case agreement: 8/8;
+- decision-state agreement: 4/4 (`ALLOW`, `DENY`, `REVIEW`, `FAIL_CLOSED`);
+- tamper rejection agreement: 4/4;
+- Goal 0 compatibility agreement: 6/6;
+- `identical_hashes=true`;
+- `shared_implementation_code=false`;
+- second language: JavaScript/Node.js;
+- `authority_effect=false`.
 
-## Audit Kit continuation progress
+### Fixture Audit Kit package
 
-- #10 canonicalization conformance: COMPLETE.
-- #31 reason registry: COMPLETE.
-- #67 achieved assurance/trust reporting: COMPLETE.
-- #62 evidence pack: implementation installed on PR #1 with `schemas/evidence-pack-manifest.v1.json`, `fixtures/evidence-pack/**`, `tools/build_evidence_pack.py`, and `tools/verify_evidence_pack.py`.
-- Hosted evidence-pack validation was added at head `370a9b287bd80128e3f5808f483cac0b9dba94e8`.
-- `StegGate Schema Foundation` run `31226448739`, job `93021624129`: SUCCESS, including manifest freshness, content-bounded integrity verification, tamper refusal, missing-object refusal, and Python compile.
-- `Repo Check` run `31226448728`: SUCCESS on the same head.
-- Schema Foundation intentionally emits no uploaded artifact; artifact count was 0. Run logs endpoint returned no textual body through the connected control surface, while job/step conclusions were inspectable and green.
-- #61 offline receipt/evidence reconstruction remains the next first-language verifier lane. The evidence-pack integrity verifier does not replace that broader reconstruction contract.
+Head `e8eeed35ec4a79fc045c7d4024600fa1bcff134b`:
+- StegGate Schema Foundation run `31232868831`, job `93039971990`: SUCCESS.
+- Repo Check run `31232868815`, job `93039971955`: SUCCESS.
+- generated package: `audit-kit-fixture-001`;
+- generated object count: 10 bound package objects plus `package-manifest.json`;
+- Python/Node reconstruction agreement: true;
+- deterministic rebuild: true;
+- tampered report refused: true;
+- missing evidence refused: true;
+- artifact `steggate-audit-kit-fixture-001` ID `9014396989`;
+- artifact size: `7555` bytes;
+- artifact digest: `sha256:d175ea93f49291530b87798dc4a5084bb887bbcb87fe738a814a1301463b117b`;
+- classification: `fixture_only_not_customer_validation`.
 
-## Remaining work and durable owners
+The fixture package is not customer validation or a real consequence-boundary observation.
 
-Continuation is repository-native:
+## First real-boundary activation
 
-- PR #1 semantic review/merge decision — maintainer-controlled; PR remains draft.
-- issue #61 — offline receipt/evidence reconstruction path.
-- issue #30 — assembled audit package/report, downstream of the usable verifier path.
-- issue #12 — independent second-language canonicalizer/verifier, blocked on the first-language contract.
-- issue #13 — first real consequence-boundary audit, blocked on usable Audit Kit + independent implementation.
-- issue #63 — prove REVIEW cannot reach consequence absent separately authorized admission.
-- issue #64 — remaining Goal 0/live-binding consequence-path proof as recorded by the issue.
-- issue #65 — real-boundary candidate-binding proof.
-- issue #72 — execution profile, blocked by the recorded Audit Kit/Track 1B/first-boundary chain.
-- other profile/protocol/ledger/runtime obligations remain with their linked issues in `management/steggate-v46-session-inventory.json`.
-- propagation to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki` remains blocked until release readiness is explicitly authorized.
+Durable owner: `StegVerse-Labs/ara-admissibility-interop#13`.
 
-Administrative duplicate guards that remained open in #74-#101 were closed as duplicates. Substantive later issues were preserved.
+Machine record: `management/first-boundary-activation.json`.
 
-## Session consolidation and archive state
+Current state:
+- `state=BLOCKED`;
+- `claim_state=UNCLAIMED`;
+- `consequential_target_ref=null`;
+- `authority_model_ref=null`.
 
-- issue #2: COMPLETE.
-- issue #23: COMPLETE.
-- issue #32: COMPLETE; original review lineage transferred.
-- issue #66: COMPLETE; archive gate receipt recorded.
-- `StegVerse-Labs/StegCore#54`: COMPLETE.
-- No unresolved task depends on reconstructing the originating chat.
-- PR #1 remains intentionally draft/unmerged; release/publication/deployment are not activated.
+Machine-observable release condition:
+1. `consequential_target_ref` is a non-empty durable reference to a real non-synthetic consequential boundary/target;
+2. `authority_model_ref` is a non-empty durable reference describing who/what may authorize the consequence and what evidence establishes that authority;
+3. the activation record transitions to `READY` and passes `python tools/validate_first_boundary_activation.py`.
 
-## Completion percentages for the active canonical Audit Kit lane
+Only after that may a finite issue #13 implementation claim be created. The next execution then instantiates the Audit Kit against the real target, captures candidate/evidence/decision/receipt/consequence observations, verifies with both independent implementations, and feeds findings to #63/#64/#65 and the applicable profile/runtime lanes.
 
-- Foundation/reconciliation slice: 100%.
-- Canonicalization/reason/assurance/evidence-pack prerequisites: 100% installed and hosted-green through #62.
-- First-language offline reconstruction verifier (#61): outstanding.
-- Independent second-language verification / real-boundary audit: dependency-gated and outstanding.
-- Merge/release/publication activation: 0% claimed; maintainer authorization is still required.
+## Remaining durable owners
+
+- #13 — first real consequence-boundary audit; BLOCKED on named target + authority model.
+- #63 — prove REVIEW cannot reach consequence absent separately authorized admission; blocked on executable/real-boundary evidence.
+- #64 — reconstruct DENY/REVIEW/FAIL_CLOSED consequence semantics; blocked on consequence-path evidence.
+- #65 — real-boundary candidate-binding proof.
+- #72 — execution profile; blocked by first-boundary/runtime evidence chain.
+- #3/#24/#34-#37/#42-#51/#56-#59 — presentation-profile/evaluator/coverage/custody/claims work under their issue dependencies.
+- #14/#15/#21/#22/#26/#27/#33/#53/#55 — later protocol/profile/federation lane.
+- #16/#28/#29/#38/#39/#40/#41 — later ledger/latency/HIL/AdmittedCode/portable-node/adapter lanes.
+- propagation to Site, Publisher, admissibility-wiki, stegguardian-wiki, or other publication surfaces remains blocked until separately authorized release/publication readiness.
+
+Administrative duplicate/placeholder issues #68-#107 contain no unique continuation requirement and are closed/superseded.
+
+## Session consolidation
+
+The originating StegGate v4.0-v4.6 session is durably transferred. No future implementation, validation, integration, propagation, reconciliation, or blocker release requires reconstruction from chat history.
+
+`MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1, ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md, management/steggate-v46-session-inventory.json, management/steggate-v46-implementation.json, management/first-boundary-activation.json, and the named substantive issues.`
+
+PR #1 remains intentionally draft/unmerged under maintainer-controlled semantic review. Merge status is separate from session archival safety.
+
+## Completion percentages
+
+- Developed-file completion for current fixture Audit Kit/Track 1B scope: 100%.
+- Validation completion for current fixture Audit Kit/Track 1B scope: 100%.
+- Integration into PR #1 hosted validation: 100%.
+- Propagation/release/publication: 0% claimed; not authorized.
+- Real-boundary goal activation: 0% while blocker state is `BLOCKED`.
+- Session consolidation for originating StegGate v4.0-v4.6 goals: 100% transferred or complete.
+
+## Archive conditions
+
+Archive-safe for the originating StegGate v4.0-v4.6 session because all unique requirements are completed, superseded, or durably issue/blocker-owned and no chat-only execution dependency remains. A separate active conversation may still own unrelated goals; this handoff does not make claims about those unrelated sessions.
