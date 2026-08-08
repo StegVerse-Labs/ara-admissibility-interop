@@ -18,6 +18,7 @@ on:
       - 'tools/validate_assurance_fixtures.py'
       - 'tools/build_evidence_pack.py'
       - 'tools/verify_evidence_pack.py'
+      - 'tools/verify_audit_kit.py'
       - 'management/steggate-v46-*.json'
       - 'docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md'
       - '.github/workflows/steggate-schema-foundation.yml'
@@ -44,5 +45,7 @@ jobs:
         run: |
           python tools/build_evidence_pack.py --check
           python tools/verify_evidence_pack.py --self-test
+      - name: Validate offline Audit Kit receipt and evidence reconstruction
+        run: python tools/verify_audit_kit.py
       - name: Compile StegGate Python tooling
-        run: python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py
+        run: python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py
