@@ -10,7 +10,8 @@ branch: feat/steggate-v46-schema-foundation
 canonical_owner: PR #1
 claim: issue #109 — RELEASED AFTER HOSTED GREEN
 standalone predecessor: issue #108 — MERGED INTO CANONICAL WORKSTREAM
-runtime_activation: NOT_CLAIMED
+runtime_activation: COMPLETE_BOUNDED_OBSERVATION_PRODUCER
+runtime_owner: StegVerse-Labs/StegCore
 publication_activation: NOT_CLAIMED
 release_authority: NOT_GRANTED
 ```
@@ -29,13 +30,6 @@ reports/action-first-reconstruction-validation.json
 management/action-first-reconstruction-session-inventory.json
 ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md
 .github/workflows/steggate-schema-foundation.yml
-```
-
-Source architecture remains:
-
-```text
-StegVerse-Labs/StegCore/docs/STEGGATE_PRODUCT_REVIEW_V5.md
-StegVerse-Labs/StegCore/docs/ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md
 ```
 
 ## Implemented v1 semantics
@@ -57,46 +51,71 @@ model(reality) != reality
 reconstruction success != execution authority
 ```
 
-## Hosted validation
+## Interop hosted validation
 
-Validated implementation head:
-
-```text
-d48b2734c2fdb8018271e2413a0d786f6cc5e479
-```
-
-Evidence:
+Validated implementation head `d48b2734c2fdb8018271e2413a0d786f6cc5e479`:
 
 ```text
-StegGate Schema Foundation run: 31264790935 — SUCCESS
-validation job: 93121083300 — SUCCESS
-Action-First validator step: SUCCESS
-Action-First cases: 11/11
-Action-First invariants: 8/8
-Action-First result: PASS
-compile step: SUCCESS
-Repo Check run: 31264789097 — SUCCESS
+StegGate Schema Foundation 31264790935 / job 93121083300: SUCCESS
+Action-First validator: PASS
+cases: 11/11
+invariants: 8/8
+compile: PASS
+Repo Check 31264789097: SUCCESS
 Audit Kit artifact: 9023815216
 artifact sha256: 325cde87df503d801ed48c13bbf013bed1fef7e4ad7c518d92ec7b59b7e1c72e
 ```
 
 The committed evidence receipt is `reports/action-first-reconstruction-validation.json`.
 
-This proves schema/fixture/validator integration and hosted validation. It does not prove runtime activation, publication, release, standards status, empirical causal identifiability, or Reconstruction Singularity convergence in a physical system.
+## Bounded StegCore runtime activation — COMPLETE
+
+The canonical runtime producer now exists in `StegVerse-Labs/StegCore` without moving interop/schema authority out of this repository.
+
+```text
+StegCore issue: #65
+StegCore PR: #66
+merge commit: 08583953ced22ae0b8f1cd09120ea72b77119bba
+producer: src/stegcore/action_first_reconstruction.py
+runtime handoff: docs/ACTION_FIRST_RUNTIME_MIRROR_HANDOFF.md
+semantic source pinned to this schema commit: d48b2734c2fdb8018271e2413a0d786f6cc5e479
+schema blob: c49f70190ad313e2c849564c411080cd3c7a610f
+```
+
+PR-head hosted evidence:
+
+```text
+Action-First Runtime Validation 31266359492: SUCCESS
+focused runtime tests: 7/7 PASS
+runtime producer compile: PASS
+src/stegcore/runtime.py unchanged proof: PASS
+Validate StegCore Runtime 31266359489: SUCCESS
+StegCore Tests 31266359504: SUCCESS
+BCAT Gate 31266359511: SUCCESS
+Test Readiness 31266359494: SUCCESS
+StegVerse 001/002 Baseline 31266359496: SUCCESS
+```
+
+Post-merge main evidence:
+
+```text
+Validate StegCore Runtime 31266389594: SUCCESS
+StegCore Tests 31266389565: SUCCESS
+BCAT Gate 31266389573: SUCCESS
+StegVerse 001/002 Baseline 31266389560: SUCCESS
+```
+
+Runtime scope is intentionally bounded. It builds Action-First records from existing StegCore `AdapterObservation` plus explicit reconstruction inputs. It preserves calculated/realized/observed state separation, dual residuals, irreversibility, observation coverage, latent/unknown candidate references, and reconstruction posture. It does not change `governed_execute()`, does not promote reconstructed constraints into Governance truth, does not mint Continuity, and does not create release/publication/deployment authority.
+
+The existing StegCore `v0.1.0` tag predates merge `08583953...`; therefore that tag does **not** contain the Action-First runtime producer.
 
 ## Automation
 
-The existing `.github/workflows/steggate-schema-foundation.yml` now executes `tools/validate_action_first_reconstruction.py` and compile-checks it. No parallel CI lane was created. Repo Check remains independently green on the same validated head.
-
-## Convergence and duplicate prevention
-
-PR #1 is the canonical schema/integration workstream. Issue #109 was the bounded integration claim and its release condition was satisfied by the hosted-green evidence above. Issue #108 was a standalone successor registration created before PR #1's live handoff was inspected; its requirements are now implemented or preserved here and in the machine inventory, so it is merged/superseded rather than left as a competing workstream.
-
-`STEGGATE_PROTOCOL_MIRROR_HANDOFF.md` remains the broader governed-transition protocol handoff. This handoff owns only the Action-First reconstruction delta.
+The interop Schema Foundation lane remains canonical for schema/shared-vector validation. StegCore separately owns runtime-producer tests. Neither lane creates the other's authority.
 
 ## Remaining higher-order work
 
-The following are intentionally not claimed as solved by the v1 interoperability envelope and are transferred to PR #1 / its protocol handoff as future-version work:
+The following remain future-version protocol work rather than present v1 claims:
 
 ```text
 metric-specific heterogeneous state-distance functions
@@ -105,12 +124,10 @@ probabilistic admissibility weighting
 empirical Reconstruction Singularity convergence thresholds
 ```
 
-These are not chat-owned tasks and must not be represented as present v1 capability.
-
 ## Cross-repository ownership
 
 ```text
-StegVerse-Labs/StegCore -> runtime producer; no runtime duplication
+StegVerse-Labs/StegCore -> bounded runtime observation producer COMPLETE
 StegVerse-Labs/Continuity -> continuity consumer/minting authority under its own handoff
 StegVerse-Labs/Governance -> authority/evidence threshold for promoted reconstructed constraints
 master-records -> future custody policy for historical matrices and residual lineage
@@ -124,12 +141,13 @@ StegVerse-002/stegguardian-wiki -> propagation only after stable release/publica
 
 ```text
 session-goal transfer: 9/9
-required developed files for Action-First v1: 7/7
+required developed interop files: 7/7
+runtime producer integration: COMPLETE / MERGED / HOSTED GREEN
 scaffolding or stubs: 0
-missing required files: 0
-validation groups: 3/3 (validator semantics, Schema Foundation, Repo Check)
-integration groups: 3/3 (schema/fixtures, machine lane, canonical PR workstream)
-propagation: 0/4 — release-gated and not an archival dependency
+missing required v1 files: 0
+interop validation: 3/3
+runtime integration validation: 4/4 required post-merge groups green
+public propagation: 0/4 — release-gated
 session consolidation: 9/9
 archive readiness: true
 ```
@@ -137,13 +155,13 @@ archive readiness: true
 ## Canonical continuation
 
 ```text
-MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1
-handoff: ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md
-inventory: management/action-first-reconstruction-session-inventory.json
+interop/schema: StegVerse-Labs/ara-admissibility-interop#1
+runtime producer: StegVerse-Labs/StegCore@08583953ced22ae0b8f1cd09120ea72b77119bba
+runtime task: StegVerse-Labs/StegCore#65
 broader protocol handoff: STEGGATE_PROTOCOL_MIRROR_HANDOFF.md
 ```
 
-No unique implementation, validation, integration, propagation, reconciliation, or observation responsibility remains in the originating chat.
+Public release, publication, deployment, empirical singularity claims, Continuity minting, and Governance constraint promotion remain distinct future authority classes.
 
 ## Archive status
 
