@@ -1,0 +1,12 @@
+{
+  "action": "close_issue",
+  "authority_effect": false,
+  "authority_model_ref": "management/first-boundary-authority-model.json#ara-issue-13-owner-bounded-authority",
+  "candidate_id": "rb-ara-issue13-close-001",
+  "issue_number": 13,
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "schema_version": "steggate.real-boundary-candidate.v1",
+  "state_reason": "completed",
+  "target_ref": "management/first-boundary-target.json#ara-issue-13-close-completed",
+  "target_state": "closed"
+}
