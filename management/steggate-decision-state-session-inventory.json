@@ -11,6 +11,7 @@
     "represent ALLOW divergence and non-ALLOW observed-effect governance bypass",
     "automate schema/fixture verification",
     "transfer runtime production requirements into the existing StegCore #21 canonical workstream",
+    "preserve the architecture that external governance/risk corpora and frameworks are upstream evidence/policy sources rather than execution authority",
     "prevent premature Site/Publisher/wiki propagation before release/publication authority"
   ],
   "repositories": [
@@ -33,6 +34,12 @@
       "handoff": "STEGGATE_CONTINUITY_MIRROR_HANDOFF.md",
       "role": "canonical preservation/reconstruction consumer",
       "issue": 5
+    },
+    {
+      "repository": "StegVerse-Labs/Governance",
+      "branch": "main",
+      "handoff": "GOVERNANCE_MIRROR_HANDOFF.md",
+      "role": "canonical upstream governance/evidence boundary"
     }
   ],
   "inventory": [
@@ -93,8 +100,23 @@
       "validation_state": "MACHINE_RELEASE_CONDITION_RECORDED",
       "integration_state": "CROSS_REPOSITORY_TRANSFER_COMPLETE",
       "archival_dependency": "SATISFIED_FOR_THIS_SESSION",
-      "evidence": "StegCore issue #21 comment 5224765289; StegCore handoff; docs/DECISION_STATE_RECONSTRUCTION.md",
+      "evidence": "StegCore issue #21 comments 5224765289 and 5224812524; StegCore handoff; docs/DECISION_STATE_RECONSTRUCTION.md",
       "next_executable_action": "StegCore #21 implements and hosted-validates runtime producer semantics; this session must not duplicate it"
+    },
+    {
+      "task_id": "DSR-GOVERNANCE-SOURCE-BOUNDARY",
+      "originating_goal": "external governance/risk frameworks and governance corpora can become upstream sources but must not be confused with execution authority",
+      "destination": "StegVerse-Labs/Governance",
+      "branch": "main",
+      "location": "GOVERNANCE_MIRROR_HANDOFF.md; docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md",
+      "owner": "Governance",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "EXISTING_CANONICAL_CONTRACT_COVERS_REQUIREMENT",
+      "validation_state": "CONVERGENCE_VERIFIED_BY_LIVE_CONTRACT",
+      "integration_state": "NO_DUPLICATE_ADAPTER_CREATED",
+      "archival_dependency": "SATISFIED",
+      "evidence": "Governance external evidence contract states external providers produce evidence, Governance evaluates admissibility context, StegCore owns runtime decision, and evidence providers do not acquire execution authority",
+      "next_executable_action": "NONE for this session; any named external-source adapter must use Governance contracts and be separately claimed when product scope activates it"
     },
     {
       "task_id": "DSR-PUBLIC-PROPAGATION",
@@ -115,8 +137,10 @@
   "convergence": {
     "runtime_duplicate_detected": true,
     "canonical_runtime_owner": "StegVerse-Labs/StegCore#21",
-    "selected_session_role": "interop implementation + Continuity integration/validation + runtime requirement transfer",
-    "runtime_duplicate_execution_performed": false
+    "governance_source_duplicate_detected": true,
+    "canonical_governance_source_contract": "StegVerse-Labs/Governance/docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md",
+    "selected_session_role": "interop implementation + Continuity integration/validation + runtime requirement transfer + governance-source convergence verification",
+    "duplicate_execution_performed": false
   },
   "automation": {
     "ara": ".github/workflows/steggate-schema-foundation.yml",
@@ -124,11 +148,11 @@
     "runtime_release_condition": "StegCore #21 committed adapter/runtime producer code plus dedicated hosted conformance proving non-ALLOW callback unreachability and durable decision/commit/observation/reconciliation bindings"
   },
   "session_completion": {
-    "primary_and_adjacent_goals": 5,
-    "implemented_or_transferred": 5,
+    "primary_and_adjacent_goals": 6,
+    "implemented_or_transferred": 6,
     "unique_chat_only_requirements_remaining": 0,
     "session_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
     "archive_ready": true,
-    "canonical_continuation": "StegVerse-Labs/StegCore#21 for runtime implementation; StegVerse-Labs/ara-admissibility-interop/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md for interop; StegVerse-Labs/Continuity/STEGGATE_CONTINUITY_MIRROR_HANDOFF.md for reconstruction consumer"
+    "canonical_continuation": "StegVerse-Labs/StegCore#21 for runtime implementation; StegVerse-Labs/ara-admissibility-interop/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md for interop; StegVerse-Labs/Continuity/STEGGATE_CONTINUITY_MIRROR_HANDOFF.md for reconstruction consumer; StegVerse-Labs/Governance/docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md for external governance/evidence sources"
   }
 }
