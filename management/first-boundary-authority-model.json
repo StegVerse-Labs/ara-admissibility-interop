@@ -1,0 +1,33 @@
+{
+  "schema_version": "steggate.real-boundary-authority.v1",
+  "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+  "authority_model_id": "ara-issue-13-owner-bounded-authority",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "authority_principal": "StegVerse GitHub repository owner identity",
+  "durable_authority_record": "https://github.com/StegVerse-Labs/ara-admissibility-interop/issues/13#issuecomment-5224288597",
+  "durable_authority_comment_id": 5224288597,
+  "authorized_executor": "connected GitHub execution lane operating under the StegVerse repository owner's granted write permissions",
+  "scope": {
+    "repository": "StegVerse-Labs/ara-admissibility-interop",
+    "branch_context": "feat/steggate-v46-schema-foundation",
+    "issue_number": 13,
+    "allowed_action": "transition issue #13 from open to closed with state_reason=completed after deterministic ALLOW evidence"
+  },
+  "preconditions": [
+    "exact candidate repository/issue/action binding",
+    "deterministic candidate canonical hash",
+    "independent Python/Node reconstruction agreement",
+    "mutated-candidate refusal",
+    "exact-candidate retry/reconstruction hash stability"
+  ],
+  "forbidden_authority": [
+    "merge PR #1",
+    "release or tag",
+    "deployment",
+    "publication",
+    "StegCore runtime mutation",
+    "customer validation claim",
+    "standards or external execution authority"
+  ],
+  "authority_effect": false
+}
