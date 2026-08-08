@@ -1,0 +1,17 @@
+{
+  "schema_version": "steggate.real-boundary-consequence-observation.v1",
+  "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+  "candidate_id": "rb-ara-taskstate-001",
+  "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
+  "target_path": "management/steggate-v46-implementation.json",
+  "target_field": "first_real_boundary_pilot",
+  "admitted_target_value": "COMPLETE",
+  "observed_target_value": "COMPLETE",
+  "consequence_commit_sha": "48b7c7f68b8dc17dc3b398b682ff4342755ab0da",
+  "observation_method": "post-mutation GitHub repository fetch",
+  "observation_result": "MATCH",
+  "superseded_transport_candidate": "rb-ara-issue13-close-001",
+  "superseded_transport_reason": "platform refused issue-state mutation; canonical task-state consequence substituted under the same bounded repository authority",
+  "broader_authority_exercised": false,
+  "authority_effect": false
+}
