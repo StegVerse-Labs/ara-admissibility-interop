@@ -1,0 +1,33 @@
+{
+  "profile_version": "steggate.authority-rar-bound.v1",
+  "status": "review-candidate",
+  "purpose": "Use RFC 9396 authorization_details semantics without treating RAR as a standalone signed delegation credential.",
+  "semantic_substrate": "RFC 9396 authorization_details",
+  "required_binding": {
+    "portable_authority_proof_required": true,
+    "accepted_binding_envelopes": ["COSE_Sign1", "JWS_detached", "oauth_token_bound_authorization_details", "approved_stegid_authority_artifact"],
+    "grantor_identity_required": true,
+    "delegate_identity_required": true,
+    "proof_of_possession_or_equivalent_required": true,
+    "validity_interval_required": true,
+    "revocation_semantics_required": true,
+    "resource_or_location_constraints_required": true,
+    "action_constraints_required": true,
+    "argument_constraints_supported": true
+  },
+  "decision_rules": {
+    "missing_binding": "FAIL_CLOSED",
+    "unverifiable_grantor": "FAIL_CLOSED",
+    "expired_authority": "DENY",
+    "revoked_authority": "DENY",
+    "scope_exceeded": "DENY",
+    "incomparable_upstream_authority": "FAIL_CLOSED",
+    "downstream_broadening": "DENY_OR_FAIL_CLOSED_PER_COMPARABILITY"
+  },
+  "authority_effect": false,
+  "notes": [
+    "This profile defines evidence/interop semantics only and does not mint authority.",
+    "Runtime evaluation remains owned by StegVerse-Labs/StegCore under its live handoff and issue claims.",
+    "A signed envelope proves integrity/attribution only to the extent its key and grant chain are independently admissible."
+  ]
+}
