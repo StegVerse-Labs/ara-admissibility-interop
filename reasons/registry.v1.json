@@ -31,6 +31,10 @@
     {"code":"SINK_EXCLUSIVITY_UNVERIFIABLE","class":"presentation","description":"Required sink exclusivity cannot be established."},
     {"code":"LABEL_EVIDENCE_INSUFFICIENT","class":"presentation","description":"Label or entitlement evidence is insufficient under the declared unlabeled posture."},
     {"code":"DECISION_ENUM_RECONCILIATION_FAILED","class":"interop","description":"StegCore and StegGate decision vocabularies cannot be projected losslessly."},
-    {"code":"LEGACY_DECISION_MAPPING_INVALID","class":"interop","description":"A legacy ARA decision value is mapped inconsistently with the v4.6 decision vocabulary."}
+    {"code":"LEGACY_DECISION_MAPPING_INVALID","class":"interop","description":"A legacy ARA decision value is mapped inconsistently with the v4.6 decision vocabulary."},
+    {"code":"CREDENTIAL_BINDING_MISMATCH","class":"execution","description":"The consequence-time credential binding does not match the credential admitted with the execution request."},
+    {"code":"CAPABILITY_ACTION_NOT_EXPOSED","class":"execution","description":"The requested action is outside the effective executable capability surface."},
+    {"code":"PARAMETER_OUT_OF_BOUNDS","class":"execution","description":"At least one requested action parameter exceeds the admitted capability bounds."},
+    {"code":"GOVERNED_COMMIT_REQUIRED","class":"execution","description":"The execution path does not preserve the required governed-commit boundary."}
   ]
 }
