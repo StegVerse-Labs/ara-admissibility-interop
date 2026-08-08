@@ -18,8 +18,9 @@ Read this file before continuing repository work. The feature branch `feat/stegg
 - StegCore runtime owner remains PR #18 on `feat/commit-coherence-boundary`.
 - Canonical inventory: `management/steggate-v46-session-inventory.json`.
 - Canonical task state: `management/steggate-v46-implementation.json`.
-- Current critical-path blocker: #13 + `management/first-boundary-activation.json`.
-- Blocker validator: `tools/validate_first_boundary_activation.py`.
+- First real boundary: COMPLETE under `management/first-boundary-activation.json`.
+- Exact real-boundary candidate binding: COMPLETE under closed issue #65.
+- Deterministic execution profile: implementation and hosted validation COMPLETE under issue #72; claim is releaseable.
 
 ## Claim state
 
@@ -35,72 +36,105 @@ Completed finite claims:
 - #30 assembled fixture Audit Kit package/report — COMPLETE.
 - #64 DENY/REVIEW/FAIL_CLOSED reconstruction distinction — COMPLETE.
 - #63 REVIEW-not-admission consequence proof — COMPLETE.
-
-Current #13 state: `BLOCKED / UNCLAIMED`. No real-boundary implementation claim may be created until both a named non-synthetic consequential target and its authority model are durably recorded and `management/first-boundary-activation.json` transitions to `READY` under `tools/validate_first_boundary_activation.py`.
+- #13 first real bounded repository consequence implementation — COMPLETE; GitHub issue remains administratively open only because the issue-close transport was refused by the execution platform.
+- #65 exact candidate-binding proof — COMPLETE and issue closed.
+- #72 deterministic ara execution profile — COMPLETE and hosted-green; StegCore runtime ownership preserved.
 
 ## Implemented candidate scope
 
-PR #1 contains core/continuity/presentation/StegCore-interop invariants; transition/derivation/receipt/assurance/evidence-pack schemas; least-permissive composition vectors; PP-1 fixtures; `stegverse.jcs.v1`; reason registry; achieved-assurance reporting; content-bounded evidence-pack tooling; Python and independent Node offline verifiers; cross-language parity; deterministic fixture Audit Kit package/report generation and verification; first-real-boundary activation state/validator; and bounded consequence-path semantics proving REVIEW is not admission.
+PR #1 contains core/continuity/presentation/StegCore-interop invariants; transition/derivation/receipt/assurance/evidence-pack/execution-request schemas; least-permissive composition vectors; PP-1 and execution fixtures; `stegverse.jcs.v1`; reason registry; achieved-assurance reporting; content-bounded evidence-pack tooling; Python and independent Node offline verifiers; cross-language parity; deterministic fixture Audit Kit package/report generation and verification; first-real-boundary activation/receipt/observation records; REVIEW-not-admission consequence semantics; and the deterministic execution profile.
 
-Latest consequence-proof files:
-- `fixtures/consequence/review-transition-cases.json`.
-- `tools/validate_review_consequence.py`.
+Execution-profile surfaces:
+- `schemas/execution-request.v1.json`.
+- `profiles/execution-deterministic.v1.yaml`.
+- `claims/execution-deterministic.yaml`.
+- `fixtures/execution/execution-profile-cases.json`.
+- `invariants/profile-execution.yaml`.
+- `tools/validate_execution_profile.py`.
+- `reports/execution-profile-validation.json`.
 
-The proof models consequence permission only; it does not execute a real consequence. REVIEW can advance only through a distinct later `ALLOW` admission with verified authority and exact `candidate_id` + `candidate_hash` binding. DENY and FAIL_CLOSED are non-admitting.
+The execution profile requires exact candidate and credential binding, exposed-action containment, parameter-bound containment, downstream capability narrowing/no broadening, governed commit preservation, and non-admission for REVIEW/DENY/FAIL_CLOSED. It does not implement or replace StegCore runtime behavior.
 
 ## Goal 0 / StegCore boundary
 
 Canonical StegCore references remain `src/stegcore/decision.py#DecisionValue`, `docs/COMMIT_COHERENCE.md`, and `src/stegcore/commit_governance.py` on `StegVerse-Labs/StegCore@feat/commit-coherence-boundary`.
 
-Ara preserves `allow -> ALLOW`, `deny -> DENY`, `defer -> REVIEW` (never FAIL_CLOSED), legacy `FAIL-CLOSED -> FAIL_CLOSED`, and exact candidate binding by candidate id plus canonical candidate hash. StegCore PR #18 remains runtime owner; no duplicate runtime implementation belongs here.
+Ara preserves `allow -> ALLOW`, `deny -> DENY`, `defer -> REVIEW` (never FAIL_CLOSED), legacy `FAIL-CLOSED -> FAIL_CLOSED`, exact candidate binding by candidate id plus canonical candidate hash, exact credential binding, and capability narrowing semantics. StegCore PR #18 remains runtime owner; no duplicate runtime implementation belongs here.
 
-## Strongest hosted evidence
+## First real-boundary evidence
 
-Current consequence-semantic head `0693209405ae606a00e5c7fabb48205f80e74808`:
-- StegGate Schema Foundation run `31236182276`, job `93049003103`: SUCCESS.
-- Repo Check run `31236182274`, job `93049003089`: SUCCESS.
-- invariant/schema baseline PASS: 29 invariants, 61 fixture references, 28 reason codes, 5 schemas.
-- canonicalization: 5/5 positive, 3/3 negative.
-- Python/Node verifier parity: 8/8 cases, 4/4 decision states, 4/4 tamper refusals, 6/6 Goal 0 fixtures, identical hashes, no shared implementation code.
-- fixture Audit Kit package: 10 objects, deterministic rebuild, Python/Node agreement, tamper refusal, missing-object refusal.
-- first-boundary activation validator: PASS while correctly reporting BLOCKED and `release_inputs_satisfied=false`.
-- REVIEW consequence proof: 7/7 cases PASS; four REVIEW cases include direct refusal, unverified-authority refusal, candidate-mismatch refusal, and one separately authorized admission success; `review_is_admission=false`; `authority_effect=false`.
-- uploaded fixture Audit Kit artifact from the same Schema Foundation run: ID `9015463781`, 7555 bytes, digest `sha256:6b313a850efdfea9584ed34173bc614a20b1c293a1ff6ec287045d9aed6fc087`.
+- admitted candidate: `rb-ara-taskstate-001`.
+- candidate hash: `sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3`.
+- admitted consequence: `management/steggate-v46-implementation.json:first_real_boundary_pilot=COMPLETE`.
+- consequence commit: `48b7c7f68b8dc17dc3b398b682ff4342755ab0da`.
+- post-mutation observation: `real-boundary/consequence-observation.json` reports `observation_result=MATCH`, `observed_target_value=COMPLETE`.
+- post-consequence validation head: `4e4288d8af23085fff7fecc456db460cc3b12c2e`.
+- Schema Foundation run `31237866865`, job `93053670769`: SUCCESS.
+- Repo Check run `31237866861`, job `93053670786`: SUCCESS.
+- exact Python/Node candidate hash agreement: true.
+- mutated candidate: DENY / `CANDIDATE_BINDING_MISMATCH`.
+- missing authority: FAIL_CLOSED / `CONSEQUENCE_AUTHORITY_MISSING`.
+- retry/reconstruction hash stability: true.
+- authority effect: false.
 
-## First real-boundary activation
+## Deterministic execution-profile evidence
 
-Durable owner: #13. Machine record: `management/first-boundary-activation.json`.
+Validated branch head: `63af5b2568aa206e571f53fb172ab840fe97b7cc`.
 
-Current machine state: `BLOCKED`, `UNCLAIMED`, `consequential_target_ref=null`, `authority_model_ref=null`.
+- Schema Foundation run `31238487769`, job `93055293539`: SUCCESS.
+- Repo Check run `31238487749`, job `93055293490`: SUCCESS.
+- invariant/schema baseline: 35 invariants, 68 fixture IDs, 74 fixture references, 32 reason codes, 6 schemas — PASS.
+- execution validator: 7 fixtures — 1 ALLOW, 5 DENY, 1 FAIL_CLOSED; six execution invariants; four execution claims.
+- exact candidate binding: true.
+- exact credential binding: true.
+- capability narrowing: true.
+- governed commit required: true.
+- real-boundary observation consumed: true.
+- StegCore runtime owner preserved: true.
+- hosted artifact `steggate-audit-kit-fixture-001`: ID `9016228721`, 7555 bytes, digest `sha256:c2ae3df5efd11cadd707b441bbf522c8a21dbc7f3649f76b62509fbf68fae8a5`.
+- committed receipt: `reports/execution-profile-validation.json` at commit `b098448869b7b04ea126a119ae232b9fa489d561`.
 
-Release requires both durable references, transition to `READY`, and validator PASS. Only then may a finite #13 claim instantiate the Audit Kit against a real target, capture candidate/evidence/decision/receipt/consequence observations, verify both implementations, and feed real-boundary findings to #65 and applicable profile/runtime lanes.
+## Durable sequencing and remaining owners
 
-## Remaining durable owners
-
-- #13 — BLOCKED / UNCLAIMED: first real consequence-boundary audit; release requires named target + authority model.
-- #65 — BLOCKED: exact candidate-binding proof requires real positive/mutation/retry/reconstruction consequence-boundary evidence from #13.
-- #72 — BLOCKED: execution profile waits on #13 and resulting #65 evidence; runtime authority remains StegCore.
-- #8 — sequencing guard; current ordering is durable, closure still requires first real boundary evidence.
-- presentation, protocol/federation, ledger/latency, HIL, AdmittedCode, portable-node and adapter work remains with its named substantive issues and dependencies.
+- #8 remains the sequencing guard. Its former first-real-boundary closure condition is now satisfied; it should be reconciled/closed or advanced to the next named runtime/protocol lane without duplicating runtime ownership.
+- #13 implementation is COMPLETE; only the administrative GitHub open state remains due platform issue-close refusal. Do not treat that UI state as an implementation blocker.
+- #65 COMPLETE/closed.
+- #72 COMPLETE/hosted-green; release claim and close issue when repository mutation authority permits.
+- presentation, protocol/federation, ledger/latency, HIL, AdmittedCode, portable-node and adapter work remains with their named substantive issues and dependencies.
 - propagation to Site, Publisher, admissibility-wiki, stegguardian-wiki or other publication surfaces remains blocked until separately authorized release/publication readiness.
+
+## Automation and collision controls
+
+`.github/workflows/steggate-schema-foundation.yml` now automatically validates:
+- invariant/reason/schema/fixture coverage;
+- canonicalization;
+- achieved assurance;
+- Audit Kit evidence/reconstruction and Python/Node parity;
+- first-boundary activation and post-consequence observation;
+- REVIEW-not-admission semantics;
+- deterministic execution profile semantics and the StegCore ownership boundary.
+
+The workflow fails closed on missing or contradictory evidence. Claims remain issue-owned and bounded; runtime mutation remains owned by StegCore PR #18.
 
 ## Session consolidation
 
-All originating StegGate v4.0-v4.6 requirements are completed, superseded, or durably issue/blocker-owned. No continuation requires reconstructing the originating chat.
+All originating StegGate v4.0-v4.6 requirements represented in this session are completed, superseded, or durably issue/task/handoff-owned. No continuation requires reconstructing the originating chat.
 
-`MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1, ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md, management/steggate-v46-session-inventory.json, management/steggate-v46-implementation.json, management/first-boundary-activation.json, and the named substantive issues.`
+`MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1, ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md, management/steggate-v46-session-inventory.json, management/steggate-v46-implementation.json, management/first-boundary-activation.json, reports/execution-profile-validation.json, and the named substantive issues.`
 
 PR #1 remains intentionally draft/unmerged under maintainer semantic review; merge/release/publication is separate from implementation-state preservation.
 
 ## Completion percentages
 
-- Developed-file completion for the currently released fixture/consequence-semantic scope: 100%.
-- Validation completion for that scope: 100%.
-- Hosted integration into PR #1: 100%.
-- Real-boundary goal activation: 0% while #13 machine state is BLOCKED.
+For the execution-profile goal just completed, denominator = schema + profile + claims + fixtures + invariant registry + validator + workflow integration + durable receipt = 8 required deliverables.
+
+- Developed-file completion: 8/8 = 100%.
+- Validation completion: 5/5 = 100% (static registry/schema, deterministic execution fixtures, first-boundary evidence consumption, hosted Schema Foundation, hosted Repo Check).
+- Integration completion: 4/4 = 100% (PR branch, reason/invariant registry, CI, StegCore ownership mapping).
+- Goal activation: 100% for ara execution-profile semantics; no runtime/deployment/release authority is implied.
 - Propagation/release/publication: 0% claimed; not authorized.
 - Originating-session consolidation: 100% transferred or complete.
 
 ## Archive conditions
 
-Do not infer whole-conversation archival from this repository alone. The StegGate-originating slice is durably transferred; the complete conversation is archive-ready only when every other session goal is also complete or durably transferred under its own canonical continuation records.
+The StegGate-originating slice is durably transferred and no longer depends on chat history. Whole-conversation archival is permitted only if no other unique session goal remains outside this repository's durable records. Within this repository, the next continuation is the sequencing guard #8 and its next nonconflicting substantive issue; do not preserve this session merely to remember #72 or the first-boundary history.
