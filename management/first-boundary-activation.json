@@ -4,14 +4,14 @@
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "branch": "feat/steggate-v46-schema-foundation",
   "issue": 13,
-  "state": "READY",
+  "state": "CLAIMED",
   "owner": "StegVerse-Labs/ara-admissibility-interop#13 first-boundary pilot authority",
-  "claim_state": "UNCLAIMED",
+  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
   "release_inputs": {
     "consequential_target_ref": "management/first-boundary-target.json#ara-issue-13-close-completed",
     "authority_model_ref": "management/first-boundary-authority-model.json#ara-issue-13-owner-bounded-authority"
   },
-  "machine_release_condition": "SATISFIED: durable bounded repository-governance target and StegVerse-authored authority model are present; READY must validate before a finite implementation claim is created.",
+  "machine_release_condition": "SATISFIED: durable bounded repository-governance target and StegVerse-authored authority model are present and READY validation passed before claim creation.",
   "completed_prerequisites": {
     "goal0_reconciliation": true,
     "canonicalization_conformance_issue_10": true,
@@ -24,16 +24,17 @@
     "review_not_admission_issue_63": true,
     "decision_reconstruction_issue_64": true
   },
-  "latest_fixture_audit_evidence": {
-    "head_sha": "6015853a04f33e14ac12f46553b48a92d4661b45",
-    "schema_foundation_run": 31236314048,
-    "schema_foundation_job": 93049344876,
-    "repo_check_run": 31236314056,
-    "repo_check_job": 93049344850,
-    "artifact_id": 9015508215,
-    "artifact_digest": "sha256:ca99246a119f3878f9acb0a42279580c5bc1f4cd8488a001d9b996c6e59706e2",
-    "classification": "fixture_only_not_customer_validation"
+  "active_claim": {
+    "claim_id": "STEGGATE-FIRST-BOUNDARY-001-RB-ARA-ISSUE13",
+    "claimed_at": "2026-08-07T22:23:00-05:00",
+    "expires_at": "2026-08-14T22:23:00-05:00",
+    "expected_evidence": "exact candidate/authority binding; independent candidate hash reconstruction; ALLOW positive path; mutated-candidate refusal; exact-candidate retry/reconstruction stability; actual issue #13 closed/completed observation; #65 candidate-binding evidence",
+    "collision_boundaries": "issue #13 state transition only; no PR merge/release/deploy/publication; no StegCore mutation; no customer/standards claim"
   },
-  "next_action_when_ready": "Create a finite implementation claim on issue #13; build exact issue-state candidate/evidence/decision/receipt records; prove positive, mutation, and retry candidate binding; then execute only the admitted close/completed issue-state consequence and verify the observed GitHub state.",
+  "candidate": {
+    "candidate_id": "rb-ara-issue13-close-001",
+    "candidate_hash": "sha256:ff1ed6c8c64d179e00ca518b7a9dbecc8fe0ba9005d760b914c2b2777664fb14"
+  },
+  "next_action_when_ready": "Build and host-validate real-boundary candidate/evidence/decision/receipt records including positive, mutation, and retry/reconstruction binding; execute only the admitted issue #13 close/completed consequence; verify observed GitHub state; release claim COMPLETE.",
   "authority_effect": false
 }
