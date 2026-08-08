@@ -1,0 +1,13 @@
+{
+  "schema_version": "steggate.real-boundary-decision.v1",
+  "decision_id": "rb-dec-ara-issue13-001",
+  "candidate_id": "rb-ara-issue13-close-001",
+  "candidate_hash": "sha256:ff1ed6c8c64d179e00ca518b7a9dbecc8fe0ba9005d760b914c2b2777664fb14",
+  "decision": "ALLOW",
+  "reason_code": null,
+  "authority_verified": true,
+  "target_authorized": true,
+  "candidate_binding_verified": true,
+  "consequence_scope": "StegVerse-Labs/ara-admissibility-interop#13 close/completed only",
+  "authority_effect": false
+}
