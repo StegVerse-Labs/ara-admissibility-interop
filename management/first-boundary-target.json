@@ -1,0 +1,28 @@
+{
+  "schema_version": "steggate.real-boundary-target.v1",
+  "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+  "target_id": "ara-issue-13-close-completed",
+  "target_class": "repository_governance_issue_state_transition",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "branch_context": "feat/steggate-v46-schema-foundation",
+  "issue_number": 13,
+  "precondition": {
+    "state": "open"
+  },
+  "authorized_consequence": {
+    "state": "closed",
+    "state_reason": "completed"
+  },
+  "non_synthetic_basis": "This changes the canonical GitHub task state for the real first-boundary issue and therefore changes durable project execution state. It is not a fixture-only, demo-only, customer, production, deployment, publication, standards, or StegCore runtime target.",
+  "forbidden_consequences": [
+    "merge_pr_1",
+    "create_release_or_tag",
+    "deploy",
+    "publish",
+    "mutate_stegcore_runtime",
+    "claim_customer_validation",
+    "claim_standards_authority"
+  ],
+  "completion_observation": "GitHub issue #13 is CLOSED with state_reason=completed after admitted-candidate evidence is durably recorded.",
+  "authority_effect": false
+}
