@@ -12,6 +12,7 @@ on:
       - 'canonicalization/**'
       - 'assurance/**'
       - 'reasons/**'
+      - 'audit-kit/**'
       - 'tools/lint_invariants.py'
       - 'tools/canonicalize_steggate.py'
       - 'tools/canonicalize_steggate_node.mjs'
@@ -22,6 +23,8 @@ on:
       - 'tools/verify_audit_kit.py'
       - 'tools/verify_audit_kit_node.mjs'
       - 'tools/validate_track1b_parity.mjs'
+      - 'tools/build_audit_package.py'
+      - 'tools/verify_audit_package.py'
       - 'management/steggate-v46-*.json'
       - 'docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md'
       - '.github/workflows/steggate-schema-foundation.yml'
@@ -57,9 +60,19 @@ jobs:
         run: node tools/verify_audit_kit_node.mjs
       - name: Validate Track 1B cross-language canonicalizer and verifier parity
         run: node tools/validate_track1b_parity.mjs
+      - name: Build deterministic fixture Audit Kit package
+        run: python tools/build_audit_package.py
+      - name: Verify fixture Audit Kit package and refusal paths
+        run: python tools/verify_audit_package.py --self-test
       - name: Compile and parse-check StegGate tooling
         run: |
-          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py
+          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py
           node --check tools/canonicalize_steggate_node.mjs
           node --check tools/verify_audit_kit_node.mjs
           node --check tools/validate_track1b_parity.mjs
+      - name: Upload fixture Audit Kit package
+        uses: actions/upload-artifact@v4
+        with:
+          name: steggate-audit-kit-fixture-001
+          path: reports/audit-kit-fixture-001
+          if-no-files-found: error
