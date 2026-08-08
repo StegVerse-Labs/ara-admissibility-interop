@@ -23,6 +23,8 @@ TOOL_BINDINGS = [
     "tools/canonicalize_steggate_node.mjs",
     "tools/verify_audit_kit_node.mjs",
     "tools/validate_track1b_parity.mjs",
+    "tools/build_audit_package.py",
+    "tools/verify_audit_package.py",
 ]
 
 
@@ -181,6 +183,7 @@ def build(output: Path) -> dict[str, Any]:
             "python": "tools/verify_audit_kit.py",
             "node": "tools/verify_audit_kit_node.mjs",
             "cross_language_parity": "tools/validate_track1b_parity.mjs",
+            "package": "tools/verify_audit_package.py",
         },
         "authority_effect": False,
     }
