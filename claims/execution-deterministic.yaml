@@ -1,0 +1,27 @@
+{
+  "claim_set": "SG-EXECUTION-DETERMINISTIC-v1",
+  "status": "review-candidate",
+  "authority_effect": false,
+  "claims": [
+    {
+      "claim_id": "SG-EXEC-001",
+      "statement": "A consequential execution action is admissible only when the exact candidate and credential bindings match the admitted request.",
+      "evidence": ["fixtures/execution/execution-profile-cases.json", "tools/validate_execution_profile.py", "real-boundary/consequence-observation.json"]
+    },
+    {
+      "claim_id": "SG-EXEC-002",
+      "statement": "The executable capability surface may preserve or narrow upstream authority but may not broaden actions or parameter bounds.",
+      "evidence": ["fixtures/execution/execution-profile-cases.json", "tools/validate_execution_profile.py"]
+    },
+    {
+      "claim_id": "SG-EXEC-003",
+      "statement": "Execution requires governed commit semantics and cannot treat REVIEW, DENY, or FAIL_CLOSED as consequence admission.",
+      "evidence": ["profiles/execution-deterministic.v1.yaml", "fixtures/consequence/review-transition-cases.json", "tools/validate_review_consequence.py"]
+    },
+    {
+      "claim_id": "SG-EXEC-004",
+      "statement": "Ara defines interoperable execution schema/profile semantics while StegCore PR #18 remains the runtime consequence owner.",
+      "evidence": ["compatibility/stegcore-goal0.v1.json", "profiles/execution-deterministic.v1.yaml"]
+    }
+  ]
+}
