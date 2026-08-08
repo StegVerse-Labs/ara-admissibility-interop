@@ -7,12 +7,11 @@
   "pull_request": 1,
   "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
   "owner": "repository-native issue and blocker records",
-  "completion_state": "COMPLETE_FIXTURE_AUDIT_KIT_AND_TRACK1B",
+  "completion_state": "COMPLETE_FIXTURE_AUDIT_KIT_TRACK1B_AND_DECISION_SEMANTICS",
   "validation_state": "HOSTED_GREEN",
   "integration_state": "DRAFT_PR_OPEN_NOT_MERGED; REAL_BOUNDARY_BLOCKED_ON_NAMED_TARGET_AND_AUTHORITY_MODEL",
-  "activation_state": "FIXTURE_AUDIT_KIT_ACTIVE; REAL_BOUNDARY_NOT_ACTIVATED; MERGE_RELEASE_PUBLICATION_NOT_AUTHORIZED",
-  "claim_released_at": "2026-08-08T01:33:21Z",
-  "latest_validated_head": "e8eeed35ec4a79fc045c7d4024600fa1bcff134b",
+  "activation_state": "FIXTURE_AUDIT_KIT_ACTIVE; REVIEW_CONSEQUENCE_SEMANTICS_PROVEN; REAL_BOUNDARY_NOT_ACTIVATED; MERGE_RELEASE_PUBLICATION_NOT_AUTHORIZED",
+  "latest_validated_head": "0693209405ae606a00e5c7fabb48205f80e74808",
   "canonical_dependencies": {
     "stegcore_decision_enum": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/decision.py#DecisionValue",
     "stegcore_commit_contract": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:docs/COMMIT_COHERENCE.md",
@@ -20,30 +19,42 @@
     "stegcore_coordination_issue": "StegVerse-Labs/StegCore#54",
     "first_boundary_activation": "management/first-boundary-activation.json"
   },
-  "completed_issues": [2, 10, 12, 23, 30, 31, 61, 62, 66, 67],
+  "completed_issues": [2, 10, 12, 23, 30, 31, 61, 62, 63, 64, 66, 67],
   "latest_validation_receipts": [
     {
       "workflow": "StegGate Schema Foundation",
-      "run_id": 31232868831,
-      "job_id": 93039971990,
-      "head_sha": "e8eeed35ec4a79fc045c7d4024600fa1bcff134b",
+      "run_id": 31236182276,
+      "job_id": 93049003103,
+      "head_sha": "0693209405ae606a00e5c7fabb48205f80e74808",
       "conclusion": "success",
-      "scope": "fixture Audit Kit build, Python/Node reconstruction, Track 1B parity, deterministic package verification and artifact upload"
+      "scope": "full Audit Kit/Track 1B baseline plus bounded REVIEW consequence-path proof"
     },
     {
       "workflow": "Repo Check",
-      "run_id": 31232868815,
-      "job_id": 93039971955,
-      "head_sha": "e8eeed35ec4a79fc045c7d4024600fa1bcff134b",
+      "run_id": 31236182274,
+      "job_id": 93049003089,
+      "head_sha": "0693209405ae606a00e5c7fabb48205f80e74808",
       "conclusion": "success",
       "scope": "repository validation/publication-boundary/evidence/deployment-notification suite"
     }
   ],
+  "decision_semantics_evidence": {
+    "review_issue": 63,
+    "epistemic_distinction_issue": 64,
+    "fixture": "fixtures/consequence/review-transition-cases.json",
+    "validator": "tools/validate_review_consequence.py",
+    "cases": 7,
+    "review_cases": 4,
+    "review_is_admission": false,
+    "separate_admission_required": true,
+    "separate_admission_requirements": ["distinct transition", "decision=ALLOW", "authority_verified=true", "candidate_id exact match", "candidate_hash exact match"],
+    "authority_effect": false
+  },
   "latest_artifact": {
     "name": "steggate-audit-kit-fixture-001",
-    "artifact_id": 9014396989,
+    "artifact_id": 9015463781,
     "size_bytes": 7555,
-    "digest": "sha256:d175ea93f49291530b87798dc4a5084bb887bbcb87fe738a814a1301463b117b",
+    "digest": "sha256:6b313a850efdfea9584ed34173bc614a20b1c293a1ff6ec287045d9aed6fc087",
     "classification": "fixture_only_not_customer_validation"
   },
   "authority_boundaries": [
@@ -51,21 +62,13 @@
     "No deployment or publication authority claimed.",
     "No evaluator replacement authority claimed.",
     "No StegCore runtime mutation authority is claimed by this ara lane.",
-    "Fixture Audit Kit PASS is not customer validation or a real consequential-boundary observation.",
+    "Fixture and consequence-semantic PASS results are not customer validation or real consequential-boundary observations.",
     "PR #1 remains draft/unmerged pending maintainer-controlled semantic review and merge/release authority."
   ],
   "implemented_paths": [
-    "invariants/",
-    "schemas/",
-    "algebra/",
-    "canonicalization/",
-    "compatibility/",
-    "profiles/",
-    "claims/",
-    "fixtures/",
-    "assurance/",
-    "reasons/",
+    "invariants/", "schemas/", "algebra/", "canonicalization/", "compatibility/", "profiles/", "claims/", "fixtures/", "assurance/", "reasons/",
     "audit-kit/AUDIT_REPORT_TEMPLATE.md",
+    "fixtures/consequence/review-transition-cases.json",
     "tools/canonicalize_steggate.py",
     "tools/canonicalize_steggate_node.mjs",
     "tools/verify_audit_kit.py",
@@ -74,23 +77,21 @@
     "tools/build_audit_package.py",
     "tools/verify_audit_package.py",
     "tools/validate_first_boundary_activation.py",
+    "tools/validate_review_consequence.py",
     ".github/workflows/steggate-schema-foundation.yml",
     "management/steggate-v46-session-inventory.json",
     "management/first-boundary-activation.json",
     "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
   ],
-  "goal0_reconciliation": {
-    "ST-016": "StegCore allow/deny/defer projects to StegGate ALLOW/DENY/REVIEW; defer is explicitly not FAIL_CLOSED.",
-    "CL-SG-003": "Exact consequence candidate binding is preserved by candidate_id plus canonical candidate_hash equality; StegCore commit coherence remains a separate runtime boundary.",
-    "legacy_contracts": ["admissibility/commitment-candidate.schema.json", "admissibility/standing-result.schema.json"]
-  },
   "continuation": {
     "canonical_handoff": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
-    "session_inventory": "management/steggate-v46-session-inventory.json",
+    "sequencing_guard_issue": 8,
     "active_blocker": "issue #13 + management/first-boundary-activation.json",
-    "blocked_release_condition": "consequential_target_ref and authority_model_ref both durably supplied; activation state READY",
+    "blocked_release_condition": "consequential_target_ref and authority_model_ref both durably supplied; activation state READY and validator PASS",
+    "real_boundary_candidate_binding_issue": 65,
+    "execution_profile_issue": 72,
     "next_after_release": "finite issue #13 implementation claim and real-boundary Audit Kit execution"
   },
   "collision_policy": "Do not duplicate PR #1 interop work or StegCore PR #18 runtime work. Follow-on changes require their issue-owned claim or successor durable claim record.",
-  "archive_dependency": "SATISFIED_FOR_ORIGINATING_STEGGATE_V4_SESSION: all session-specific requirements are committed, completed, or durably issue/blocker-owned; no chat history is required for continuation."
+  "archive_dependency": "NOT_SATISFIED_FOR_COMPLETE_CONVERSATION: StegGate-originating requirements are durable, but whole-conversation archival is prohibited until all other session goals are complete or durably transferred."
 }
