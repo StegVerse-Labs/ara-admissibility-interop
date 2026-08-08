@@ -1,168 +1,129 @@
 # ARA Admissibility Interop Mirror Handoff
 
-Repository: `StegVerse-Labs/ara-admissibility-interop`
-Branch: `feat/steggate-v46-schema-foundation`
-Draft PR: #1, intentionally open/unmerged
+## Source of truth
 
-## Source-of-truth rule
+```text
+Repository: StegVerse-Labs/ara-admissibility-interop
+Branch: feat/steggate-v46-schema-foundation
+Role: interoperable StegGate admissibility / execution-profile / decision-state semantics
+Runtime producer owner: StegVerse-Labs/StegCore
+Continuity consumer owner: StegVerse-Labs/Continuity
+Session state: MERGED_INTO_CANONICAL_WORKSTREAM / ARCHIVE_READY
+```
 
-Read this file before continuing repository work. Live Git state, hosted workflow evidence, and the machine inventories named below supersede prior chat claims. This branch does **not** authorize release, tag, deployment, publication, evaluator replacement, standards claims, customer-validation claims, or authority expansion.
+Live branch state, hosted workflow evidence, `management/` records, StegCore runtime state, and Continuity evidence supersede chat claims.
 
-Canonical machine state:
+## Completed semantic surfaces
 
-- `management/steggate-v46-implementation.json`
-- `management/steggate-v46-session-inventory.json`
-- `management/steggate-decision-state-session-inventory.json`
-- `management/first-boundary-activation.json`
-- `reports/execution-profile-validation.json`
-- `reports/decision-state-reconstruction-validation.json`
+### Deterministic execution profile
 
-## Canonical continuation and claims
+Canonical files:
 
-- originating v4.6 session work: `MERGED_INTO_CANONICAL_WORKSTREAM`;
-- runtime adapters, HTTP/API bounded transport, receipt-chain binding, and runtime decision-state production: `StegVerse-Labs/StegCore#21`, `CLAIMED_FOR_IMPLEMENTATION`;
-- Continuity decision-state consumer: `StegVerse-Labs/Continuity#5`, COMPLETE / CLOSED / hosted green;
-- external governance/evidence-source boundary: existing `StegVerse-Labs/Governance/docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md`; no duplicate adapter created;
-- public propagation to Site/Publisher/admissibility-wiki/stegguardian-wiki: release/publication gated and not authorized by this branch.
+```text
+schemas/execution-request.v1.json
+profiles/execution-deterministic.v1.yaml
+claims/execution-deterministic.yaml
+fixtures/execution/execution-profile-cases.json
+invariants/profile-execution.yaml
+tools/validate_execution_profile.py
+reports/execution-profile-validation.json
+```
 
-Collision rule: do not duplicate StegCore #21 runtime work, completed Continuity #5 work, or the Governance external-evidence authority boundary.
+Validated state:
 
-`MERGED INTO: StegVerse-Labs/StegCore#21#issuecomment-5224812524`
+```text
+head: 63af5b2568aa206e571f53fb172ab840fe97b7cc
+Schema Foundation run: 31238487769
+job: 93055293539
+Repo Check run: 31238487749
+result: SUCCESS
+cases: 7 total = 1 ALLOW / 5 DENY / 1 FAIL_CLOSED
+exact candidate binding: true
+exact credential binding: true
+capability narrowing: true
+governed commit required: true
+authority_effect: false
+```
 
-## Established StegGate v4.6 state
+### Complete decision-state reconstruction
 
-Previously completed and preserved state includes:
+Canonical files:
 
-- first real boundary implementation and observation;
-- exact candidate binding;
-- REVIEW-not-admission consequence semantics;
-- deterministic execution profile;
-- Audit Kit evidence pack, offline verification, Python/Node parity and assurance reporting;
-- commit-coherence/runtime ownership split with StegCore.
+```text
+admissibility/decision-state-reconstruction.md
+schemas/decision-state.v1.json
+fixtures/decision-state/reconstruction-cases.json
+tools/validate_decision_state_reconstruction.py
+reports/decision-state-reconstruction-validation.json
+management/steggate-decision-state-session-inventory.json
+```
 
-Deterministic execution-profile evidence remains valid for its stated scope:
+Validated state:
 
-- validated head `63af5b2568aa206e571f53fb172ab840fe97b7cc`;
-- Schema Foundation `31238487769` / job `93055293539`: SUCCESS;
-- Repo Check `31238487749` / job `93055293490`: SUCCESS;
-- 7 execution cases = 1 ALLOW / 5 DENY / 1 FAIL_CLOSED;
-- exact candidate/credential binding, capability narrowing, governed commit, and real-boundary observation: true;
-- artifact `9016228721`, digest `sha256:c2ae3df5efd11cadd707b441bbf522c8a21dbc7f3649f76b62509fbf68fae8a5`.
+```text
+implementation head: 4d861c9a1dc86f4f879187394f001109f113e505
+Schema Foundation run: 31242496468 / job 93065680897 — SUCCESS
+Repo Check run: 31242494602 — SUCCESS
+handoff/task-state head: 8017e22083b7f9d8fb07090aa29f2b96ba6cc57f
+successor Schema Foundation: 31242687145 / job 93066153500 — SUCCESS
+successor Repo Check: 31242687163 / job 93066153551 — SUCCESS
+```
 
-First-real-boundary evidence remains:
+The contract preserves ALLOW, DENY, REVIEW, FAIL_CLOSED, coherence denial, explicit non-execution, decision→commit→observation binding, and reconciliation states without granting execution authority.
 
-- candidate `rb-ara-taskstate-001`;
-- canonical hash `sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3`;
-- consequence commit `48b7c7f68b8dc17dc3b398b682ff4342755ab0da`;
-- `real-boundary/consequence-observation.json` = MATCH / COMPLETE;
-- post-consequence Schema Foundation `31237866865` / `93053670769`: SUCCESS;
-- post-consequence Repo Check `31237866861` / `93053670786`: SUCCESS;
-- authority effect: false.
+## Runtime producer convergence — COMPLETE
 
-## Complete decision-state reconstruction — ACTIVE / HOSTED GREEN
+The ara HTTP/ALLOW-only and decision-state producer requirements were transferred to `StegVerse-Labs/StegCore#21`. That canonical runtime implementation is now complete:
 
-Originating requirement: rebuilding governed reality requires the complete admissibility matrix outcome and everything after the gate, not only successful `ALLOW`.
+```text
+StegCore issue #21: CLOSED / COMPLETED
+StegCore PR #55: MERGED
+merge: 8435279b194b9b15e0be66ef2c6f6668a842afdc
+post-merge governed adapter conformance: 31260775199 — SUCCESS
+current validated runtime contract: 70bbb0eb8a5dec4f27ee7aca5cf09cdb17a924af
+current runtime validation: 31262198018 — SUCCESS
+```
 
-Canonical surfaces:
+The runtime producer now implements normalized UI/API/human/AI/agent/batch/workflow/replay adapters, exact candidate/credential/authority/capability/prior-receipt binding, no-direct-executor reachability, complete decision-state records, and later reconciliation.
 
-- `admissibility/decision-state-reconstruction.md`;
-- `schemas/decision-state.v1.json`;
-- `fixtures/decision-state/reconstruction-cases.json`;
-- `tools/validate_decision_state_reconstruction.py`;
-- `.github/workflows/steggate-schema-foundation.yml`;
-- `reports/decision-state-reconstruction-validation.json`;
-- `management/steggate-decision-state-session-inventory.json`.
+No ara-local StegCore runtime implementation remains authorized or necessary.
 
-Validated semantics:
+MERGED INTO: `StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md`, closed issue #21, and `management/governed-runtime-adapters-task.json`.
 
-- exact candidate/hash and evaluated evidence/authority/policy references remain reconstructable;
-- material predicates preserve PASS / FAIL / UNKNOWN / NOT_APPLICABLE;
-- ALLOW / DENY / REVIEW / FAIL_CLOSED are all evidence-bearing;
-- non-ALLOW paths preserve explicit non-execution;
-- FAIL_CLOSED remains distinct from DENY;
-- REVIEW successors are distinct transitions;
-- decision reality, execution reality, and observed reality remain distinct;
-- ALLOW + COMMITTED + DIVERGENT remains reconstructable;
-- DENY + OBSERVED_EFFECT may reconcile to GOVERNANCE_BYPASS;
-- an ALLOW receipt alone does not prove complete mediation or coverage.
+## Continuity consumer convergence — COMPLETE
 
-Hosted evidence:
+Canonical consumer:
 
-- implementation head `4d861c9a1dc86f4f879187394f001109f113e505`;
-- Schema Foundation `31242496468` / job `93065680897`: SUCCESS;
-- Repo Check `31242494602`: SUCCESS;
-- artifact `9017466116`, digest `sha256:421db40d4bf19b55b0ceb8b5d53773186b67583f38d5a6faac1dc0fe66918eae`;
-- handoff/task-state head `8017e22083b7f9d8fb07090aa29f2b96ba6cc57f`: Schema Foundation `31242687145` / job `93066153500` SUCCESS and Repo Check `31242687163` / job `93066153551` SUCCESS;
-- decision-state inventory head `8bf5ef0ca6bab5c94c245154ed30c51e0f632e81`: Repo Check `31242785164` SUCCESS.
+```text
+StegVerse-Labs/Continuity/STEGGATE_CONTINUITY_MIRROR_HANDOFF.md
+issue #5: CLOSED / COMPLETED
+run 31242432042: Python 3.11 and Python 3.12 SUCCESS
+artifacts: 9017444663, 9017445027
+```
 
-The first decision-state workflow attempt failed because fixture records omitted `schema_version`; commit `4d861c9a1dc86f4f879187394f001109f113e505` corrected it. The succeeding hosted validations are authoritative.
+Continuity reconstruction does not create execution authority.
 
-## Continuity consumer — COMPLETE / CLOSED / HOSTED GREEN
+## Collision boundaries
 
-`StegVerse-Labs/Continuity` owns preservation/reconstruction downstream. Installed surfaces:
+```text
+ara owns interoperable schema/profile/semantic fixtures
+StegCore owns runtime decisions, adapters, callback reachability, and runtime producer records
+Continuity owns preservation/reconstruction consumer behavior
+```
 
-- `STEGGATE_CONTINUITY_MIRROR_HANDOFF.md`;
-- `docs/STEGGATE_DECISION_STATE_RECONSTRUCTION.md`;
-- `schemas/steggate-decision-state-receipt.schema.json`;
-- `examples/steggate-decision-state/reconstruction-cases.json`;
-- `scripts/verify_steggate_decision_state.py`;
-- `.github/workflows/validate-steggate-decision-state.yml`.
+Do not duplicate StegCore runtime code in ara or Continuity. Do not promote transport, schema conformance, replay, reconstruction, or evidence visibility into execution authority.
 
-Issue #5 is CLOSED / COMPLETED. Dedicated run `31242432042` passed Python 3.11 job `93065513964` and Python 3.12 job `93065513976`; artifacts `9017444663` and `9017445027`. Later handoff validation run `31242588709` also succeeded. An unrelated legacy bootstrap workflow failure is not part of this acceptance path and is not represented as repository-wide green.
+## Session consolidation
 
-## StegCore runtime boundary and transfer
+```text
+execution-profile semantics: COMPLETE / HOSTED GREEN
+decision-state semantics: COMPLETE / HOSTED GREEN
+HTTP bounded-transport requirement: MERGED INTO COMPLETE STEGCORE #21
+decision-state producer requirement: MERGED INTO COMPLETE STEGCORE #21
+Continuity consumer dependency: COMPLETE / CLOSED / HOSTED GREEN
+chat-only requirements: 0
+active session claims: 0
+archive readiness: READY
+```
 
-StegCore remains runtime authority owner:
-
-- PR #18 commit coherence merged at `5f78b489c51a99af7b76b0b9e3979da820c9a296`; dedicated acceptance run `29308236624` / job `87006244615`: 7/7 SUCCESS;
-- PR #20 production `governed_execute()` binding merged at `8d5178507c86efe98c359f957ab20475e55ca9f2`;
-- `src/stegcore/runtime.py#governed_execute` remains the mutation boundary;
-- runtime decision-state contract: `docs/DECISION_STATE_RECONSTRUCTION.md`;
-- issue #21 remains canonical runtime implementation owner;
-- transfer comments: `5224430822`, `5224765289`, and hosted-dependency reconciliation `5224812524`.
-
-Machine release condition for #21: committed adapter/runtime producer code plus dedicated hosted conformance proving callback unreachability before admissibility + coherence ALLOW, complete decision-state binding for executing and non-executing outcomes, observation/receipt-pointer preservation, and divergence/unknown/bypass reconciliation semantics.
-
-A scheduled StegCore runtime-validation run on handoff commit `cb2e13ab55a2fd6cf3029c7c67bd019ee6370c61` executed the substantive validators and full runtime tests successfully (`95 passed, 119 subtests passed`) but failed while attempting to push generated validation evidence directly to protected `main`. Repository automation opened StegCore issue #23; that automation/persistence defect is separately machine-owned and does not invalidate the passing runtime test step or transfer runtime implementation ownership to this session.
-
-## Governance-source convergence
-
-The session observation that external governance/risk frameworks or governance corpora may act as upstream sources without becoming execution authority is already covered by `StegVerse-Labs/Governance/docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md`.
-
-That contract assigns external systems evidence-provider status, Governance the evidence/admissibility-context evaluation role, and StegCore the runtime decision. External evidence cannot mint execution authority or a Continuity receipt. Therefore this requirement is `MERGED_INTO_CANONICAL_WORKSTREAM`; no source-specific adapter is created until separately activated under Governance contracts.
-
-## Automation and propagation
-
-Ara machine validation: `.github/workflows/steggate-schema-foundation.yml` plus `repo-check.yml`.
-
-Continuity machine validation: `StegVerse-Labs/Continuity/.github/workflows/validate-steggate-decision-state.yml`.
-
-Runtime continuation: StegCore #21; runtime-validation persistence failure observer: StegCore #23.
-
-Publication propagation remains blocked until the applicable release/publication authority is machine-observably satisfied. No Site, Publisher, admissibility-wiki, stegguardian-wiki, tag, release, deployment, or publication completion is claimed.
-
-## Session execution inventory and completion
-
-The authoritative decision-state session denominator is **six** durable goals in `management/steggate-decision-state-session-inventory.json`:
-
-1. canonical decision-state semantics — COMPLETE;
-2. ara executable schema/fixtures/validator/CI — COMPLETE / HOSTED GREEN;
-3. Continuity reconstruction consumer — COMPLETE / CLOSED / HOSTED GREEN;
-4. StegCore runtime producer requirement — MERGED INTO canonical issue #21 with machine release condition;
-5. Governance external-source authority boundary — MERGED INTO existing canonical Governance contract;
-6. public propagation boundary — BLOCKED by release/publication authority, durably assigned, no session archival dependency.
-
-Completion for this session slice:
-
-- task completion or durable transfer: 6/6 = 100%;
-- developed ara decision-state files/surfaces: 5/5 = 100%;
-- validation acceptance groups: 5/5 = 100%;
-- cross-repository integration/ownership: 4/4 = 100% (ara, Continuity, StegCore, Governance);
-- session consolidation: 6/6 = 100%;
-- source PR merge/release/publication/deployment: not claimed and not required for this session slice.
-
-`MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1; management/steggate-decision-state-session-inventory.json; management/steggate-v46-implementation.json; reports/decision-state-reconstruction-validation.json; StegVerse-Labs/Continuity/STEGGATE_CONTINUITY_MIRROR_HANDOFF.md; StegVerse-Labs/Continuity#5; StegVerse-Labs/StegCore#21#issuecomment-5224812524; StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md; StegVerse-Labs/Governance/docs/examples/EXTERNAL_EVIDENCE_PROVIDER_INTERFACE.md.`
-
-## Archive condition
-
-SATISFIED for this session. No unique implementation, validation, integration, propagation, reconciliation, observation, or governance-source requirement remains only in chat. Runtime work continues under StegCore #21; the separate runtime-validation evidence-persistence defect is machine-owned by StegCore #23; publication remains explicitly release-gated. Archiving this conversation will not remove required project state or execution authority.
+Project evolution may continue through the canonical owners above, but this originating ara/session lane has no unique implementation, validation, integration, or observation responsibility remaining.
