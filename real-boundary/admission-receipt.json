@@ -15,7 +15,8 @@
     "target_field": "first_real_boundary_pilot",
     "target_value": "COMPLETE"
   },
-  "consequence_observed": false,
-  "observation_ref": null,
+  "consequence_observed": true,
+  "observation_ref": "real-boundary/consequence-observation.json",
+  "consequence_commit_sha": "48b7c7f68b8dc17dc3b398b682ff4342755ab0da",
   "authority_effect": false
 }
