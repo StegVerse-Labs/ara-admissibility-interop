@@ -7,25 +7,26 @@ Branch: `feat/steggate-v46-schema-foundation`
 Draft PR: `#1`
 Goal ID: `STEGGATE-PROTOCOL-001`
 
-`ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` remains the canonical repository-level handoff. This file is the specialized authoritative continuation record for the governed-transition protocol workstream. It does not supersede the root repository handoff and must be read with it.
+`ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` remains the canonical repository-level handoff. This file is the specialized authoritative continuation record for the governed-transition protocol workstream and must be read with the root handoff.
 
 ## Originating session goal
 
-Convert the StegGate product review and the portable StegVerse-node architecture into a durable, implementation-neutral governed-transition protocol while avoiding duplication of the active StegCore runtime-adapter lane.
+Convert the StegGate product review and portable StegVerse-node architecture into durable, implementation-neutral governed-transition protocol state without duplicating the active StegCore runtime-adapter lane.
 
-The session concluded that:
+Transferred requirements include:
 
 - StegVerse is the user/entity-facing governance ecosystem;
 - StegGate is the consequence-adjudication runtime;
-- a separate governed-transition protocol is needed for local, organizational, federated, and chained use;
+- protocol semantics must support local, organizational, federated, and chained use;
 - sender admission never equals receiver admission;
-- downstream authority may narrow but never silently broaden;
+- downstream authority may preserve or narrow but never silently broaden;
 - human approval must bind to the canonical candidate;
 - verification must resolve trust outside the evidence pack;
 - coverage/completeness must be evidenced;
-- JCS canonicalization must not perform Unicode normalization;
-- RFC 9396 supplies fine-grained authorization-detail semantics but is not itself a signed delegation credential;
-- independent conformance, not analogy or marketing, is the protocol proof target.
+- RFC 8785 JCS must not perform Unicode normalization;
+- RFC 9396 provides authorization-details semantics but is not standalone signed delegation proof;
+- independent conformance is the protocol proof target;
+- the TCP/IP comparison is an interoperability-role analogy only, not a standards claim.
 
 ## Authoritative files
 
@@ -33,177 +34,190 @@ The session concluded that:
 - `STEGGATE_PROTOCOL_MIRROR_HANDOFF.md`
 - `admissibility/steggate-governed-transition-protocol-v1.md`
 - `management/steggate-protocol-session-inventory.json`
-- existing v4.6 schema/invariant/runtime-consumer state referenced by the root handoff
+- `schemas/transition.v1.json`
+- `schemas/governed-transition-envelope.v1.json`
+- `schemas/gateway-discovery.v1.json`
+- `profiles/authority-rar-bound.v1.yaml`
+- `fixtures/protocol/governed-transition-cases.json`
+- `tools/validate_governed_transition_protocol.py`
+- existing canonicalization, assurance, invariant, Audit Kit, execution, and decision-state surfaces referenced by the root handoff
 
 ## Canonical owner and active claim
 
-Task ID: `STEGGATE-PROTOCOL-001`
+Task: `STEGGATE-PROTOCOL-001`
 Canonical owner: `StegVerse-Labs/ara-admissibility-interop#1`
-Role: canonical interop/schema integration only
 Claim state: `CLAIMED_FOR_INTEGRATION`
-Claim creation time: `2026-08-08T08:43:00-05:00`
+Role: canonical interop/schema integration only; no runtime adapter ownership
+Claim creation: `2026-08-08T08:43:00-05:00`
 
-Release condition:
+Claim release condition:
 
-> Versioned protocol schemas, RFC 8785/JCS golden vectors, authority-narrowing fixtures, intent-binding fixtures, discovery/trust profiles, independent verifier evidence, and second-implementation conformance are committed and hosted-green, or each remaining item is transferred to a named durable owner with a machine-observable release condition.
-
-Expected evidence:
-
-- schema/profile commits;
-- deterministic validator outputs;
-- hosted workflow runs/jobs;
-- conformance artifacts;
-- independent implementation evidence;
-- updated task inventory and handoff.
+> Remaining L0-L3 trust/assurance protocol delta, protocol-specific second-implementation conformance, and any nonduplicative intent-binding executable profile are committed and hosted-green, or durably transferred to named owners with machine-observable release conditions.
 
 Collision boundaries:
 
 - `StegVerse-Labs/StegCore#21` exclusively owns reusable runtime adapters, HTTP/API bounded transport, runtime receipt-chain binding, and runtime decision-state production while its claim remains active.
-- `StegVerse-Labs/Continuity#5` decision-state consumer work is complete and must not be duplicated.
-- `StegVerse-Labs/Governance` retains its existing evidence-provider/governance boundary.
-- No Site/Publisher/wiki propagation is authorized by this protocol branch.
+- `StegVerse-Labs/Continuity#5` decision-state consumer is complete and must not be duplicated.
+- `StegVerse-Labs/Governance` retains its evidence-provider/governance authority boundary.
+- This branch does not authorize Site/Publisher/wiki propagation, release, deployment, standards status, compliance claims, or customer-validation claims.
 
-## Current implementation state
+## Convergence detected
 
-### Already complete before this session
+Inspection showed that several v3 review requirements were already real implementation on PR #1 and therefore were not rebuilt:
 
-The root handoff records and hosted evidence establish:
+- `SG-CORE-004` already defines monotonic authority narrowing;
+- `fixtures/core/cases.json` already contains narrowing, broadening, and incomparable-authority cases;
+- `AUTHORITY_BROADENING` and `AUTHORITY_NOT_COMPARABLE` are already canonical v1 reason codes;
+- `SG-CORE-009` already requires deterministic canonical bytes and explicitly refuses normalization/reinterpretation of unsupported Unicode/numeric input;
+- canonicalization has independent Python and Node implementations with golden vectors;
+- Audit Kit verification already has independent Python/Node parity;
+- achieved assurance reporting and overclaim refusal already exist;
+- complete ALLOW/DENY/REVIEW/FAIL_CLOSED decision-state reconstruction is hosted-green.
 
-- first real bounded consequence;
-- exact candidate binding;
-- deterministic execution profile;
-- REVIEW-not-admission semantics;
-- Audit Kit evidence pack and offline verification;
-- Python/Node parity for the existing scope;
-- complete decision-state reconstruction for ALLOW, DENY, REVIEW, and FAIL_CLOSED;
-- StegCore commit-coherence and production governed mutation boundary;
-- Continuity decision-state reconstruction consumer.
+Therefore `AUTHORITY_BROADENING_ATTEMPT` was not introduced as a duplicate reason code, and no duplicate canonicalizer or second runtime lane was created.
 
-These remain authoritative for their stated scopes and are not reimplemented here.
+## Mutations completed by this session
 
-### Completed by this session
+1. `admissibility/steggate-governed-transition-protocol-v1.md`
+   - commit `f5715e98f6edfa438a3d97456dc47f13e34d1803`
+   - transfers product/node/protocol requirements and standards corrections.
+2. `management/steggate-protocol-session-inventory.json`
+   - initial commit `3f869c142b2828054d9ce79effa9ab59983030e9`
+   - reconciled commit `3dbb71e6dc6ea9cb87d403599c09a41598cb77aa`.
+3. `STEGGATE_PROTOCOL_MIRROR_HANDOFF.md`
+   - specialized continuation handoff for this workstream.
+4. `schemas/gateway-discovery.v1.json`
+   - commit `cbc3a19d76c28f9e19d3f795bc39d6a3c95420a9`.
+5. `schemas/governed-transition-envelope.v1.json`
+   - commit `342ea48418992df56c7e85a2bae75bb2f9fe7a85`.
+6. `profiles/authority-rar-bound.v1.yaml`
+   - commit `75576300fb289b56677385740af6fa35f8228de5`.
+7. `fixtures/protocol/governed-transition-cases.json`
+   - commit `1a7980d4c4525080e6dcbe5bde8068921051044f`.
+8. `tools/validate_governed_transition_protocol.py`
+   - commit `78743d1e3c023c10254b8daf987bbb8fe6f22fb5`.
+9. `.github/workflows/steggate-schema-foundation.yml`
+   - commit `5ebeac84bda82b88df7beaa5f3ba680de9d0ebba` adds protocol validation and ensures the protocol inventory/handoff/requirements trigger the existing machine lane.
 
-1. Installed `admissibility/steggate-governed-transition-protocol-v1.md` at commit `f5715e98f6edfa438a3d97456dc47f13e34d1803`.
-2. Installed `management/steggate-protocol-session-inventory.json` at commit `3f869c142b2828054d9ce79effa9ab59983030e9`.
-3. Transferred all unique product-review / portable-node protocol requirements into repository-native state.
-4. Corrected JCS semantics: no Unicode NFC/NFD normalization inside RFC 8785 canonicalization.
-5. Corrected RFC 9396 usage: authorization-detail semantics require a separately bound/signed authority proof for portable delegation claims.
-6. Added monotonic authority narrowing as a required protocol invariant.
-7. Added local, organizational, federated, and chained deployment semantics.
-8. Added discovery, trust-profile, protocol-versioning, coverage, idempotency, intent-binding, and independent-conformance requirements.
-9. Explicitly bounded the TCP/IP comparison as an interoperability-role analogy rather than a standards claim.
+## Hosted validation evidence
 
-## Incomplete work and exact owners
+Validated head: `5ebeac84bda82b88df7beaa5f3ba680de9d0ebba`.
 
-### Protocol executable delta — ara PR #1
+### StegGate Schema Foundation
 
-Owner: `StegVerse-Labs/ara-admissibility-interop#1`
-State: `CLAIMED_FOR_INTEGRATION`
+- run `31260489746`: SUCCESS
+- job `93110434515`: SUCCESS
+- new governed-transition protocol validation step: SUCCESS
+- invariant/schema foundation: PASS
+- 35 invariants
+- 79 fixture IDs after protocol fixtures
+- 74 invariant fixture references
+- 32 canonical reason codes
+- 11 schemas after protocol schema additions
+- JCS vectors: 5 positive / 3 negative PASS
+- independent Python/Node canonicalizer/verifier parity: PASS
+- Audit Kit reconstruction/tamper refusal: PASS
+- first real-boundary validation: PASS
+- REVIEW cannot directly authorize consequence: PASS
+- deterministic execution profile: PASS
+- complete decision-state reconstruction: PASS
 
-Required implementation locations, after current files are inspected for reuse:
+The protocol validator proves for its current v1 scope:
 
-- `schemas/` — governed-transition, discovery, trust/assurance, multi-gate narrowing structures;
-- `profiles/` — JCS/application/authority profiles;
-- `fixtures/` — canonicalization, intent-binding, authority-narrowing, protocol-version/trust negative cases;
-- `invariants/` — monotonic narrowing and any nonduplicative protocol invariants;
-- validators/reports consistent with the existing schema-foundation validation architecture.
+- gateway discovery required fields/decision vocabulary;
+- monotonic authority narrowing;
+- authority broadening refusal using canonical `AUTHORITY_BROADENING`;
+- unsupported major protocol version -> `FAIL_CLOSED`;
+- RFC 9396 authorization details without separately bound portable authority proof -> `FAIL_CLOSED`;
+- bound RAR authority profile positive case.
 
-Do not add duplicate reason codes or invariants before inspecting the current registry.
+### Repo Check
 
-### Runtime adapters and bounded HTTP/API transport — StegCore #21
+- run `31260489761`: SUCCESS
+- repository/publication-boundary checks completed successfully.
 
-Owner: `StegVerse-Labs/StegCore#21`
-State: `MERGED_INTO_CANONICAL_WORKSTREAM / CLAIMED_FOR_IMPLEMENTATION`
+This evidence validates repository/schema integration. It does not establish deployment, release, publication, standards recognition, customer validation, or StegCore #21 runtime-adapter completion.
 
-Release condition is defined in `StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md` and issue #21. This ara workstream may publish stable protocol inputs for #21 to consume but must not implement a competing runtime lane.
+## Current task inventory
 
-### Second independent implementation
+Canonical machine inventory: `management/steggate-protocol-session-inventory.json`.
 
-Owner: ara PR #1 until transferred to an exact independent repository.
-State: `BLOCKED`
-Machine-observable release condition: v1 canonical schemas/golden vectors hosted-green.
-Next action after release: assign and install a second implementation that shares vectors but no runtime/canonicalization code.
+Current states:
 
-### Portable StegVerse node integration
+- `SGP-001` requirements transfer — COMPLETE / HOSTED GREEN.
+- `SGP-002` governed-transition core envelope — COMPLETE FOR V1 CORE / HOSTED GREEN.
+- `SGP-003` JCS canonicalization / independent parity — COMPLETE from existing canonical implementation / HOSTED GREEN.
+- `SGP-004` monotonic multi-gate authority narrowing — COMPLETE FOR V1 / HOSTED GREEN.
+- `SGP-005` discovery/trust/assurance — PARTIAL; discovery plus existing assurance are green, L0-L3 trust profile delta remains.
+- `SGP-006` independent protocol conformance — PARTIAL; Python/Node canonicalizer and Audit Kit parity are green, new governed-transition envelope/discovery second implementation remains.
+- `SGP-007` runtime adapters / HTTP bounded transport — MERGED INTO `StegVerse-Labs/StegCore#21`; active elsewhere.
+- `SGP-008` portable node integration — BLOCKED until trust profile is stable and canonical portable-node runtime owner is resolved from a live handoff.
+- `SGP-009` public propagation — BLOCKED by release/publication authority.
 
-Owner: not yet assigned because the canonical portable-node runtime repository must be resolved from its live handoff rather than inferred from the Site presentation branch.
-State: `BLOCKED`
-Machine-observable release condition: core transition/discovery/trust profiles hosted-green plus canonical portable-node runtime owner resolved from a live handoff.
+## Exact remaining executable work
 
-### Public propagation
+### Ara PR #1
 
-Destinations when authorized:
+Owner: `StegVerse-Labs/ara-admissibility-interop#1`.
 
-- `StegVerse-Labs/Site`
-- `GCAT-BCAT-Engine/Publisher`
-- `StegVerse-Labs/admissibility-wiki`
-- `stegguardian-wiki` under its live owner
+1. Reconcile existing assurance fixtures with the session's L0-L3 external-anchor semantics and add only missing profile/fixture machinery.
+2. Extend independent Node/Python conformance to the governed-transition envelope/discovery semantics without sharing implementation code.
+3. Inspect existing intent/presentation profiles before adding any intent-binding schema or fixture; duplicate semantics are prohibited.
+4. Keep all protocol validation inside the existing Schema Foundation machine lane unless a demonstrable limitation requires expansion.
 
-State: `BLOCKED_BY_RELEASE_AUTHORITY`
-Release condition: applicable handoffs authorize propagation after implementation and conformance evidence exists.
+### StegCore runtime
 
-## Validation commands / paths
+MERGED INTO: `StegVerse-Labs/StegCore#21` and `StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md`.
 
-Use the repository's existing schema-foundation and repo-check validation architecture. Existing authoritative paths include:
+No ara/chat lane may implement competing runtime adapters while #21 owns the claim.
 
-- `.github/workflows/steggate-schema-foundation.yml`
-- repo check workflow recorded by the root handoff
-- protocol-specific validators added under the existing tool/validator conventions rather than creating an unrelated CI system.
+### Portable node
 
-Do not claim hosted validation for new protocol files until workflow runs/jobs are directly inspected.
+State: BLOCKED / no chat dependency.
+Release condition: core protocol/discovery/trust profile hosted-green and canonical portable-node runtime repository identified from its live handoff. Site presentation branches must not be assumed to be runtime ownership.
 
-## Cross-repository dependencies
+### Publication
 
-- `StegVerse-Labs/StegCore#21` — runtime adapters/producer semantics;
-- `StegVerse-Labs/Continuity#5` — completed decision-state reconstruction consumer;
-- `StegVerse-Labs/Governance` — policy/evidence-source governance boundaries and future regulatory mappings;
-- StegID / Continuity contracts — continuity minting/verification, not StegGate authority;
-- Master Records — custody only under its own live contracts;
-- portable-node runtime repository — to be resolved before node integration;
-- Site/Publisher/wikis — release/publication projection only after authorization.
+State: BLOCKED_BY_RELEASE_AUTHORITY / no chat dependency.
+Destinations only when authorized: Site, Publisher, admissibility-wiki, stegguardian-wiki under live contracts.
 
-## Automation and machine-owned continuation
+## Automation
 
-Existing ara schema-foundation/repo-check workflows remain the machine validation lane. Do not create a parallel workflow system unless existing dispatchers cannot express the protocol validators.
+Machine continuation uses the existing `.github/workflows/steggate-schema-foundation.yml` plus Repo Check. The protocol validator is now part of that established lane; no parallel CI system was created.
 
-The protocol inventory persists claim state, release conditions, next executable actions, collision boundaries, and archival dependencies in `management/steggate-protocol-session-inventory.json`.
-
-StegCore issue #23 separately owns the runtime-validation evidence-persistence defect described in the root handoff. It does not transfer StegCore #21 runtime ownership to this protocol session.
+The machine inventory records owners, collision boundaries, release conditions, evidence, and next executable actions. No recurring check remains dependent on this chat.
 
 ## Session consolidation
 
-Session goal denominator: 9 durable goals in `management/steggate-protocol-session-inventory.json`.
+Original and adjacent goals from this conversation that are now durable:
 
-Current transfer state:
+1. identify the scarce product wedge beyond generic MCP security;
+2. productize commit-time admissibility and portable evidence;
+3. incorporate intent binding, external trust, coverage, determinism, availability, idempotency, and privacy corrections;
+4. position StegVerse as the user/entity-facing portable governance ecosystem;
+5. position StegGate Runtime as the consequence boundary;
+6. promote an implementation-neutral governed-transition protocol;
+7. support local/internal/federated/chained placement;
+8. require monotonic authority narrowing and receiver re-admission;
+9. bound the TCP/IP analogy and require independent conformance proof.
 
-- session-specific requirements transferred or completed: 9/9;
-- chat-only unique requirements remaining: 0;
-- runtime adapter goal merged into StegCore #21;
-- protocol executable delta retained by ara PR #1;
-- portable-node integration blocked with explicit release condition;
-- public propagation blocked by release authority.
+All 9/9 are implemented, represented in executable repository state, or durably assigned to canonical owners/release conditions. Unique chat-only requirements remaining: 0.
 
-MERGED INTO: `StegVerse-Labs/ara-admissibility-interop/admissibility/steggate-governed-transition-protocol-v1.md`; `management/steggate-protocol-session-inventory.json`; this handoff; `StegVerse-Labs/StegCore#21` for runtime continuation.
+MERGED INTO: `StegVerse-Labs/ara-admissibility-interop#1`; `admissibility/steggate-governed-transition-protocol-v1.md`; `management/steggate-protocol-session-inventory.json`; this handoff; and `StegVerse-Labs/StegCore#21` for runtime continuation.
 
-## Completion percentages
+## Completion assessment
 
-These percentages are for `STEGGATE-PROTOCOL-001`, not the already-completed v4.6 decision-state session slice.
+Denominator for the new protocol goal, not the prior v4.6 session slice:
 
-- task transfer/completion: 9/9 = 100% durable assignment;
-- developed protocol-delta files: 3/12 = 25% after this handoff (requirements, inventory, specialized handoff); existing v4.6 foundation is reusable but not counted as completing unimplemented v3 protocol delta files;
-- protocol-delta validation: 0/6 acceptance groups until new-commit hosted runs and future executable fixtures are inspected;
-- integration: 2/5 durable owner integrations currently established (ara canonical owner, StegCore runtime owner); Continuity/Governance existing dependencies are recognized but the new node/federated protocol integration is not activated;
-- goal activation: 30% review-to-executable protocol activation;
-- session consolidation: 9/9 = 100% once this handoff is committed and branch validation state is inspected.
+- session goal transfer: 9/9 = 100%;
+- protocol task completion or durable transfer: 6/9 = 67%;
+- developed protocol-delta files: 9/12 = 75%; scaffolding/stubs: 0; missing required delta files/groups: 3;
+- validation groups: 4/6 = 67%;
+- integration groups: 3/5 = 60%;
+- propagation: 0/4, explicitly release-gated and not an archival dependency;
+- goal activation: 65%;
+- session consolidation: 9/9 = 100%.
 
-## Archive conditions
+## Archive condition
 
-The originating chat session becomes archive-safe when:
-
-1. the requirements file, machine inventory, and this specialized handoff are committed;
-2. the resulting branch validation state is inspected and any failure caused by these files is either repaired or durably assigned;
-3. no unique session requirement remains only in chat;
-4. runtime work remains owned by StegCore #21 rather than this session;
-5. all unimplemented protocol tasks have durable owners/release conditions in the inventory.
-
-Project incompleteness does not by itself retain the chat once those conditions are satisfied.
+SATISFIED for this originating chat session after this handoff commit receives hosted validation or, if that final documentation-only validation fails, the failure is repaired or durably assigned. All substantive new protocol code at `5ebeac84bda82b88df7beaa5f3ba680de9d0ebba` is already hosted-green. Remaining project work has canonical repository owners and machine-observable release conditions and does not require access to this conversation.
