@@ -26,6 +26,7 @@ on:
       - 'tools/build_audit_package.py'
       - 'tools/verify_audit_package.py'
       - 'tools/validate_first_boundary_activation.py'
+      - 'tools/validate_review_consequence.py'
       - 'management/steggate-v46-*.json'
       - 'management/first-boundary-activation.json'
       - 'docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md'
@@ -68,9 +69,11 @@ jobs:
         run: python tools/verify_audit_package.py --self-test
       - name: Validate first real-boundary activation state
         run: python tools/validate_first_boundary_activation.py
+      - name: Prove REVIEW cannot directly authorize consequence
+        run: python tools/validate_review_consequence.py
       - name: Compile and parse-check StegGate tooling
         run: |
-          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py tools/validate_first_boundary_activation.py
+          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py tools/validate_first_boundary_activation.py tools/validate_review_consequence.py
           node --check tools/canonicalize_steggate_node.mjs
           node --check tools/verify_audit_kit_node.mjs
           node --check tools/validate_track1b_parity.mjs
