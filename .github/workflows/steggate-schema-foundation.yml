@@ -19,6 +19,7 @@ on:
       - 'tools/canonicalize_steggate_node.mjs'
       - 'tools/validate_canonicalization_vectors.py'
       - 'tools/validate_assurance_fixtures.py'
+      - 'tools/validate_trust_levels.py'
       - 'tools/build_evidence_pack.py'
       - 'tools/verify_evidence_pack.py'
       - 'tools/verify_audit_kit.py'
@@ -32,6 +33,7 @@ on:
       - 'tools/validate_execution_profile.py'
       - 'tools/validate_decision_state_reconstruction.py'
       - 'tools/validate_governed_transition_protocol.py'
+      - 'tools/validate_governed_transition_protocol_node.mjs'
       - 'tools/validate_action_first_reconstruction.py'
       - 'management/steggate-v46-*.json'
       - 'management/steggate-protocol-session-inventory.json'
@@ -64,6 +66,8 @@ jobs:
         run: python tools/validate_canonicalization_vectors.py
       - name: Validate achieved assurance ordering and overclaim refusal
         run: python tools/validate_assurance_fixtures.py
+      - name: Validate L0-L3 external-anchor trust semantics
+        run: python tools/validate_trust_levels.py
       - name: Validate content-bounded Audit Kit evidence pack
         run: |
           python tools/build_evidence_pack.py --check
@@ -88,16 +92,19 @@ jobs:
         run: python tools/validate_execution_profile.py
       - name: Validate complete decision-state reconstruction semantics
         run: python tools/validate_decision_state_reconstruction.py
-      - name: Validate governed-transition protocol discovery, narrowing, version, and bound-authority semantics
+      - name: Validate governed-transition protocol in Python
         run: python tools/validate_governed_transition_protocol.py
+      - name: Validate governed-transition protocol independently in Node
+        run: node tools/validate_governed_transition_protocol_node.mjs
       - name: Validate Action-First reconstruction, observation, residual, and identifiability semantics
         run: python tools/validate_action_first_reconstruction.py
       - name: Compile and parse-check StegGate tooling
         run: |
-          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py tools/validate_first_boundary_activation.py tools/validate_review_consequence.py tools/validate_real_boundary_pilot.py tools/validate_execution_profile.py tools/validate_decision_state_reconstruction.py tools/validate_governed_transition_protocol.py tools/validate_action_first_reconstruction.py
+          python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/validate_trust_levels.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py tools/validate_first_boundary_activation.py tools/validate_review_consequence.py tools/validate_real_boundary_pilot.py tools/validate_execution_profile.py tools/validate_decision_state_reconstruction.py tools/validate_governed_transition_protocol.py tools/validate_action_first_reconstruction.py
           node --check tools/canonicalize_steggate_node.mjs
           node --check tools/verify_audit_kit_node.mjs
           node --check tools/validate_track1b_parity.mjs
+          node --check tools/validate_governed_transition_protocol_node.mjs
       - name: Upload fixture Audit Kit package
         uses: actions/upload-artifact@v4
         with:
