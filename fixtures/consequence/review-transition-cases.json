@@ -1,0 +1,87 @@
+{
+  "schema_version": "steggate.review-consequence-cases.v1",
+  "authority_effect": false,
+  "cases": [
+    {
+      "case_id": "review.direct_consequence_refused",
+      "candidate_id": "cand-review-001",
+      "candidate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "initial_decision": "REVIEW",
+      "admission_transition": null,
+      "expect_consequence_permitted": false,
+      "expect_reason": "REVIEW_REQUIRES_SEPARATE_ADMISSION"
+    },
+    {
+      "case_id": "review.unverified_authority_refused",
+      "candidate_id": "cand-review-002",
+      "candidate_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "initial_decision": "REVIEW",
+      "admission_transition": {
+        "transition_id": "admit-review-002",
+        "decision": "ALLOW",
+        "authority_verified": false,
+        "candidate_id": "cand-review-002",
+        "candidate_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "expect_consequence_permitted": false,
+      "expect_reason": "SEPARATE_ADMISSION_AUTHORITY_UNVERIFIED"
+    },
+    {
+      "case_id": "review.candidate_mismatch_refused",
+      "candidate_id": "cand-review-003",
+      "candidate_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "initial_decision": "REVIEW",
+      "admission_transition": {
+        "transition_id": "admit-review-003",
+        "decision": "ALLOW",
+        "authority_verified": true,
+        "candidate_id": "cand-review-003",
+        "candidate_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "expect_consequence_permitted": false,
+      "expect_reason": "CANDIDATE_BINDING_MISMATCH"
+    },
+    {
+      "case_id": "review.separate_authorized_admission_required",
+      "candidate_id": "cand-review-004",
+      "candidate_hash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "initial_decision": "REVIEW",
+      "admission_transition": {
+        "transition_id": "admit-review-004",
+        "decision": "ALLOW",
+        "authority_verified": true,
+        "candidate_id": "cand-review-004",
+        "candidate_hash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "expect_consequence_permitted": true,
+      "expect_reason": "SEPARATE_ADMISSION_ESTABLISHED"
+    },
+    {
+      "case_id": "deny.direct_consequence_refused",
+      "candidate_id": "cand-deny-001",
+      "candidate_hash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "initial_decision": "DENY",
+      "admission_transition": null,
+      "expect_consequence_permitted": false,
+      "expect_reason": "DENY_NOT_ADMISSION"
+    },
+    {
+      "case_id": "fail_closed.direct_consequence_refused",
+      "candidate_id": "cand-fc-001",
+      "candidate_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "initial_decision": "FAIL_CLOSED",
+      "admission_transition": null,
+      "expect_consequence_permitted": false,
+      "expect_reason": "FAIL_CLOSED_NOT_ADMISSION"
+    },
+    {
+      "case_id": "allow.direct_consequence_semantically_admitted",
+      "candidate_id": "cand-allow-001",
+      "candidate_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "initial_decision": "ALLOW",
+      "admission_transition": null,
+      "expect_consequence_permitted": true,
+      "expect_reason": "INITIAL_ALLOW_ADMISSION"
+    }
+  ]
+}
