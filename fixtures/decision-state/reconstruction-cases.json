@@ -3,6 +3,7 @@
   "fixtures": [
     {
       "fixture_id": "decision_state.deny.no_effect",
+      "schema_version": "steggate.decision-state.v1",
       "decision_state_id": "ds-deny-001",
       "transition_id": "tr-deny-001",
       "candidate_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
@@ -20,6 +21,7 @@
     },
     {
       "fixture_id": "decision_state.fail_closed.no_effect",
+      "schema_version": "steggate.decision-state.v1",
       "decision_state_id": "ds-fc-001",
       "transition_id": "tr-fc-001",
       "candidate_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -38,6 +40,7 @@
     },
     {
       "fixture_id": "decision_state.review.successor",
+      "schema_version": "steggate.decision-state.v1",
       "decision_state_id": "ds-review-001",
       "transition_id": "tr-review-001",
       "candidate_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
@@ -57,6 +60,7 @@
     },
     {
       "fixture_id": "decision_state.allow.divergent_observation",
+      "schema_version": "steggate.decision-state.v1",
       "decision_state_id": "ds-allow-div-001",
       "transition_id": "tr-allow-div-001",
       "candidate_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
@@ -76,6 +80,7 @@
     },
     {
       "fixture_id": "decision_state.deny.observed_effect_bypass",
+      "schema_version": "steggate.decision-state.v1",
       "decision_state_id": "ds-deny-bypass-001",
       "transition_id": "tr-deny-bypass-001",
       "candidate_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
