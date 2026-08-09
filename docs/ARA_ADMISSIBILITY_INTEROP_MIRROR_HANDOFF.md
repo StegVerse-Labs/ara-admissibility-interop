@@ -33,6 +33,7 @@ Complete live verification of the `0.2.0-release-candidate` governed public-revi
 - Repo Check run `29228302637` on commit `5657faf198cb1b805690a866d68ce46745c3ec40` reached `Generate validation report` and reported only two stale literal assertions: `missing-builder-phrase:dependency` and `missing-builder-tests-phrase:linked-page`; all independently reported schema, example, policy, and evaluator checks passed.
 - A concurrent bounded update replaced the stale `linked-page` assertion with executable test markers. Commit `e49e6c9c7b8f7e6af7d87344d470a1aa7dd99ba0` replaced the remaining generic `dependency` assertion with the builder's exact `without external runtime dependencies` contract, preserving all other self-check, publication, notification, replay, monitor, and release-boundary invariants.
 - Existing exact-commit stamping, live HTTP verification, receipt generation, evidence evaluation, bundle verification, notification generation, and retained-artifact boundaries remain unchanged.
+- Session-specific origin-reconstruction case `SV-ARA-CASE-ORIGIN-RECONSTRUCTION-2026-08-09` was durably installed at `admissibility/examples/conversation-origin-reconstruction-case.md` with machine-readable companion `admissibility/examples/conversation-origin-reconstruction-case.json`. The case preserves the observed transition from competing causal narratives to reconstruction framing, recursive recognition of the conversation as evidence, deliberate preservation, and explicit assent. Commits: `022d1a6c2629a775f90d4aa07acca65448865a17` and `b08c0e35b6aed53b709c8f785081dcbb11ad5659`.
 
 ## Current publication posture
 
@@ -72,6 +73,40 @@ Email delivery and mailbox receipt are orchestration signals, not deployment evi
 Replay-ledger continuity prevents duplicate task creation. It cannot promote release gates, establish Repo Check standing, set `stable_release_authorized`, or create a release tag.
 
 The dependency-free builder, manifest alignment, identity-hash compatibility, self-check alignment, and path normalization do not change publication posture, release authority, canonical status, clinical or regulatory standing, or any external system.
+
+The origin-reconstruction case is repository-local evidence preservation only. It does not authorize publication, release, deployment, theological conclusions, archaeological conclusions, or claims that the documented conversation is the origin of the reconstruction concept.
+
+## Session consolidation: origin-reconstruction conversation
+
+Goal ID: `SV-ARA-CASE-ORIGIN-RECONSTRUCTION-2026-08-09`
+
+Originating session goal: preserve the conversation itself as evidence so future observers can reconstruct the intellectual transition rather than infer it only from a later terminal state.
+
+Canonical owner: `StegVerse-Labs/ara-admissibility-interop` on `main`.
+
+Claim state: `COMPLETE` for repository-local preservation. No competing implementation claim was found before installation.
+
+Authoritative files:
+
+- `admissibility/examples/conversation-origin-reconstruction-case.md`
+- `admissibility/examples/conversation-origin-reconstruction-case.json`
+- this canonical handoff
+
+Transferred requirements:
+
+- preserve the conversation rather than only a retrospective essay;
+- preserve the competing predecessor hypotheses visible at the beginning of the exchange;
+- distinguish earliest observable state from originating state;
+- distinguish observation from provenance, chronology from causality, surviving evidence from complete history, and reconstructable transition from reconstructed origin;
+- preserve the recursive transition in which the participants recognize that the conversation itself is evidence;
+- preserve the deliberate decision to document and the user's explicit assent;
+- retain explicit non-claims so the case cannot be used as evidence for or against the existence of God or as proof of a specific prehistoric causal account.
+
+Validation for this session goal: direct repository fetch of both installed files plus JSON parse/syntax inspection is required after commit. No workflow or publication success is implied by file installation.
+
+MERGED INTO: `StegVerse-Labs/ara-admissibility-interop/docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` and the two authoritative case files above.
+
+Archive condition for this originating session: once direct repository reads confirm the committed human-readable and machine-readable case records and the canonical handoff contains this consolidation record, no unique execution information from that conversation remains only in chat.
 
 ## Next tasks
 
