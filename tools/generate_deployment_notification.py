@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_HANDOFF = ROOT / "docs" / "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
+ROOT_HANDOFF_REDIRECT = ROOT / "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
 DEFAULT_BUNDLE = ROOT / "status" / "deployed-evidence-bundle.json"
 DEFAULT_DECISION = ROOT / "status" / "release-evidence-decision.json"
 DEFAULT_MARKDOWN = ROOT / "status" / "deployment-notification-email.md"
@@ -31,6 +32,61 @@ def sha256_text(text: str) -> str:
 def repository_path(path: Path) -> Path:
     """Resolve a CLI path against the repository root without changing its boundary."""
     return path.resolve() if path.is_absolute() else (ROOT / path).resolve()
+
+
+def resolve_handoff_path(
+    path: Path,
+    *,
+    root: Path = ROOT,
+    canonical: Path = DEFAULT_HANDOFF,
+    redirect: Path = ROOT_HANDOFF_REDIRECT,
+) -> Path:
+    """Resolve the one canonical mirror handoff and reject competing handoff sources.
+
+    The repository intentionally retains a root discovery redirect, but mutable handoff
+    state lives only in ``docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md``.  This
+    function makes that precedence executable so callers cannot accidentally alternate
+    between two ``*_MIRROR_HANDOFF.md`` files based on glob order or CLI input.
+    """
+    root = root.resolve()
+    canonical = canonical.resolve()
+    redirect = redirect.resolve()
+    candidate = path.resolve()
+
+    try:
+        candidate.relative_to(root)
+        canonical.relative_to(root)
+        redirect.relative_to(root)
+    except ValueError as exc:
+        raise ValueError("handoff path must remain inside repository root") from exc
+
+    if candidate == canonical:
+        if not canonical.is_file():
+            raise ValueError("canonical mirror handoff is missing")
+        return canonical
+
+    if candidate == redirect:
+        if not redirect.is_file():
+            raise ValueError("mirror handoff redirect is missing")
+        redirect_text = redirect.read_text(encoding="utf-8")
+        canonical_relative = canonical.relative_to(root).as_posix()
+        if "Status: superseded redirect" not in redirect_text:
+            raise ValueError("root mirror handoff is not a declared superseded redirect")
+        if f"`{canonical_relative}`" not in redirect_text:
+            raise ValueError("root mirror handoff redirect does not identify canonical handoff")
+        if not canonical.is_file():
+            raise ValueError("canonical mirror handoff is missing")
+        return canonical
+
+    if candidate.name.endswith("_MIRROR_HANDOFF.md"):
+        raise ValueError(
+            "competing mirror handoff rejected; canonical source is "
+            + canonical.relative_to(root).as_posix()
+        )
+
+    raise ValueError(
+        "non-canonical handoff rejected; use " + canonical.relative_to(root).as_posix()
+    )
 
 
 def extract_sections(markdown: str) -> dict[str, str]:
@@ -89,13 +145,14 @@ def main() -> int:
     parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
     args = parser.parse_args()
 
-    handoff_path = repository_path(args.handoff)
     bundle_path = repository_path(args.bundle)
     decision_path = repository_path(args.decision)
     markdown_path = repository_path(args.markdown)
     json_path = repository_path(args.json)
 
     try:
+        requested_handoff_path = repository_path(args.handoff)
+        handoff_path = resolve_handoff_path(requested_handoff_path)
         handoff_relative_path = handoff_path.relative_to(ROOT).as_posix()
         handoff_text = handoff_path.read_text(encoding="utf-8")
         bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
