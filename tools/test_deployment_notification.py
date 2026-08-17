@@ -7,7 +7,13 @@ import json
 import tempfile
 from pathlib import Path
 
-from generate_deployment_notification import REQUIRED_SECTIONS, extract_sections, render, sha256_text
+from generate_deployment_notification import (
+    REQUIRED_SECTIONS,
+    extract_sections,
+    render,
+    resolve_handoff_path,
+    sha256_text,
+)
 
 
 def main() -> int:
@@ -47,6 +53,39 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as temp_dir:
         root = Path(temp_dir)
+        docs = root / "docs"
+        docs.mkdir()
+        canonical = docs / "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
+        redirect = root / "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
+        competing = docs / "COMPETING_MIRROR_HANDOFF.md"
+        canonical.write_text(handoff, encoding="utf-8")
+        redirect.write_text(
+            "# Redirect\n\nStatus: superseded redirect\n\n"
+            "`docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md`\n",
+            encoding="utf-8",
+        )
+        competing.write_text(handoff, encoding="utf-8")
+
+        if resolve_handoff_path(canonical, root=root, canonical=canonical, redirect=redirect) != canonical.resolve():
+            failures.append("canonical-not-selected")
+        if resolve_handoff_path(redirect, root=root, canonical=canonical, redirect=redirect) != canonical.resolve():
+            failures.append("redirect-not-resolved-to-canonical")
+        try:
+            resolve_handoff_path(competing, root=root, canonical=canonical, redirect=redirect)
+        except ValueError as exc:
+            if "competing mirror handoff rejected" not in str(exc):
+                failures.append("competing-handoff-wrong-error")
+        else:
+            failures.append("competing-handoff-not-rejected")
+
+        redirect.write_text("# stale alternate handoff\n", encoding="utf-8")
+        try:
+            resolve_handoff_path(redirect, root=root, canonical=canonical, redirect=redirect)
+        except ValueError:
+            pass
+        else:
+            failures.append("invalid-redirect-not-rejected")
+
         body_file = root / "notification.md"
         envelope_file = root / "notification.json"
         body_file.write_text(body, encoding="utf-8")
