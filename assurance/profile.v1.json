@@ -1,0 +1,9 @@
+{
+  "schema_version": "steggate.assurance-profile.v1",
+  "status": "review-candidate",
+  "authority_effect": false,
+  "verification_order": ["unverified", "self_reported", "cryptographically_verified", "independently_verified"],
+  "capability_order": ["self_reported", "constructor_attested", "host_attested", "hardware_attested", "externally_observed"],
+  "dimensions": ["identity", "signatures", "trust_anchor", "source_evidence"],
+  "semantics": "Achieved assurance reports what was actually verified. It is evidence about verification quality, never a permission grant. A claimed level may not exceed its observed level. Dimensions are compared only within their declared ordering."
+}

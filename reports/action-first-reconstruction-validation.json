@@ -1,0 +1,31 @@
+{
+  "schema_version": "stegverse.action-first-reconstruction-validation.v1",
+  "validated_head": "d48b2734c2fdb8018271e2413a0d786f6cc5e479",
+  "schema_foundation_run": 31264790935,
+  "schema_foundation_job": 93121083300,
+  "repo_check_run": 31264789097,
+  "validator": "tools/validate_action_first_reconstruction.py",
+  "schema": "schemas/action-first-reconstruction.v1.json",
+  "fixtures": "fixtures/action-first/reconstruction-cases.json",
+  "case_count": 11,
+  "required_case_count": 11,
+  "invariant_count": 8,
+  "required_invariant_count": 8,
+  "result": "PASS",
+  "errors": [],
+  "authority_effect": false,
+  "runtime_activation": false,
+  "publication_activation": false,
+  "hosted_validation": {
+    "schema_foundation": "SUCCESS",
+    "repo_check": "SUCCESS",
+    "validator_step": "SUCCESS",
+    "compile_step": "SUCCESS"
+  },
+  "artifact": {
+    "name": "steggate-audit-kit-fixture-001",
+    "artifact_id": 9023815216,
+    "sha256": "325cde87df503d801ed48c13bbf013bed1fef7e4ad7c518d92ec7b59b7e1c72e",
+    "note": "Existing Audit Kit artifact from the same hosted validation run; Action-First validator evidence is preserved in the run logs and this committed receipt."
+  }
+}

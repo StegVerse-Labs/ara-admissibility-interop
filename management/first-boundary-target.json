@@ -1,0 +1,30 @@
+{
+  "schema_version": "steggate.real-boundary-target.v1",
+  "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+  "target_id": "ara-taskstate-real-boundary",
+  "target_class": "repository_governance_canonical_task_state_mutation",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "branch_context": "feat/steggate-v46-schema-foundation",
+  "target_path": "management/steggate-v46-implementation.json",
+  "precondition": {
+    "first_real_boundary_pilot": "ABSENT_OR_NOT_COMPLETE"
+  },
+  "authorized_consequence": {
+    "target_field": "first_real_boundary_pilot",
+    "target_value": "COMPLETE"
+  },
+  "non_synthetic_basis": "This mutates the canonical repository task-state record used for cross-session continuation and therefore changes durable project execution state on the live PR branch. It is not a fixture-only or demo-only artifact.",
+  "superseded_transport": "GitHub issue #13 close/completed consequence was admitted but platform mutation was refused; no project authority is inferred from that refusal.",
+  "forbidden_consequences": [
+    "merge_pr_1",
+    "create_release_or_tag",
+    "deploy",
+    "publish",
+    "mutate_stegcore_runtime",
+    "close_unrelated_issues",
+    "claim_customer_validation",
+    "claim_standards_authority"
+  ],
+  "completion_observation": "A post-consequence fetch of management/steggate-v46-implementation.json shows first_real_boundary_pilot=COMPLETE with other canonical task state preserved.",
+  "authority_effect": false
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version":"steggate.fixtures.v1",
+  "fixtures":[
+    {"fixture_id":"core.allow.bound_candidate","input":{"admitted_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","commit_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"expected":{"decision":"ALLOW"}},
+    {"fixture_id":"core.deny.candidate_mismatch","input":{"admitted_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","commit_hash":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},"expected":{"decision":"DENY","reason_code":"CANDIDATE_BINDING_MISMATCH"}},
+    {"fixture_id":"core.fail_closed.unverifiable_evidence","input":{"required_evidence_resolvable":false},"expected":{"decision":"FAIL_CLOSED","reason_code":"REQUIRED_EVIDENCE_UNVERIFIABLE"}},
+    {"fixture_id":"core.allow.authority_narrowing","input":{"upstream":["read","write"],"downstream":["read"]},"expected":{"decision":"ALLOW"}},
+    {"fixture_id":"core.deny.authority_broadening","input":{"upstream":["read"],"downstream":["read","write"]},"expected":{"decision":"DENY","reason_code":"AUTHORITY_BROADENING"}},
+    {"fixture_id":"core.fail_closed.authority_not_comparable","input":{"upstream_vocab":"corp-v1","downstream_vocab":"gov-v1","mapping_ref":null},"expected":{"decision":"FAIL_CLOSED","reason_code":"AUTHORITY_NOT_COMPARABLE"}},
+    {"fixture_id":"core.deny.denied_authority_reuse","input":{"source_admission":"DENY","onward_authority_ref":"source"},"expected":{"decision":"DENY","reason_code":"AUTHORITY_DERIVES_FROM_DENIAL"}},
+    {"fixture_id":"core.allow.evidence_axes","input":{"origin":"ASSERTED","character":"DETERMINISTIC","truth_scope":"assertion_integrity_only"},"expected":{"valid":true}},
+    {"fixture_id":"core.fail_closed.evidence_axes_missing","input":{"origin":"ASSERTED"},"expected":{"decision":"FAIL_CLOSED","reason_code":"EVIDENCE_CLASSIFICATION_MISSING"}}
+  ]
+}

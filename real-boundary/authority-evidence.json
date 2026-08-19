@@ -1,0 +1,18 @@
+{
+  "schema_version": "steggate.real-boundary-authority-evidence.v1",
+  "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+  "candidate_id": "rb-ara-taskstate-001",
+  "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
+  "authority_model_ref": "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority",
+  "durable_authority_record": "https://github.com/StegVerse-Labs/ara-admissibility-interop/issues/13#issuecomment-5224288597",
+  "authority_principal": "StegVerse",
+  "authorized_repository": "StegVerse-Labs/ara-admissibility-interop",
+  "authorized_branch": "feat/steggate-v46-schema-foundation",
+  "authorized_action": "update_canonical_task_state",
+  "authorized_target_path": "management/steggate-v46-implementation.json",
+  "authorized_target_field": "first_real_boundary_pilot",
+  "authorized_target_value": "COMPLETE",
+  "authority_verified": true,
+  "scope_bounded": true,
+  "authority_effect": false
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "steggate.trust-level-fixtures.v1",
+  "fixtures": [
+    {
+      "fixture_id": "trust.l0.local_assertion",
+      "input": {"cryptographic_binding": false, "external_anchor_domains": [], "independent_observation": false, "reported_level": "L0"},
+      "expected": {"achieved_level": "L0", "decision": "ALLOW", "reason_code": null}
+    },
+    {
+      "fixture_id": "trust.l1.local_crypto_binding",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": [], "independent_observation": false, "reported_level": "L1"},
+      "expected": {"achieved_level": "L1", "decision": "ALLOW", "reason_code": null}
+    },
+    {
+      "fixture_id": "trust.l2.one_external_domain",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": ["issuer.example"], "independent_observation": false, "reported_level": "L2"},
+      "expected": {"achieved_level": "L2", "decision": "ALLOW", "reason_code": null}
+    },
+    {
+      "fixture_id": "trust.l3_two_external_domains_observed",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": ["issuer.example", "observer.example"], "independent_observation": true, "reported_level": "L3"},
+      "expected": {"achieved_level": "L3", "decision": "ALLOW", "reason_code": null}
+    },
+    {
+      "fixture_id": "trust.fail_closed.l2_without_external_anchor",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": [], "independent_observation": false, "reported_level": "L2"},
+      "expected": {"achieved_level": "L1", "decision": "FAIL_CLOSED", "reason_code": "ASSURANCE_OVERCLAIMED"}
+    },
+    {
+      "fixture_id": "trust.fail_closed.duplicate_domain_not_l3",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": ["issuer.example", "issuer.example"], "independent_observation": true, "reported_level": "L3"},
+      "expected": {"achieved_level": "L2", "decision": "FAIL_CLOSED", "reason_code": "ASSURANCE_OVERCLAIMED"}
+    },
+    {
+      "fixture_id": "trust.allow.report_below_achieved",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": ["issuer.example", "observer.example"], "independent_observation": true, "reported_level": "L2"},
+      "expected": {"achieved_level": "L3", "decision": "ALLOW", "reason_code": null}
+    },
+    {
+      "fixture_id": "trust.l2_observation_without_second_domain",
+      "input": {"cryptographic_binding": true, "external_anchor_domains": ["issuer.example"], "independent_observation": true, "reported_level": "L2"},
+      "expected": {"achieved_level": "L2", "decision": "ALLOW", "reason_code": null}
+    }
+  ]
+}

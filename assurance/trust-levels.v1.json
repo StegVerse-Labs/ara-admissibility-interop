@@ -1,0 +1,47 @@
+{
+  "schema_version": "steggate.trust-levels.v1",
+  "status": "review-candidate",
+  "authority_effect": false,
+  "ordering": ["L0", "L1", "L2", "L3"],
+  "levels": {
+    "L0": {
+      "name": "local_assertion",
+      "minimum_external_anchor_count": 0,
+      "independent_administrative_domain_required": false,
+      "cryptographic_binding_required": false,
+      "independent_observation_required": false,
+      "meaning": "Locally asserted state with no external trust anchor. Useful as evidence input but not externally anchored assurance."
+    },
+    "L1": {
+      "name": "cryptographically_bound_local_anchor",
+      "minimum_external_anchor_count": 0,
+      "independent_administrative_domain_required": false,
+      "cryptographic_binding_required": true,
+      "independent_observation_required": false,
+      "meaning": "The claim is cryptographically bound to a locally controlled identity or key, but no independent external administrative domain is required."
+    },
+    "L2": {
+      "name": "externally_anchored",
+      "minimum_external_anchor_count": 1,
+      "independent_administrative_domain_required": true,
+      "cryptographic_binding_required": true,
+      "independent_observation_required": false,
+      "meaning": "At least one independently administered external anchor is cryptographically bound to the claim or identity."
+    },
+    "L3": {
+      "name": "independently_observed_and_anchored",
+      "minimum_external_anchor_count": 2,
+      "independent_administrative_domain_required": true,
+      "cryptographic_binding_required": true,
+      "independent_observation_required": true,
+      "meaning": "Multiple independently administered anchors plus independent observation support reconstruction beyond the presenting domain."
+    }
+  },
+  "rules": [
+    "reported_level_must_not_exceed_achieved_level",
+    "external_anchor_count_counts_distinct_administrative_domains_only",
+    "self_controlled_key_material_does_not_satisfy_external_anchor_requirement",
+    "independent_observation_is_evidence_not_execution_authority",
+    "trust_level_does_not_replace_admissibility_or_receiver_readmission"
+  ]
+}

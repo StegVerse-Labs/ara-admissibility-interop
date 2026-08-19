@@ -1,0 +1,16 @@
+{
+  "pack_id":"audit-kit-fixture-001",
+  "canonicalization_profile":"stegverse.jcs.v1",
+  "objects":[
+    {"role":"candidate","path":"source/candidate.json","sensitive_handling":"included_fixture","sha256":"sha256:e341a31596e96b8db059c50194729ac99789c1fcbdc1b3dc81e18c9b3e2a61e6"},
+    {"role":"policy_authority_evidence","path":"source/policy-authority-evidence.json","sensitive_handling":"commitment_and_refs_only","sha256":"sha256:724664064054c34f984a2143e68cd918b6cdee4014fef283c26ec7575f03dece"},
+    {"role":"decision","path":"source/decision.json","sensitive_handling":"included_fixture","sha256":"sha256:628c517d810a6ca021e1f4f844da2738a8c2e298f30a3aebd92ed97568df6235"},
+    {"role":"receipt","path":"source/receipt.json","sensitive_handling":"included_fixture","sha256":"sha256:4903ee76a7eebecbdef7f421416b81faa421017cbd7a860fe980ec5f6a483088"},
+    {"role":"coverage","path":"source/coverage.json","sensitive_handling":"included_fixture","sha256":"sha256:ee50c0c3e6119e7cf09fd3687924a61e0d1a697874c19176b58240c3c65594e6"},
+    {"role":"verifier_inputs","path":"source/verifier-inputs.json","sensitive_handling":"included_fixture","sha256":"sha256:8c526e22f1bd28daab852c088c58497c67fa7793eec57e8407225e1e0df3d3c8"}
+  ],
+  "achieved_assurance":{"profile_ref":"steggate.assurance-profile.v1","identity":"self_reported","signatures":"unverified","trust_anchor":"self_reported","source_evidence":"cryptographically_verified","capability_construction":"self_reported","assumptions":["fixture identities and policy/authority references are synthetic","SHA-256 checks establish content integrity only"]},
+  "trust_assumptions":["fixture source files are local bounded test evidence","no external provider assertion is implicitly trusted"],
+  "non_claims":["not production evidence","not release approval","not execution authority","not publication authority","not standards certification"],
+  "schema_version":"steggate.evidence-pack-manifest.v1"
+}

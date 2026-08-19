@@ -1,0 +1,17 @@
+{
+  "schema_version":"steggate.evidence-pack-spec.v1",
+  "pack_id":"audit-kit-fixture-001",
+  "canonicalization_profile":"stegverse.jcs.v1",
+  "objects":[
+    {"role":"candidate","path":"source/candidate.json","sensitive_handling":"included_fixture"},
+    {"role":"policy_authority_evidence","path":"source/policy-authority-evidence.json","sensitive_handling":"commitment_and_refs_only"},
+    {"role":"decision","path":"source/decision.json","sensitive_handling":"included_fixture"},
+    {"role":"receipt","path":"source/receipt.json","sensitive_handling":"included_fixture"},
+    {"role":"coverage","path":"source/coverage.json","sensitive_handling":"included_fixture"},
+    {"role":"verifier_inputs","path":"source/verifier-inputs.json","sensitive_handling":"included_fixture"}
+  ],
+  "achieved_assurance":{"profile_ref":"steggate.assurance-profile.v1","identity":"self_reported","signatures":"unverified","trust_anchor":"self_reported","source_evidence":"cryptographically_verified","capability_construction":"self_reported","assumptions":["fixture identities and policy/authority references are synthetic","SHA-256 checks establish content integrity only"]},
+  "trust_assumptions":["fixture source files are local bounded test evidence","no external provider assertion is implicitly trusted"],
+  "non_claims":["not production evidence","not release approval","not execution authority","not publication authority","not standards certification"],
+  "forbidden_embedded_fields":["credential","credentials","password","private_prompt","provider_response","secret","token"]
+}

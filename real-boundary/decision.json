@@ -1,0 +1,13 @@
+{
+  "schema_version": "steggate.real-boundary-decision.v1",
+  "decision_id": "rb-dec-ara-taskstate-001",
+  "candidate_id": "rb-ara-taskstate-001",
+  "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
+  "decision": "ALLOW",
+  "reason_code": null,
+  "authority_verified": true,
+  "target_authorized": true,
+  "candidate_binding_verified": true,
+  "consequence_scope": "Set management/steggate-v46-implementation.json:first_real_boundary_pilot=COMPLETE only",
+  "authority_effect": false
+}

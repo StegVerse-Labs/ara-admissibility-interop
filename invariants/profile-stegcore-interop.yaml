@@ -1,0 +1,28 @@
+{
+  "registry_version": "steggate.invariants.v1",
+  "profile": "stegcore-interop",
+  "status": "review-candidate",
+  "invariants": [
+    {
+      "invariant_id": "SG-INTEROP-001",
+      "normative_statement": "StegCore allow, deny, and defer remain semantically distinct across the StegGate interop boundary; defer maps to REVIEW and MUST NOT be reclassified as FAIL_CLOSED.",
+      "required_fixture_ids": ["compat.stegcore.allow_to_allow", "compat.stegcore.deny_to_deny", "compat.stegcore.defer_to_review"],
+      "expected_outcome": "LOSSLESS_DECISION_PROJECTION",
+      "failure_reason_code": "DECISION_ENUM_RECONCILIATION_FAILED"
+    },
+    {
+      "invariant_id": "SG-INTEROP-002",
+      "normative_statement": "The legacy ARA FAIL-CLOSED spelling maps only to the v4.6 FAIL_CLOSED value and MUST NOT be used as an alias for StegCore defer.",
+      "required_fixture_ids": ["compat.legacy.fail_closed_spelling", "compat.stegcore.defer_to_review"],
+      "expected_outcome": "LEGACY_DECISION_COMPATIBILITY",
+      "failure_reason_code": "LEGACY_DECISION_MAPPING_INVALID"
+    },
+    {
+      "invariant_id": "SG-INTEROP-003",
+      "normative_statement": "A retry or reconstructed consequence attempt must present the same canonical candidate hash that was admitted; a changed candidate is denied before consequence.",
+      "required_fixture_ids": ["compat.candidate_binding.same_hash", "compat.candidate_binding.retry_mismatch"],
+      "expected_outcome": "EXACT_CANDIDATE_BINDING",
+      "failure_reason_code": "CANDIDATE_BINDING_MISMATCH"
+    }
+  ]
+}

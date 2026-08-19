@@ -1,0 +1,61 @@
+{
+  "schema_version": "steggate.stegcore-goal0-compat.v1",
+  "status": "review-candidate",
+  "origin": "STEGGATE-GOAL0 / ST-016 decision reconciliation and CL-SG-003/SPE live-binding dependency",
+  "canonical_refs": {
+    "stegcore_decision_enum": {
+      "repository": "StegVerse-Labs/StegCore",
+      "branch": "feat/commit-coherence-boundary",
+      "path": "src/stegcore/decision.py",
+      "symbol": "DecisionValue",
+      "values": ["allow", "deny", "defer"]
+    },
+    "stegcore_commit_boundary": {
+      "repository": "StegVerse-Labs/StegCore",
+      "branch": "feat/commit-coherence-boundary",
+      "path": "docs/COMMIT_COHERENCE.md",
+      "runtime_path": "src/stegcore/commit_governance.py",
+      "ordering": "existing admissibility -> coherence gate -> state transition",
+      "candidate_binding_scope": "bound action, capability surface, state, authority basis, and receipt integrity at the consequence boundary"
+    },
+    "ara_legacy_candidate": "admissibility/commitment-candidate.schema.json",
+    "ara_legacy_result": "admissibility/standing-result.schema.json",
+    "ara_v46_receipt": "schemas/receipt.v1.json",
+    "ara_binding_invariant": "SG-CORE-002"
+  },
+  "decision_projection": [
+    {
+      "source": "allow",
+      "target": "ALLOW",
+      "rule": "positive StegCore admissibility may enter the later coherence gate; it is not itself execution authority"
+    },
+    {
+      "source": "deny",
+      "target": "DENY",
+      "rule": "negative StegCore admissibility remains negative and cannot become onward authority"
+    },
+    {
+      "source": "defer",
+      "target": "REVIEW",
+      "rule": "defer represents unresolved/pending governance requirements and MUST NOT be collapsed into FAIL_CLOSED"
+    }
+  ],
+  "fail_closed_rule": "FAIL_CLOSED is reserved for inability to establish a required policy-relevant fact or comparable authority/evidence basis; it is not an alias for StegCore defer.",
+  "candidate_binding_rule": "The consequence-bearing candidate MUST be identified by the same candidate_id and canonical candidate_hash admitted by StegGate. Retries or reconstruction MUST recompute and compare that hash before consequence. A mismatch is DENY / CANDIDATE_BINDING_MISMATCH.",
+  "legacy_compatibility": {
+    "commitment_candidate": {
+      "preserve": ["candidate_id", "transition_id", "requested_action", "actor", "target", "policy_reference", "evidence_references", "execution_context", "validity_window", "recoverability_profile"],
+      "v46_binding": "canonicalize the complete governed candidate under the declared canonicalization profile and bind its sha256 identifier into the v4.6 decision receipt"
+    },
+    "standing_result": {
+      "preserve": ["candidate_id", "decision", "standing_valid", "checks", "commit_time", "reasons"],
+      "projection": {
+        "ALLOW": "ALLOW",
+        "DENY": "DENY",
+        "FAIL-CLOSED": "FAIL_CLOSED"
+      },
+      "note": "legacy FAIL-CLOSED spelling is a compatibility surface; v4.6 canonical receipt value is FAIL_CLOSED"
+    }
+  },
+  "authority_boundary": "This mapping identifies existing canonical StegCore references and ara compatibility requirements. It does not modify StegCore PR #18, mint continuity evidence, authorize execution, merge, release, publication, or deployment."
+}

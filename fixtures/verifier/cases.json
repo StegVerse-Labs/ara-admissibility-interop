@@ -1,0 +1,17 @@
+{
+  "schema_version": "steggate.offline-verifier-cases.v1",
+  "base_manifest": "fixtures/evidence-pack/manifest.json",
+  "decision_cases": [
+    {"case_id":"verifier.allow","decision":"ALLOW","reason_code":"DECISION_REQUIRED","expect":"PASS"},
+    {"case_id":"verifier.deny","decision":"DENY","reason_code":"CANDIDATE_BINDING_MISMATCH","expect":"PASS"},
+    {"case_id":"verifier.review","decision":"REVIEW","reason_code":"REQUIRED_EVIDENCE_UNVERIFIABLE","expect":"PASS"},
+    {"case_id":"verifier.fail_closed","decision":"FAIL_CLOSED","reason_code":"AUTHORITY_NOT_COMPARABLE","expect":"PASS"}
+  ],
+  "tamper_cases": [
+    {"case_id":"verifier.tamper.receipt_decision","operation":"receipt_decision_mismatch","expect":"REJECT"},
+    {"case_id":"verifier.tamper.candidate_bytes","operation":"candidate_content_without_manifest_update","expect":"REJECT"},
+    {"case_id":"verifier.tamper.reason","operation":"unregistered_reason","expect":"REJECT"},
+    {"case_id":"verifier.tamper.authority","operation":"receipt_authority_effect_true","expect":"REJECT"}
+  ],
+  "legacy_fixture": "fixtures/compatibility/stegcore-goal0.json"
+}

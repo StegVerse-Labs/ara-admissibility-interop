@@ -1,127 +1,181 @@
 # ARA Admissibility Interop Mirror Handoff
 
-## Current goal
+## Canonical status
 
-Complete live verification of the `0.2.0-release-candidate` governed public-review publication path and activate evidence-backed email monitoring for successor orchestration.
+This file is the repository handoff. On `main`, the governed `0.2.0-release-candidate` public-review publication lane remains authoritative. On branch `feat/steggate-v46-schema-foundation`, this candidate section records the distinct StegGate v4.6 schema/integration lane without granting merge, release, publication, deployment, evaluator-replacement, or standards authority.
 
-## Completed
+## Active goal and claim
 
-- Confirmed canonical and iOS-safe workflow mirrors for Repo Check, Docs Pages, Deployment Notification, and Deployment Mailbox Monitor.
-- Added dependency-free publication gates, exact-commit Pages verification, retained evidence, independent verification, release decisions, deterministic evidence bundles, and evidence-bounded gate promotion.
-- Added handoff-backed deployment notification generation importing `Current goal`, `Current publication posture`, `Current release gate`, `Boundary`, and `Next tasks`.
-- Added Microsoft Graph application transport, retained delivery receipts, a post-Pages successor notification workflow, and canonical body, envelope, and bundle attachments.
-- Added inbound notification validation, verification-required next-task candidates, durable replay identities, duplicate no-ops, and conflicting-replay rejection.
-- Added scheduled Microsoft Graph mailbox polling, oldest-first unread processing, required attachment validation, mark-read-after-acceptance, and durable cross-run ledger restoration.
-- Repeated Pages runs proved the containerized Jekyll action could report build completion without exposing a usable host-side `_site/index.html` to the following governed stamping step.
-- Added `tools/build_governed_docs_site.py`, a dependency-free deterministic renderer that converts repository Markdown to static HTML, copies declared supporting assets, and guarantees `_site/index.html` before deployment stamping.
-- Replaced `actions/jekyll-build-pages@v1` in both Pages workflow copies with `python3 tools/build_governed_docs_site.py`; the external container build is no longer on the critical publication path.
-- Added `tools/test_governed_docs_builder.py` covering heading rendering, Markdown-link conversion, inline-code rendering, code escaping, root entry generation, linked-page generation, and supporting-asset copying.
-- Repo Check now runs the deterministic builder regression suite, and canonical/iOS workflow parity was restored after both workflow pairs were updated.
-- Docs Pages run `29225241901` on commit `ec0adaa7a1d9d5b9f926a06ed84c04eb360d7934` passed deterministic build, deployment stamping, built-entry verification, Pages artifact upload, deployment, exact-live-commit verification, and receipt generation.
-- That run then failed only at `Evaluate deployed release evidence` because the receipt generator records the live deployment identity hash as `identity_body_sha256` while the independent verifier still read the legacy `identity_sha256` field.
-- Commit `92dde057ffeb682e31acc147574e4c19a5f617e3` repaired the verifier to use the canonical `identity_body_sha256` field while accepting the legacy alias for retained-evidence compatibility.
-- Repo Check run `29225254890` on commit `e26659d65c0404388c01254c76f570f17dc82658` failed at `Generate validation report` because `tools/check_docs_site.py` still required the removed Jekyll action and pre-renderer workflow structure.
-- Commit `698fd40a11f964f2a75ff6aff3c6fff8908cd528` aligned the docs self-check with the deterministic builder, all four workflow mirror pairs, current notification/replay/mailbox tests, and the canonical live identity hash field.
-- Repo Check run `29225390550` on commit `3619635c793ce4abd43f9900750f58988f465d96` exposed one remaining stale invariant: `tools/check_docs_site.py` required the literal delegated permission name `Mail.ReadWrite` inside the poller implementation even though the poller correctly uses Microsoft Graph application scope `https://graph.microsoft.com/.default` with client credentials and performs a bounded `isRead` patch only after accepted processing.
-- Commit `0796b475d82e1abbd75b3c7f40ad7dbc1ccc9380` replaced that stale literal check with executable transport invariants: Graph `.default` scope, `client_credentials`, the bounded `isRead` mutation, and the governed one-message processor.
-- Deployment Notification run `29225409767` successfully resolved the triggering run, checked out the exact triggering commit, downloaded `deployed-publication-evidence`, and independently reverified the retained evidence bundle before failing while regenerating the handoff-backed email notification. No notification was sent and no external authority boundary was crossed.
-- Deployment Notification run `29225962832` on commit `8e6fc46d62d8c346a1f08628b38af9a71b41133f` reproduced the same bounded failure and exposed the exact exception: the repository-relative handoff path `docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` was passed directly to `Path.relative_to(ROOT)`, producing a deterministic `ValueError` before notification generation.
-- Commit `791d4df65c1618c2acde3bc56bf35505577fb7ee` added repository-root path normalization for all generator inputs and outputs, computes the handoff-relative path only after resolution, and retains fail-closed handling for paths outside the repository root.
-- Updated `release-manifest.json` to schema `0.13.0`, replacing stale Jekyll declarations with the dependency-free governed builder, registering the builder tests, all four workflow pairs, exact notification attachments, replay processing, scheduled mailbox polling, and durable monitor-state retention.
-- Strengthened `tools/check_docs_site.py` to enforce the deterministic builder contract, four workflow pairs, three canonical email attachments, 90-day monitor-state retention, one-task-per-notification semantics, and the prohibition on automated release authority.
-- Updated `docs/deployment-email-monitoring.md` with the hourly monitor schedule, sixth monitor-mailbox secret, restricted `Mail.Send` and `Mail.ReadWrite` requirements, replay identity, mark-read sequencing, and retained cross-run state.
-- Repo Check run `29228302637` on commit `5657faf198cb1b805690a866d68ce46745c3ec40` reached `Generate validation report` and reported only two stale literal assertions: `missing-builder-phrase:dependency` and `missing-builder-tests-phrase:linked-page`; all independently reported schema, example, policy, and evaluator checks passed.
-- A concurrent bounded update replaced the stale `linked-page` assertion with executable test markers. Commit `e49e6c9c7b8f7e6af7d87344d470a1aa7dd99ba0` replaced the remaining generic `dependency` assertion with the builder's exact `without external runtime dependencies` contract, preserving all other self-check, publication, notification, replay, monitor, and release-boundary invariants.
-- Existing exact-commit stamping, live HTTP verification, receipt generation, evidence evaluation, bundle verification, notification generation, and retained-artifact boundaries remain unchanged.
-- Session-specific origin-reconstruction case `SV-ARA-CASE-ORIGIN-RECONSTRUCTION-2026-08-09` was durably installed at `admissibility/examples/conversation-origin-reconstruction-case.md` with machine-readable companion `admissibility/examples/conversation-origin-reconstruction-case.json`. The case preserves the observed transition from competing causal narratives to reconstruction framing, recursive recognition of the conversation as evidence, deliberate preservation, and explicit assent. Commits: `022d1a6c2629a775f90d4aa07acca65448865a17` and `b08c0e35b6aed53b709c8f785081dcbb11ad5659`.
+```text
+goal_id: STEGGATE-AUDITKIT-001
+originating_goal: translate StegGate Product Review v4.0-v4.6 normative requirements into fixture-backed invariant registries, schemas, canonicalization, algebra vectors, compatibility evidence, and deterministic validation
+repository: StegVerse-Labs/ara-admissibility-interop
+branch: feat/steggate-v46-schema-foundation
+pull_request: 1
+parent_issue: 2
+session_consolidation_issue: 23
+archive_gate_issue: 66
+canonical_task_owner: ara-admissibility-interop implementation lane
+implementation_claim: CLAIMED_FOR_INTEGRATION
+validation_claim: MACHINE_OWNED_BY_BRANCH_WORKFLOWS
+claim_created: 2026-08-07T19:45:05Z
+claim_release_condition: durable candidate handoff/session inventory/task state are current, final branch head is hosted-green, all unique session requirements are transferred, and PR #1 is merged or explicitly remains as the canonical unmerged continuation
+collision_boundary: PR #1 changed paths plus management/steggate-v46-*.json and this branch copy of the handoff
+```
 
-## Current publication posture
+## Mainline publication lane preserved
 
-- publication status: `public_review`
-- canonical status: `not_authorized`
-- independent review: `not_started`
-- clinical status: `not_validated`
-- regulatory status: `not_authorized`
-- reliance posture: `research_and_review_only`
+The `main` handoff's existing publication posture remains unchanged:
 
-## Current release gate
+```text
+publication_status: public_review
+canonical_status: not_authorized
+independent_review: not_started
+clinical_status: not_validated
+regulatory_status: not_authorized
+reliance_posture: research_and_review_only
+stable_release_tag: blocked
+```
 
-- local architecture and checks: built
-- canonical/iOS workflow parity: built across four workflow pairs
-- deterministic dependency-free docs builder and tests: built and declared in release manifest schema `0.13.0`
-- exact-commit deployment and live verification: observed through the retained-evidence boundary
-- independent evidence verifier canonical identity-hash compatibility: repaired, successor-run verification pending
-- docs aggregate self-check alignment: stale builder and builder-test literal assertions repaired; successor-run verification pending
-- retained evidence bundle download and independent re-verification: observed in Deployment Notification runs `29225409767` and `29225962832`
-- handoff-backed notification regeneration: exact relative-path failure repaired in commit `791d4df65c1618c2acde3bc56bf35505577fb7ee`; successor-run verification pending
-- release-evidence evaluator and bounded gate promoter: built
-- handoff-backed email generation and Graph transport: built
-- replay ledger and one-task-per-notification processing: built
-- scheduled mailbox polling and durable state restoration: built and documented
-- Microsoft Graph application credentials: not configured or not yet observed
-- outbound delivery evidence: pending configured successor run
-- inbound mailbox-monitor evidence: pending configured scheduled run
-- deployed publication evidence and bundle retention: observed, direct artifact inspection still pending
-- stable release tag: blocked
+The StegGate branch MUST NOT infer release, deployment, publication, evaluator replacement, canonical-standard status, or execution authority from schema validation or PR mergeability.
 
-## Boundary
+## Implemented StegGate v4.6 candidate surfaces
 
-A successful Pages deployment means only that documentation was permitted under the declared publication posture. It does not establish upstream endorsement, external certification, independent review, clinical validity, regulatory authorization, canonical status, or execution authority.
+```text
+.github/workflows/steggate-schema-foundation.yml
+invariants/core.yaml
+invariants/profile-continuity.yaml
+invariants/profile-presentation.yaml
+schemas/transition.v1.json
+schemas/derivation.v1.json
+schemas/receipt.v1.json
+algebra/compose.v1.md
+algebra/compose-vectors.json
+canonicalization/STEGVERSE_JCS_V1.md
+tools/canonicalize_steggate.py
+profiles/presentation-entitlement.v1.yaml
+claims/presentation-entitlement.yaml
+fixtures/core/cases.json
+fixtures/continuity/cases.json
+fixtures/presentation/pp1/cases.json
+tools/lint_invariants.py
+management/steggate-v46-implementation.json
+management/steggate-v46-session-inventory.json
+```
 
-Email delivery and mailbox receipt are orchestration signals, not deployment evidence or release authority. The monitor may create a verification-required task only after validating the attached body, envelope, bundle identity, commit, declared handoff sections, and public-review decision.
+Current branch head before this handoff reconciliation was `26b416d609d42d8ac2e32e41713a28bfb5f57c2e`, 20 commits ahead of `main`, with 19 changed files and no deletions. PR #1 is open, draft, and mergeable.
 
-Replay-ledger continuity prevents duplicate task creation. It cannot promote release gates, establish Repo Check standing, set `stable_release_authorized`, or create a release tag.
+## Validation evidence
 
-The dependency-free builder, manifest alignment, identity-hash compatibility, self-check alignment, and path normalization do not change publication posture, release authority, canonical status, clinical or regulatory standing, or any external system.
+Hosted validation observed on head `26b416d609d42d8ac2e32e41713a28bfb5f57c2e`:
 
-The origin-reconstruction case is repository-local evidence preservation only. It does not authorize publication, release, deployment, theological conclusions, archaeological conclusions, or claims that the documented conversation is the origin of the reconstruction concept.
+```text
+StegGate Schema Foundation run 31215301992 / job 92987333546: SUCCESS
+Repo Check run 31215301955 / job 92987333302: SUCCESS
+additional Repo Check run 31215301616 / job 92987332220: SUCCESS
+```
 
-## Session consolidation: origin-reconstruction conversation
+Because this handoff reconciliation creates a new branch head, final archive/claim release requires successor hosted checks on that new head. Validation success on the prior head remains evidence for the implemented code but is not silently promoted to the new commit.
 
-Goal ID: `SV-ARA-CASE-ORIGIN-RECONSTRUCTION-2026-08-09`
+## Goal 0 dependency / StegCore coordination
 
-Originating session goal: preserve the conversation itself as evidence so future observers can reconstruct the intellectual transition rather than infer it only from a later terminal state.
+```text
+task_id: STEGGATE-GOAL0
+consumer: ara issue #2 / PR #1
+coordination_owner: StegVerse-Labs/StegCore issue #54
+claim_state: BLOCKED_PENDING_CANONICAL_REFS
+```
 
-Canonical owner: `StegVerse-Labs/ara-admissibility-interop` on `main`.
+Issue `StegVerse-Labs/StegCore#54` is coordination-only and must not duplicate StegCore PR #18 or alter existing `decide()` runtime ownership. It must expose or durably identify:
 
-Claim state: `COMPLETE` for repository-local preservation. No competing implementation claim was found before installation.
+1. the canonical decision-state enum contract referred to as `ST-016`;
+2. the live-binding / candidate-binding contract referred to as `CL-SG-003` / SPE;
+3. exact fields/outcomes ara must preserve when evolving existing `admissibility/commitment-candidate.schema.json` and `admissibility/standing-result.schema.json`.
 
-Authoritative files:
+Until those refs exist, semantic freeze and merge remain blocked. This dependency is durable and does not require chat history.
 
-- `admissibility/examples/conversation-origin-reconstruction-case.md`
-- `admissibility/examples/conversation-origin-reconstruction-case.json`
-- this canonical handoff
+## Session execution inventory
 
-Transferred requirements:
+Canonical inventory:
 
-- preserve the conversation rather than only a retrospective essay;
-- preserve the competing predecessor hypotheses visible at the beginning of the exchange;
-- distinguish earliest observable state from originating state;
-- distinguish observation from provenance, chronology from causality, surviving evidence from complete history, and reconstructable transition from reconstructed origin;
-- preserve the recursive transition in which the participants recognize that the conversation itself is evidence;
-- preserve the deliberate decision to document and the user's explicit assent;
-- retain explicit non-claims so the case cannot be used as evidence for or against the existence of God or as proof of a specific prehistoric causal account.
+```text
+management/steggate-v46-session-inventory.json
+```
 
-Validation for this session goal: direct repository fetch of both installed files plus JSON parse/syntax inspection is required after commit. No workflow or publication success is implied by file installation.
+It preserves the primary v4.0-v4.6 goal and adjacent goals, including Presentation Authority, continuity-as-relationship, least-stable semantics, final protocol kit, independent second implementation, first real consequential boundary, chained receipts/latency, sovereign/provider-neutral posture, and deferred HIL/AdmittedCode/portable-node/adapters. Every item has a durable issue/location, owner or future lane, claim state, evidence, release condition, and next action.
 
-MERGED INTO: `StegVerse-Labs/ara-admissibility-interop/docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` and the two authoritative case files above.
+Session-specific consolidation issues:
 
-Archive condition for this originating session: once direct repository reads confirm the committed human-readable and machine-readable case records and the canonical handoff contains this consolidation record, no unique execution information from that conversation remains only in chat.
+```text
+#23 STEGGATE-SESSION-CONSOLIDATION-001
+#66 STEGGATE-SESSION-ARCHIVE-GATE-001
+```
 
-## Next tasks
+Issues `#68-#101` are recorded by the inventory as duplicate administrative issues with no unique requirements; canonical replacements are #23, #66, and PR #1. They should be closed/superseded when issue-mutation authority is exercised.
 
-1. Confirm a successor Repo Check passes the governed-docs-builder suite together with all publication, evidence, promotion, notification, replay-ledger, and mailbox-poller tests after commit `e49e6c9c7b8f7e6af7d87344d470a1aa7dd99ba0`.
-2. Confirm a successor Deployment Notification run regenerates the handoff-backed notification without the prior `Path.relative_to` failure and stops only at a declared credential boundary or completes delivery-receipt generation.
-3. Confirm a successor Docs Pages run passes `Evaluate deployed release evidence` using the canonical `identity_body_sha256` field.
-4. Confirm Docs Pages generates and verifies the aggregate evidence bundle, generates the handoff-backed notification, and retains `deployed-publication-evidence`.
-5. Inspect that artifact and independently verify the publication receipt and aggregate evidence bundle.
-6. Confirm Deployment Notification reverifies that artifact and writes a delivery receipt.
-7. Configure narrowly restricted Microsoft Entra `Mail.Send` and `Mail.ReadWrite` application access for the designated sender and monitor mailbox.
-8. Configure the six mail and monitor secrets declared by the workflows.
-9. Confirm the hourly monitor restores its prior ledger, processes a governed email once, marks it read only after acceptance, and uploads updated monitor state.
-10. Apply only evidence-backed technical gate promotion after direct artifact inspection.
-11. Set `repo_check_workflow_verified` only from separately observed Repo Check evidence.
-12. Create a stable tag only after explicit release authorization.
-13. Add optional downstream Site mirroring only after inspecting `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`.
+## Current completion state
 
-No prior chat context is required to continue from this handoff.
+```text
+task_completion: schema foundation + canonicalization slice implemented; Goal 0 compatibility reconciliation remains
+required_candidate_files: 19/19 present for current implemented slice
+scaffolding_or_stubs: 0 identified in the current implemented slice
+missing_required_files_for_current_slice: 0
+validation: prior branch head hosted-green; successor validation required after this handoff update
+integration: draft PR open; not merged; Goal 0 compatibility unresolved
+propagation: not authorized/not started
+session_consolidation: unique requirements durably transferred to inventory/issues; final archive gate awaits successor validation and task-state reconciliation
+```
+
+## Automation
+
+`.github/workflows/steggate-schema-foundation.yml` is the machine-owned validator for this lane. Repository Repo Check remains an independent required check. Neither workflow may create release authority.
+
+## Exact next tasks
+
+1. Observe successor `StegGate Schema Foundation` and `Repo Check` checks on the post-handoff branch head.
+2. Update `management/steggate-v46-implementation.json` with that exact final head and hosted receipts.
+3. Keep PR #1 draft while `STEGGATE-GOAL0` remains unresolved.
+4. StegCore issue #54 supplies canonical ST-016 and CL-SG-003/SPE refs without duplicating PR #18.
+5. Ara issue #2 installs compatibility/reconciliation fixtures for the legacy commitment-candidate and standing-result contracts using those refs; fail closed rather than guess.
+6. Close/supersede duplicate administrative issues #68-#101 after confirming they contain no unique requirements.
+7. Close #23 and #66 only after the inventory/handoff/task state reference the final hosted-green branch head and no chat-only dependency remains.
+8. Do not tag, release, deploy, publish, or propagate until the applicable mainline/release handoff grants that authority.
+
+## Cross-repository propagation obligations
+
+Future release/publication work, once separately authorized, must inspect destination handoffs before propagation to:
+
+```text
+StegVerse-Labs/Site
+GCAT-BCAT-Engine/Publisher
+StegVerse-Labs/admissibility-wiki
+StegVerse-002/stegguardian-wiki
+master-records (when custody/master-record contracts require it)
+```
+
+No propagation is claimed by this branch.
+
+## Archive condition
+
+The originating v4.0-v4.6 session can be archived when:
+
+- this candidate handoff and `management/steggate-v46-session-inventory.json` preserve all unique decisions and requirements;
+- `management/steggate-v46-implementation.json` records the final hosted-green branch head;
+- #23/#66 can truthfully mark the session `MERGED_INTO_CANONICAL_WORKSTREAM` or `COMPLETE — ARCHIVE`;
+- all active claims have durable release conditions;
+- no future action requires reconstructing a decision from chat.
+
+The branch may remain draft/unmerged because semantic freeze is blocked by Goal 0; archive safety depends on durable continuation, not on forcing an unauthorized merge.
+
+## Canonical continuation
+
+```text
+MERGED INTO: StegVerse-Labs/ara-admissibility-interop PR #1
+branch: feat/steggate-v46-schema-foundation
+parent: issue #2
+inventory: management/steggate-v46-session-inventory.json
+archive gate: issue #66
+Goal 0 coordination: StegVerse-Labs/StegCore#54
+```
+
+No prior chat context is required to reconstruct the StegGate v4.0-v4.6 implementation state from these durable surfaces.

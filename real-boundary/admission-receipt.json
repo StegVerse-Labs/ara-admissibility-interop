@@ -1,0 +1,22 @@
+{
+  "schema_version": "steggate.real-boundary-admission-receipt.v1",
+  "receipt_id": "rb-receipt-ara-taskstate-001",
+  "decision_id": "rb-dec-ara-taskstate-001",
+  "candidate_id": "rb-ara-taskstate-001",
+  "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
+  "decision": "ALLOW",
+  "authority_model_ref": "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority",
+  "target_ref": "management/first-boundary-target.json#ara-taskstate-real-boundary",
+  "authorized_consequence": {
+    "repository": "StegVerse-Labs/ara-admissibility-interop",
+    "branch": "feat/steggate-v46-schema-foundation",
+    "action": "update_canonical_task_state",
+    "target_path": "management/steggate-v46-implementation.json",
+    "target_field": "first_real_boundary_pilot",
+    "target_value": "COMPLETE"
+  },
+  "consequence_observed": true,
+  "observation_ref": "real-boundary/consequence-observation.json",
+  "consequence_commit_sha": "48b7c7f68b8dc17dc3b398b682ff4342755ab0da",
+  "authority_effect": false
+}

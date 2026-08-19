@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse-labs.github.io/ara-admissibility-interop/schemas/receipt.v1.json",
+  "title": "StegGate Decision Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","receipt_id","transition_id","profile_ref","decision","reason_code","candidate_hash","evidence","observed_at"],
+  "properties": {
+    "schema_version": {"const":"steggate.receipt.v1"},
+    "receipt_id": {"type":"string","minLength":1},
+    "transition_id": {"type":"string","minLength":1},
+    "profile_ref": {"type":"string","minLength":1},
+    "decision": {"enum":["ALLOW","DENY","REVIEW","FAIL_CLOSED"]},
+    "reason_code": {"type":"string","minLength":1},
+    "candidate_hash": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "evidence": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["evidence_ref","origin","character","claim_type","truth_scope"],"properties":{"evidence_ref":{"type":"string","minLength":1},"origin":{"enum":["ASSERTED","OBSERVED","DERIVED"]},"character":{"enum":["DETERMINISTIC","PROBABILISTIC"]},"claim_type":{"type":"string","minLength":1},"truth_scope":{"type":"string","minLength":1},"confidence":{"type":"number","minimum":0,"maximum":1}}}},
+    "continuity": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["predecessor_ref","dimension","result"],"properties":{"predecessor_ref":{"type":"string","minLength":1},"dimension":{"enum":["identity","authority","intent","data","custody","service","instance"]},"result":{"enum":["ESTABLISHED","PARTIALLY_ESTABLISHED","NOT_ESTABLISHED","INDETERMINATE","NOT_APPLICABLE"]},"reason_code":{"type":"string"}}}},
+    "atomicity": {"enum":["atomic","partial_possible"]},
+    "reversibility": {"enum":["reversible","compensable","irreversible"]},
+    "presentation_observation": {"enum":["RENDERED","NOT_RENDERED","PARTIALLY_RENDERED","UNKNOWN"]},
+    "capability_assurance": {"enum":["self_reported","constructor_attested","host_attested","hardware_attested","externally_observed"]},
+    "achieved_assurance": {"$ref":"assurance-report.v1.json"},
+    "authorization_externally_determined": {"type":"boolean"},
+    "decision_disclosure_mode": {"enum":["acknowledge","neither_confirm_nor_deny","silent"]},
+    "observed_at": {"type":"string","format":"date-time"}
+  }
+}

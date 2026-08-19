@@ -1,0 +1,51 @@
+{
+  "schema_version": "steggate.execution-profile-validation.v1",
+  "task_id": "STEGGATE-EXECUTION-PROFILE-001",
+  "issue": 72,
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "branch": "feat/steggate-v46-schema-foundation",
+  "validated_head": "63af5b2568aa206e571f53fb172ab840fe97b7cc",
+  "profile_id": "SG-EXECUTION-DETERMINISTIC-v1",
+  "status": "PASS",
+  "schema_foundation": {
+    "run_id": 31238487769,
+    "job_id": 93055293539,
+    "conclusion": "success",
+    "fixtures": 7,
+    "allows": 1,
+    "denies": 5,
+    "fail_closed": 1,
+    "execution_invariants": 6,
+    "execution_claims": 4,
+    "exact_candidate_binding": true,
+    "exact_credential_binding": true,
+    "capability_narrowing": true,
+    "governed_commit_required": true,
+    "real_boundary_observed": true,
+    "stegcore_runtime_owner_preserved": true
+  },
+  "repo_check": {
+    "run_id": 31238487749,
+    "job_id": 93055293490,
+    "conclusion": "success"
+  },
+  "artifact": {
+    "name": "steggate-audit-kit-fixture-001",
+    "artifact_id": 9016228721,
+    "size_bytes": 7555,
+    "digest": "sha256:c2ae3df5efd11cadd707b441bbf522c8a21dbc7f3649f76b62509fbf68fae8a5"
+  },
+  "input_hashes": {
+    "schema": "sha256:c3a4e63e91b8029cdebc25c8cd8c2b4b3e8c0d4a5b70dd2f34953efc952b272d",
+    "profile": "sha256:ff405e4acac0c366ebf4096fe141671d5986fe7e9d1495eacb195d2dfe8c2cc3",
+    "fixtures": "sha256:9e309b70c5b5a7cd09df8005f82a9989e5852a310277070d0afe87073cb2b876",
+    "invariants": "sha256:587616e8a1eef62297e7b6551a609c4d521dd6898eee928bbc69fe60a1c352b2",
+    "claims": "sha256:d9d9a531d3f0a094790cc54c630f69eed8c518e71902b1c8969e8b35c7343c92",
+    "real_boundary_observation": "sha256:0868c4dd6e9867b964f713332f32eaa441fa8bbd81faed0a42af3887f3cdec66"
+  },
+  "authority_effect": false,
+  "release_authorized": false,
+  "deployment_authorized": false,
+  "publication_authorized": false,
+  "runtime_owner": "StegVerse-Labs/StegCore@feat/commit-coherence-boundary:src/stegcore/commit_governance.py"
+}

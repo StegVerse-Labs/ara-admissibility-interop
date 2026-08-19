@@ -1,0 +1,24 @@
+{
+  "claims_version": "steggate.claims.presentation-entitlement.v1",
+  "profile_id": "SG-PRESENTATION-ENTITLEMENT-v1",
+  "allowed": [
+    "Governs the boundary an artifact must cross before reaching a bound recipient through a verified text sink.",
+    "Separates acquisition, retrieval, derivation, processing, retention, and presentation authority.",
+    "Composes inherited source constraints using a declared least-permissive algebra.",
+    "Re-evaluates current source constraints at decision time.",
+    "Produces reconstructable evidence of admitted and refused disclosure decisions."
+  ],
+  "forbidden": [
+    "Prevents all data leaks.",
+    "Guarantees only authorized people can ever see governed data.",
+    "Solves the mosaic problem.",
+    "Guarantees physical sink exclusivity.",
+    "Certifies regulatory compliance."
+  ],
+  "required_qualifications": [
+    "Claims apply only to declared sinks and coverage classes.",
+    "Sink exclusivity is reported at the achieved assurance level.",
+    "Unlabeled or unresolvable source constraints follow the profile fail-safe posture.",
+    "External authorization booleans are distinguished from StegGate-evaluated predicates."
+  ]
+}

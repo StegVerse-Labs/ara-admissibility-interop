@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.2",
+  "goal_id": "STEGGATE-PROTOCOL-001",
+  "originating_session_goal": "Convert the StegGate product review and portable StegVerse-node architecture into a durable implementation-neutral governed-transition protocol without duplicating StegCore runtime ownership.",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "branch": "feat/steggate-v46-schema-foundation",
+  "canonical_repository_handoff": "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+  "specialized_handoff": "STEGGATE_PROTOCOL_MIRROR_HANDOFF.md",
+  "requirements_file": "admissibility/steggate-governed-transition-protocol-v1.md",
+  "canonical_owner": "StegVerse-Labs/ara-admissibility-interop#1",
+  "claim": {
+    "state": "COMPLETE_RELEASED_TO_CANONICAL_WORKSTREAM",
+    "role": "canonical interop/schema integration only; no runtime adapter or publication authority",
+    "claim_created_at": "2026-08-08T08:43:00-05:00",
+    "claim_released_at": "2026-08-08T11:36:00-05:00",
+    "release_condition": "L0-L3 trust semantics, protocol-specific independent implementation, intent/candidate binding reconciliation, and portable-node consumption are implemented and hosted-green or durably assigned to canonical owners.",
+    "release_evidence": [
+      "ara head 4c58cd6d7244b1a97a1d213e5adfc55e4c5e6f38",
+      "Schema Foundation 31266737480 SUCCESS",
+      "Repo Check 31266737472 SUCCESS",
+      "StegVerse-002/micro-node-runtime PR #20 merged 17e86e01895657bfd9d544ac6158b2dc09e93d23",
+      "micro-node main validation 31267301732 SUCCESS",
+      "micro-node continuity 31267302115 SUCCESS",
+      "micro-node handoff authority 31267301711 SUCCESS",
+      "micro-node PWC-003 31267301736 SUCCESS"
+    ],
+    "collision_boundaries": [
+      "StegCore owns governed execution and reusable runtime adapter semantics.",
+      "Continuity owns continuity receipt/custody semantics.",
+      "Governance retains policy/evidence-threshold authority.",
+      "micro-node-runtime consumes protocol semantics without becoming ara schema authority.",
+      "Site, Publisher, admissibility-wiki, and stegguardian-wiki retain publication/documentation authority under their own handoffs."
+    ],
+    "next_task_after_release": "Publication propagation remains SGP-009 and may proceed only when destination release/publication handoffs admit it."
+  },
+  "hosted_evidence": {
+    "validated_protocol_head": "4c58cd6d7244b1a97a1d213e5adfc55e4c5e6f38",
+    "schema_foundation_run": 31266737480,
+    "repo_check_run": 31266737472,
+    "trust_levels": "PASS",
+    "python_protocol_validator": "PASS",
+    "independent_node_protocol_validator": "PASS",
+    "action_first_validator": "PASS",
+    "portable_consumer": {
+      "repository": "StegVerse-002/micro-node-runtime",
+      "issue": 19,
+      "pull_request": 20,
+      "merge_commit": "17e86e01895657bfd9d544ac6158b2dc09e93d23",
+      "generated_evidence_commit": "95416057b69fbb228c353e8a9516361dc0d85315",
+      "evidence_path": "examples/portable_protocol_compatibility.generated.json",
+      "validate_run": 31267301732,
+      "continuity_run": 31267302115,
+      "handoff_authority_run": 31267301711,
+      "pwc003_run": 31267301736,
+      "artifact_id": 9024537295,
+      "artifact_digest": "sha256:07bd8380a3f5c3624028e4023a4ad151feeb463682871686c1fee98d5aeb84cd"
+    }
+  },
+  "goals": [
+    {
+      "id": "SGP-001",
+      "task": "Durably transfer product/protocol architecture and standards corrections.",
+      "destination": "admissibility/steggate-governed-transition-protocol-v1.md",
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE",
+      "validation_state": "HOSTED_GREEN",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "next_executable_action": "None."
+    },
+    {
+      "id": "SGP-002",
+      "task": "Executable governed-transition core schema and version/profile fields.",
+      "destination": ["schemas/transition.v1.json", "schemas/governed-transition-envelope.v1.json"],
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE_FOR_V1",
+      "validation_state": "HOSTED_GREEN",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "next_executable_action": "Future major versions must fail closed when unsupported."
+    },
+    {
+      "id": "SGP-003",
+      "task": "JCS-correct canonicalization and cross-language vectors.",
+      "destination": ["fixtures/canonicalization/vectors.json", "tools/canonicalize_steggate.py", "tools/canonicalize_steggate_node.mjs", "tools/validate_track1b_parity.mjs"],
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE",
+      "validation_state": "HOSTED_GREEN",
+      "integration_state": "PYTHON_NODE_PARITY_ACTIVE",
+      "archival_dependency": false,
+      "next_executable_action": "None."
+    },
+    {
+      "id": "SGP-004",
+      "task": "Monotonic multi-gate authority narrowing and broadening refusal.",
+      "destination": ["schemas/governed-transition-envelope.v1.json", "fixtures/protocol/governed-transition-cases.json", "tools/validate_governed_transition_protocol.py"],
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE_FOR_V1",
+      "validation_state": "HOSTED_GREEN",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "next_executable_action": "None."
+    },
+    {
+      "id": "SGP-005",
+      "task": "Gateway discovery, trust-anchor, and L0-L3 assurance semantics.",
+      "destination": ["schemas/gateway-discovery.v1.json", "assurance/trust-levels.v1.json", "fixtures/assurance/trust-level-cases.json", "tools/validate_trust_levels.py"],
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE_FOR_V1",
+      "validation_state": "HOSTED_GREEN_31266737480",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "evidence": ["4c58cd6d7244b1a97a1d213e5adfc55e4c5e6f38", "31266737480", "31266737472"],
+      "next_executable_action": "None."
+    },
+    {
+      "id": "SGP-006",
+      "task": "Independent governed-transition protocol conformance implementation.",
+      "destination": ["tools/validate_governed_transition_protocol.py", "tools/validate_governed_transition_protocol_node.mjs", "fixtures/protocol/governed-transition-cases.json"],
+      "owner": "StegVerse-Labs/ara-admissibility-interop#1",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE_FOR_V1",
+      "validation_state": "PYTHON_AND_INDEPENDENT_NODE_HOSTED_GREEN_31266737480",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "evidence": ["4c58cd6d7244b1a97a1d213e5adfc55e4c5e6f38", "31266737480"],
+      "next_executable_action": "None."
+    },
+    {
+      "id": "SGP-007",
+      "task": "Runtime adapter enforcement and bounded transport.",
+      "destination": "StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "COMPLETE_IN_CANONICAL_RUNTIME",
+      "validation_state": "HOSTED_GREEN_UNDER_STEGCORE_HANDOFF",
+      "integration_state": "COMPLETE_EXTERNAL_OWNER",
+      "archival_dependency": false,
+      "next_executable_action": "No ara duplication."
+    },
+    {
+      "id": "SGP-008",
+      "task": "Portable StegVerse node integration for local/organizational/federated gate modes.",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "owner": "StegVerse-002/micro-node-runtime#19",
+      "claim_state": "COMPLETE",
+      "completion_state": "MERGED_TO_MAIN",
+      "validation_state": "HOSTED_GREEN",
+      "integration_state": "PORTABLE_CONSUMER_ACTIVE",
+      "archival_dependency": false,
+      "evidence": ["PR #20", "17e86e01895657bfd9d544ac6158b2dc09e93d23", "31267301732", "31267302115", "31267301711", "31267301736", "9024537295"],
+      "next_executable_action": "Release micro-node issue #19 after both repository handoffs record this evidence."
+    },
+    {
+      "id": "SGP-009",
+      "task": "Public propagation to Site, Publisher, admissibility-wiki, and stegguardian-wiki.",
+      "destination": ["StegVerse-Labs/Site", "GCAT-BCAT-Engine/Publisher", "StegVerse-Labs/admissibility-wiki", "StegVerse-002/stegguardian-wiki"],
+      "owner": "destination repository-native publication/documentation lanes",
+      "claim_state": "BLOCKED",
+      "completion_state": "NOT_AUTHORIZED",
+      "validation_state": "NOT_RUN",
+      "integration_state": "BLOCKED_BY_RELEASE_PUBLICATION_AUTHORITY",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "Each applicable destination handoff admits a source-bound publication/documentation candidate under its existing machine lane.",
+      "next_executable_action": "Destination machines observe their own release conditions; no protocol-session publication mutation before authorization."
+    }
+  ],
+  "intent_binding_reconciliation": {
+    "state": "SATISFIED_WITH_EXISTING_V1_SURFACES",
+    "evidence": [
+      "schemas/transition.v1.json requires intent_ref and candidate_ref",
+      "schemas/governed-transition-envelope.v1.json binds canonical candidate hash and supports intent_binding_ref",
+      "profiles/presentation-entitlement.v1.yaml requires recipient/sink constraints and decision-time recheck"
+    ],
+    "new_duplicate_profile_required": false
+  },
+  "completion": {
+    "session_goal_transfer": {"complete": 9, "required": 9, "percent": 100},
+    "protocol_task_completion_or_transfer": {"complete_or_transferred": 8, "required": 9, "percent": 89},
+    "developed_protocol_delta_groups": {"developed": 8, "required": 8, "percent": 100, "scaffolding_or_stubs": 0, "missing": 0},
+    "validation_groups": {"validated": 7, "required": 7, "percent": 100},
+    "integration_groups": {"integrated": 5, "required": 5, "percent": 100},
+    "propagation": {"complete": 0, "required": 4, "percent": 0, "state": "release-gated"},
+    "goal_activation_percent": 89,
+    "session_consolidation_percent": 100,
+    "archive_ready_for_originating_session": true
+  },
+  "session_consolidation": {
+    "total_session_goals": 9,
+    "transferred_or_complete": 9,
+    "unique_chat_only_requirements_remaining": 0,
+    "canonical_merge_record": "MERGED INTO: StegVerse-Labs/ara-admissibility-interop#1; STEGGATE_PROTOCOL_MIRROR_HANDOFF.md; management/steggate-protocol-session-inventory.json; StegVerse-002/micro-node-runtime#19; StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md",
+    "archive_condition": "Satisfied when the micro-node root handoff and issue #19 are reconciled/released. SGP-009 remains a destination-owned authority-gated task and is not chat-owned."
+  }
+}

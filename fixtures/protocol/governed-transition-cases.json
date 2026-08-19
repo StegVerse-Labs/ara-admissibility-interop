@@ -1,0 +1,64 @@
+{
+  "schema_version": "steggate.protocol-fixtures.v1",
+  "fixtures": [
+    {
+      "fixture_id": "protocol.allow.local_discovery",
+      "input": {
+        "gateway_id": "gw-local-001",
+        "protocol_versions": ["steggate.transition.v1"],
+        "decision_states": ["ALLOW", "DENY", "REVIEW", "FAIL_CLOSED"],
+        "canonicalization_profiles": ["stegverse.jcs.v1"],
+        "identity_profiles": ["stegid"],
+        "authority_profiles": ["steggate.authority-rar-bound.v1"],
+        "assurance_profiles": ["L0"],
+        "trust_anchor_refs": ["trust:local:gw-local-001"],
+        "bindings": [{"kind": "local_ipc", "ref": "steggate://local"}]
+      },
+      "expected": {"valid": true}
+    },
+    {
+      "fixture_id": "protocol.allow.authority_narrows_across_gates",
+      "input": {
+        "gate_path": [
+          {"gateway_id": "gw-personal", "input_scope": ["read", "write"], "effective_scope": ["read", "write"], "broadened": false, "decision": "ALLOW"},
+          {"gateway_id": "gw-org", "input_scope": ["read", "write"], "effective_scope": ["read"], "broadened": false, "decision": "ALLOW"}
+        ]
+      },
+      "expected": {"valid": true, "monotonic_authority": true}
+    },
+    {
+      "fixture_id": "protocol.deny.authority_broadens_across_gates",
+      "input": {
+        "gate_path": [
+          {"gateway_id": "gw-personal", "input_scope": ["read"], "effective_scope": ["read"], "broadened": false, "decision": "ALLOW"},
+          {"gateway_id": "gw-org", "input_scope": ["read"], "effective_scope": ["read", "write"], "broadened": true, "decision": "ALLOW"}
+        ]
+      },
+      "expected": {"valid": false, "decision": "DENY", "reason_code": "AUTHORITY_BROADENING"}
+    },
+    {
+      "fixture_id": "protocol.fail_closed.unsupported_major_version",
+      "input": {"protocol_version": "steggate.transition.v2", "supported": ["steggate.transition.v1"]},
+      "expected": {"valid": false, "decision": "FAIL_CLOSED"}
+    },
+    {
+      "fixture_id": "protocol.fail_closed.rar_without_bound_authority_proof",
+      "input": {
+        "authority_profile": "steggate.authority-rar-bound.v1",
+        "authorization_details_present": true,
+        "portable_authority_proof_present": false
+      },
+      "expected": {"valid": false, "decision": "FAIL_CLOSED"}
+    },
+    {
+      "fixture_id": "protocol.allow.rar_with_bound_authority_proof",
+      "input": {
+        "authority_profile": "steggate.authority-rar-bound.v1",
+        "authorization_details_present": true,
+        "portable_authority_proof_present": true,
+        "binding_envelope": "COSE_Sign1"
+      },
+      "expected": {"valid": true}
+    }
+  ]
+}

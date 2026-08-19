@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://stegverse-labs.github.io/ara-admissibility-interop/schemas/evidence-pack-manifest.v1.json",
+  "title":"StegGate Evidence Pack Manifest v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","pack_id","canonicalization_profile","objects","achieved_assurance","trust_assumptions","non_claims"],
+  "properties":{
+    "schema_version":{"const":"steggate.evidence-pack-manifest.v1"},
+    "pack_id":{"type":"string","minLength":1},
+    "canonicalization_profile":{"const":"stegverse.jcs.v1"},
+    "objects":{"type":"array","minItems":6,"uniqueItems":true,"items":{"type":"object","additionalProperties":false,"required":["role","path","sensitive_handling","sha256"],"properties":{"role":{"enum":["candidate","policy_authority_evidence","decision","receipt","coverage","verifier_inputs"]},"path":{"type":"string","minLength":1},"sensitive_handling":{"enum":["included_fixture","commitment_and_refs_only"]},"sha256":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}}}},
+    "achieved_assurance":{"$ref":"assurance-report.v1.json"},
+    "trust_assumptions":{"type":"array","minItems":1,"items":{"type":"string","minLength":1},"uniqueItems":true},
+    "non_claims":{"type":"array","minItems":1,"items":{"type":"string","minLength":1},"uniqueItems":true}
+  }
+}

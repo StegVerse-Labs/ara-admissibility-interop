@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse-labs.github.io/ara-admissibility-interop/schemas/action-first-reconstruction.v1.json",
+  "title": "StegVerse Action-First Reconstruction Record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","record_id","transition_id","prior_state_ref","admissibility_matrix_ref","action_candidate_ref","irreversibility","calculated_state","realized_state","observed_state","model_reality_delta","reality_observation_delta","observation_profile","constraint_partition","reconstruction","continuity_consequence","viability"],
+  "properties": {
+    "schema_version": {"const": "stegverse.action-first-reconstruction.v1"},
+    "record_id": {"type": "string", "minLength": 1},
+    "transition_id": {"type": "string", "minLength": 1},
+    "prior_state_ref": {"type": "string", "minLength": 1},
+    "admissibility_matrix_ref": {"type": "string", "minLength": 1},
+    "action_candidate_ref": {"type": "string", "minLength": 1},
+    "irreversibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["crossed","boundary_ref","rollback_requires_new_transition"],
+      "properties": {
+        "crossed": {"type": "boolean"},
+        "boundary_ref": {"type": ["string","null"]},
+        "rollback_requires_new_transition": {"type": "boolean"}
+      }
+    },
+    "calculated_state": {"$ref": "#/$defs/stateIdentity"},
+    "realized_state": {"$ref": "#/$defs/stateIdentity"},
+    "observed_state": {"$ref": "#/$defs/stateIdentity"},
+    "model_reality_delta": {"$ref": "#/$defs/delta"},
+    "reality_observation_delta": {"$ref": "#/$defs/delta"},
+    "observation_profile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observer_universe_ref","coverage","level"],
+      "properties": {
+        "observer_universe_ref": {"type": "string", "minLength": 1},
+        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "level": {"enum": ["UNOBSERVED","OBSERVED","RECORDED","VERIFIED","CORROBORATED","FULLY_OBSERVED","UNKNOWN"]}
+      }
+    },
+    "constraint_partition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["known_refs","unknown_candidate_refs","latent_candidate_refs","irreducible_uncertainty_ref"],
+      "properties": {
+        "known_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "unknown_candidate_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "latent_candidate_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "irreducible_uncertainty_ref": {"type": ["string","null"]}
+      }
+    },
+    "reconstruction": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status","causal_reconstructability","identifiability","prediction_fit","constraint_promotion"],
+      "properties": {
+        "status": {"enum": ["COMPLETE","PARTIAL","UNKNOWN","FAIL_CLOSED"]},
+        "causal_reconstructability": {"type": "number", "minimum": 0, "maximum": 1},
+        "identifiability": {"enum": ["IDENTIFIABLE","PARTIALLY_IDENTIFIABLE","NON_IDENTIFIABLE","NOT_TESTED"]},
+        "prediction_fit": {"type": "number", "minimum": 0, "maximum": 1},
+        "constraint_promotion": {"enum": ["NONE","CANDIDATE","TESTABLE","PROMOTED"]}
+      }
+    },
+    "continuity_consequence": {"enum": ["PASS","PARTIAL","BROKEN","INTENTIONALLY_TERMINATED","REVALIDATION_REQUIRED","NOT_REQUIRED","UNKNOWN","FAIL_CLOSED"]},
+    "viability": {
+      "type": "object", "additionalProperties": false,
+      "required": ["terminal_declared","horizon_ref","future_admissible_transition_capacity"],
+      "properties": {
+        "terminal_declared": {"type": "boolean"},
+        "horizon_ref": {"type": ["string","null"]},
+        "future_admissible_transition_capacity": {"type": ["number","null"], "minimum": 0}
+      }
+    }
+  },
+  "$defs": {
+    "stateIdentity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state_ref","state_hash","observability_identity"],
+      "properties": {
+        "state_ref": {"type": "string", "minLength": 1},
+        "state_hash": {"type": ["string","null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+        "observability_identity": {"enum": ["UNOBSERVED","OBSERVED","RECORDED","VERIFIED","CORROBORATED","FULLY_OBSERVED","UNKNOWN"]}
+      }
+    },
+    "delta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status","metric_ref","value"],
+      "properties": {
+        "status": {"enum": ["ZERO","NONZERO","UNKNOWN","NOT_COMPUTABLE"]},
+        "metric_ref": {"type": "string", "minLength": 1},
+        "value": {"type": ["number","null"], "minimum": 0}
+      }
+    }
+  }
+}

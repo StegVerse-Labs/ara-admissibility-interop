@@ -1,0 +1,13 @@
+{
+  "action": "update_canonical_task_state",
+  "authority_effect": false,
+  "authority_model_ref": "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority",
+  "branch": "feat/steggate-v46-schema-foundation",
+  "candidate_id": "rb-ara-taskstate-001",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "schema_version": "steggate.real-boundary-candidate.v1",
+  "target_field": "first_real_boundary_pilot",
+  "target_path": "management/steggate-v46-implementation.json",
+  "target_ref": "management/first-boundary-target.json#ara-taskstate-real-boundary",
+  "target_value": "COMPLETE"
+}

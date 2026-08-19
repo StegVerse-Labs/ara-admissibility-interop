@@ -1,0 +1,26 @@
+{
+  "schema_version": "stegverse.action-first-reconstruction-fixtures.v1",
+  "cases": [
+    {"id":"model-correct-observation-complete","expected":{"delta_r":"ZERO","delta_o":"ZERO","reconstruction":"COMPLETE"}},
+    {"id":"model-correct-observation-incomplete","expected":{"delta_r":"ZERO","delta_o":"NONZERO","reconstruction":"PARTIAL"}},
+    {"id":"model-incomplete-observation-complete","expected":{"delta_r":"NONZERO","delta_o":"ZERO","reconstruction":"PARTIAL"}},
+    {"id":"model-incomplete-observation-incomplete","expected":{"delta_r":"NONZERO","delta_o":"NONZERO","reconstruction":"PARTIAL"}},
+    {"id":"admissible-but-unrealized","expected":{"realized":false,"counterfactual_preserved":true}},
+    {"id":"candidate-loses-admissibility-before-irreversibility","expected":{"realized":false,"status":"DENY"}},
+    {"id":"unobserved-realized-transition","expected":{"realized":true,"observation_level":"UNOBSERVED","dependent_reliance":"FAIL_CLOSED"}},
+    {"id":"later-observation-only-transition","expected":{"ontic_change":false,"observability_identity_change":true}},
+    {"id":"repeated-identifiable-latent-constraint","expected":{"identifiability":"IDENTIFIABLE","constraint_promotion":"CANDIDATE"}},
+    {"id":"non-identifiable-competing-latent-causes","expected":{"identifiability":"NON_IDENTIFIABLE","constraint_promotion":"NONE"}},
+    {"id":"intentional-terminal-state","expected":{"terminal_declared":true,"future_capacity_required":false,"continuity_failure":false}}
+  ],
+  "invariants": [
+    "ALLOW != execution",
+    "ALLOW != continuity",
+    "unobserved != nonexistent",
+    "FAIL_CLOSED applies to unsupported reliance, not reality itself",
+    "prediction != causal reconstruction",
+    "residual correlation != discovered constraint",
+    "model(reality) != reality",
+    "reconstruction success != execution authority"
+  ]
+}
