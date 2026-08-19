@@ -4,13 +4,16 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/healer-failure-mailbox-monitor.yml'
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: healer-failure-mailbox-via-tvc
+  group: healer-failure-mailbox-via-tvc-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
