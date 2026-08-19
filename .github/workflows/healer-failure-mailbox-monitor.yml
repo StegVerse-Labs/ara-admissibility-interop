@@ -9,6 +9,10 @@ on:
       - main
     paths:
       - '.github/workflows/healer-failure-mailbox-monitor.yml'
+  pull_request_target:
+    paths:
+      - '.github/workflows/healer-failure-mailbox-monitor.yml'
+      - 'vendor/tvc/microsoft_graph_failure_observation.py'
   pull_request:
     paths:
       - '.github/workflows/healer-failure-mailbox-monitor.yml'
@@ -29,6 +33,7 @@ jobs:
       - name: Checkout ARA carrier
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.sha }}
           persist-credentials: false
 
       - name: Verify exact TVC processor blob
