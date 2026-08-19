@@ -4,45 +4,34 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/healer-failure-mailbox-monitor.yml'
-  pull_request_target:
-    paths:
-      - '.github/workflows/healer-failure-mailbox-monitor.yml'
-      - 'vendor/tvc/microsoft_graph_failure_observation.py'
-  pull_request:
-    paths:
-      - '.github/workflows/healer-failure-mailbox-monitor.yml'
-      - 'vendor/tvc/microsoft_graph_failure_observation.py'
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: healer-failure-mailbox-via-tvc-${{ github.event_name }}-${{ github.ref }}
+  group: healer-failure-mailbox-via-tvc
   cancel-in-progress: false
 
 jobs:
   tvc_observe:
     runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.observe.outputs.ready }}
     steps:
       - name: Checkout ARA carrier
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.sha }}
           persist-credentials: false
 
       - name: Verify exact TVC processor blob
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git hash-object vendor/tvc/microsoft_graph_failure_observation.py)" = "23005dd4c09e30ecb1090ee93c61818ea15644df"
+          test "$(git hash-object vendor/tvc/microsoft_graph_failure_observation.py)" = "ceed14c28fb752cbb9e9aa079555d03db570b8ea"
 
       - name: Execute TVC-owned mailbox observation processor
+        id: observe
         shell: bash
         env:
           STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
@@ -56,9 +45,11 @@ jobs:
             --window-minutes 20 \
             --lag-minutes 2 \
             --maximum-messages 1000 \
-            --carrier StegVerse-Labs/ara-admissibility-interop
+            --carrier StegVerse-Labs/ara-admissibility-interop \
+            --allow-unbound \
+            --github-output "$GITHUB_OUTPUT"
 
-      - name: Verify sanitized TVC result
+      - name: Verify non-secret TVC manifest
         shell: bash
         run: |
           python3 - <<'PY'
@@ -72,9 +63,10 @@ jobs:
           assert m['mailbox_mutated'] is False
           assert m['provider_message_ids_exported'] is False
           assert m['partial_materialization'] is False
+          assert m['state'] in {'CREDENTIAL_BINDING_PENDING', 'MATERIALIZED'}
           PY
 
-      - name: Upload TVC-sanitized observation
+      - name: Upload TVC observation state
         uses: actions/upload-artifact@v4
         with:
           name: tvc-mailbox-failure-observation
@@ -84,6 +76,7 @@ jobs:
 
   healer_diagnose:
     needs: tvc_observe
+    if: needs.tvc_observe.outputs.ready == 'true'
     uses: StegVerse-Labs/StegVerse-Healer/.github/workflows/failure-mailbox-diagnose-reusable.yml@b8f91c23537c341010a43600e198c64f6dadd9ad
     with:
       healer_ref: b8f91c23537c341010a43600e198c64f6dadd9ad
