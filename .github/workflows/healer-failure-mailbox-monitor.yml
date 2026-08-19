@@ -13,7 +13,7 @@ permissions:
   contents: read
   actions: read
 
-# Validation marker: exercise the exact production carrier path.
+# Validation marker 2: trigger base-branch pull_request_target proof.
 concurrency:
   group: healer-failure-mailbox-via-tvc-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
