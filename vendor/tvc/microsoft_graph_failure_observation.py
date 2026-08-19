@@ -41,12 +41,10 @@ def _request_json(url: str, *, token: str = "", data: bytes | None = None, heade
         return json.loads(raw.decode("utf-8")) if raw else {}
 
 
-def _credential_configuration() -> dict[str, str]:
+def _credential_configuration() -> tuple[dict[str, str], list[str]]:
     values = {name: os.environ.get(name, "").strip() for name in REQUIRED_ENV}
     missing = [name for name, value in values.items() if not value]
-    if missing:
-        raise RuntimeError("TVC mailbox credential binding incomplete: " + ", ".join(missing))
-    return values
+    return values, missing
 
 
 def _access_token(config: dict[str, str]) -> str:
@@ -69,7 +67,25 @@ def _stable_hash(value: object) -> str:
     return "sha256:" + hashlib.sha256(str(value or "").encode("utf-8")).hexdigest()
 
 
-def run(*, output_dir: Path, window_minutes: int, lag_minutes: int, maximum_messages: int, carrier: str) -> dict:
+def _base_manifest(*, carrier: str, state: str) -> dict:
+    return {
+        "schema": "stegverse.tvc-mailbox-failure-observation-manifest/v1",
+        "state": state,
+        "mailbox_mutated": False,
+        "credential_authority": "TV/TVC",
+        "credential_storage_provider": "GitHub Actions secrets",
+        "credential_processed_by": "StegVerse-Labs/TVC",
+        "credential_processing_source": "scripts/microsoft_graph_failure_observation.py",
+        "execution_carrier": carrier,
+        "credential_value_exposed": False,
+        "credential_value_persisted": False,
+        "consumer_credential_exported": False,
+        "provider_message_ids_exported": False,
+        "authority_effect": False,
+    }
+
+
+def run(*, output_dir: Path, window_minutes: int, lag_minutes: int, maximum_messages: int, carrier: str, allow_unbound: bool) -> dict:
     if window_minutes < 1 or window_minutes > 1440:
         raise ValueError("window_minutes outside TVC bounded policy")
     if lag_minutes < 0 or lag_minutes > 60:
@@ -77,7 +93,27 @@ def run(*, output_dir: Path, window_minutes: int, lag_minutes: int, maximum_mess
     if maximum_messages < 1 or maximum_messages > 1000:
         raise ValueError("maximum_messages outside TVC bounded policy")
 
-    config = _credential_configuration()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    config, missing = _credential_configuration()
+    if missing:
+        if not allow_unbound:
+            raise RuntimeError("TVC mailbox credential binding incomplete: " + ", ".join(missing))
+        manifest = {
+            **_base_manifest(carrier=carrier, state="CREDENTIAL_BINDING_PENDING"),
+            "ready": False,
+            "missing_binding_names": missing,
+            "source_count": 0,
+            "materialized_count": 0,
+            "window_start": "",
+            "window_end": "",
+            "source_ref": "microsoft-graph://notifications@github.com/run-failed",
+            "partial_materialization": False,
+            "batch_sha256": hashlib.sha256(b"").hexdigest(),
+        }
+        (output_dir / "batch.jsonl").write_bytes(b"")
+        (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return manifest
+
     token = _access_token(config)
     end = datetime.now(timezone.utc) - timedelta(minutes=lag_minutes)
     start = end - timedelta(minutes=window_minutes)
@@ -120,7 +156,6 @@ def run(*, output_dir: Path, window_minutes: int, lag_minutes: int, maximum_mess
         next_link = payload.get("@odata.nextLink")
         url = next_link if isinstance(next_link, str) else ""
 
-    output_dir.mkdir(parents=True, exist_ok=True)
     batch_path = output_dir / "batch.jsonl"
     batch_bytes = b"".join(
         (json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
@@ -132,31 +167,28 @@ def run(*, output_dir: Path, window_minutes: int, lag_minutes: int, maximum_mess
         (_iso(start) + "|" + _iso(end) + "|" + batch_sha).encode("utf-8")
     ).hexdigest()[:24]
     manifest = {
-        "schema": "stegverse.tvc-mailbox-failure-observation-manifest/v1",
+        **_base_manifest(carrier=carrier, state="MATERIALIZED"),
+        "ready": True,
         "batch_id": batch_id,
         "source_count": source_count,
         "materialized_count": len(rows),
         "window_start": _iso(start),
         "window_end": _iso(end),
         "source_ref": "microsoft-graph://notifications@github.com/run-failed",
-        "mailbox_mutated": False,
-        "credential_authority": "TV/TVC",
-        "credential_storage_provider": "GitHub Actions secrets",
-        "credential_processed_by": "StegVerse-Labs/TVC",
-        "credential_processing_source": "scripts/microsoft_graph_failure_observation.py",
-        "execution_carrier": carrier,
-        "credential_value_exposed": False,
-        "credential_value_persisted": False,
-        "consumer_credential_exported": False,
-        "provider_message_ids_exported": False,
         "partial_materialization": partial,
         "batch_sha256": batch_sha,
-        "authority_effect": False,
     }
     (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if partial:
         raise RuntimeError("TVC mailbox observation exceeded materialization ceiling")
     return manifest
+
+
+def _write_github_output(path: str, ready: bool) -> None:
+    if not path:
+        return
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(f"ready={'true' if ready else 'false'}\n")
 
 
 def main() -> int:
@@ -166,6 +198,8 @@ def main() -> int:
     parser.add_argument("--lag-minutes", type=int, default=2)
     parser.add_argument("--maximum-messages", type=int, default=1000)
     parser.add_argument("--carrier", default="unspecified")
+    parser.add_argument("--allow-unbound", action="store_true")
+    parser.add_argument("--github-output", default="")
     args = parser.parse_args()
     manifest = run(
         output_dir=args.output_dir,
@@ -173,10 +207,14 @@ def main() -> int:
         lag_minutes=args.lag_minutes,
         maximum_messages=args.maximum_messages,
         carrier=args.carrier,
+        allow_unbound=args.allow_unbound,
     )
+    ready = bool(manifest.get("ready"))
+    _write_github_output(args.github_output, ready)
     print(json.dumps({
-        "result": "PASS",
-        "batch_id": manifest["batch_id"],
+        "result": "PASS" if ready else "CREDENTIAL_BINDING_PENDING",
+        "state": manifest["state"],
+        "ready": ready,
         "source_count": manifest["source_count"],
         "materialized_count": manifest["materialized_count"],
         "credential_authority": manifest["credential_authority"],
