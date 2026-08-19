@@ -1,0 +1,80 @@
+name: Healer Failure Mailbox Monitor via TVC
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/healer-failure-mailbox-monitor.yml'
+      - 'vendor/tvc/microsoft_graph_failure_observation.py'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: healer-failure-mailbox-via-tvc-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  tvc_observe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ARA carrier
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify exact TVC processor blob
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object vendor/tvc/microsoft_graph_failure_observation.py)" = "23005dd4c09e30ecb1090ee93c61818ea15644df"
+
+      - name: Execute TVC-owned mailbox observation processor
+        shell: bash
+        env:
+          STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
+          STEGVERSE_MAIL_CLIENT_ID: ${{ secrets.STEGVERSE_MAIL_CLIENT_ID }}
+          STEGVERSE_MAIL_CLIENT_SECRET: ${{ secrets.STEGVERSE_MAIL_CLIENT_SECRET }}
+          STEGVERSE_MONITOR_MAILBOX: ${{ secrets.STEGVERSE_MONITOR_MAILBOX }}
+        run: |
+          set -euo pipefail
+          python3 vendor/tvc/microsoft_graph_failure_observation.py \
+            --output-dir tvc-mailbox-output \
+            --window-minutes 20 \
+            --lag-minutes 2 \
+            --maximum-messages 1000 \
+            --carrier StegVerse-Labs/ara-admissibility-interop
+
+      - name: Verify sanitized TVC result
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          m=json.load(open('tvc-mailbox-output/manifest.json'))
+          assert m['credential_authority'] == 'TV/TVC'
+          assert m['credential_processed_by'] == 'StegVerse-Labs/TVC'
+          assert m['credential_value_exposed'] is False
+          assert m['credential_value_persisted'] is False
+          assert m['consumer_credential_exported'] is False
+          assert m['mailbox_mutated'] is False
+          assert m['provider_message_ids_exported'] is False
+          assert m['partial_materialization'] is False
+          PY
+
+      - name: Upload TVC-sanitized observation
+        uses: actions/upload-artifact@v4
+        with:
+          name: tvc-mailbox-failure-observation
+          path: tvc-mailbox-output
+          retention-days: 7
+          if-no-files-found: error
+
+  healer_diagnose:
+    needs: tvc_observe
+    uses: StegVerse-Labs/StegVerse-Healer/.github/workflows/failure-mailbox-diagnose-reusable.yml@b8f91c23537c341010a43600e198c64f6dadd9ad
+    with:
+      healer_ref: b8f91c23537c341010a43600e198c64f6dadd9ad
+      observation_artifact: tvc-mailbox-failure-observation
