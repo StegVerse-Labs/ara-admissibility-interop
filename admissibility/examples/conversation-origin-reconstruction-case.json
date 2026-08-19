@@ -1,0 +1,75 @@
+{
+  "case_id": "SV-ARA-CASE-ORIGIN-RECONSTRUCTION-2026-08-09",
+  "version": "1.0.0",
+  "date": "2026-08-09",
+  "status": "preserved",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "human_record": "admissibility/examples/conversation-origin-reconstruction-case.md",
+  "purpose": "Preserve a live intellectual state-transition example so later observers can distinguish recoverable evidence from inferred origin.",
+  "scope": {
+    "supports": [
+      "a documented sequence of competing causal narratives",
+      "a documented transition to reconstruction framing",
+      "a documented recognition that the conversation itself is evidence",
+      "a documented decision to preserve the conversation"
+    ],
+    "does_not_support": [
+      "existence or non-existence of God",
+      "a specific prehistoric causal account",
+      "the claim that reconstruction formalism originated in this exchange",
+      "the claim that earliest surviving evidence equals originating state",
+      "the claim that chronology alone establishes causality"
+    ]
+  },
+  "invariants": [
+    "earliest_observable_state != originating_state",
+    "observation != provenance",
+    "chronology != causality",
+    "surviving_evidence != complete_history",
+    "reconstructable_transition != reconstructed_origin"
+  ],
+  "transitions": [
+    {
+      "id": "T0",
+      "from": "competing_causal_narratives",
+      "to": "reconstruction_question",
+      "actor": "user",
+      "evidence": "If only there was a way to reconstruct the state transitions from our history that could show exactly what the circumstances were when the concept of God entered into our living space…"
+    },
+    {
+      "id": "T1",
+      "from": "reconstruction_question",
+      "to": "explicit_predecessor_result_model",
+      "actor": "assistant",
+      "evidence": "The exchange distinguishes earliest observable evidence, predecessor state, transition evidence, and admissible causal inference."
+    },
+    {
+      "id": "T2",
+      "from": "explicit_predecessor_result_model",
+      "to": "conversation_recognized_as_evidence",
+      "actor": "user",
+      "evidence": "So would this conversation… 😎"
+    },
+    {
+      "id": "T3",
+      "from": "conversation_recognized_as_evidence",
+      "to": "deliberate_preservation_proposal",
+      "actor": "user",
+      "evidence": "There’s one way to make it possible… document the conversation."
+    },
+    {
+      "id": "T4",
+      "from": "deliberate_preservation_proposal",
+      "to": "preservation_authorized",
+      "actor": "user",
+      "evidence": "Agreed."
+    }
+  ],
+  "archive_dependency": {
+    "conversation_unique_requirement": "Preserve this conversation as a durable reconstruction case rather than leaving it only in chat history.",
+    "installed": true,
+    "installed_location": "admissibility/examples/conversation-origin-reconstruction-case.md",
+    "machine_readable_location": "admissibility/examples/conversation-origin-reconstruction-case.json"
+  },
+  "authority_boundary": "Repository-local evidence preservation only. No external publication, release, tag, deployment, theological conclusion, archaeological conclusion, or authority expansion is authorized by this case."
+}
