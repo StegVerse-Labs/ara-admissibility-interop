@@ -1,13 +1,31 @@
 {
   "repo": "StegVerse-Labs/ara-admissibility-interop",
-  "status_version": "0.1.0",
-  "state": "active-build",
-  "goal_activation_percent": 75,
-  "full_build_percent": 60,
-  "handoff_ready": false,
+  "status_version": "0.2.0",
+  "state": "integrated-not-released",
+  "goal_activation_percent": 67,
+  "full_build_percent": 100,
+  "handoff_ready": true,
+  "percent_basis": {
+    "activation_domains_complete": 4,
+    "activation_domains_total": 6,
+    "complete_domains": [
+      "implementation",
+      "integration",
+      "runtime_transfer",
+      "continuity_consumer"
+    ],
+    "remaining_domains": [
+      "stable_release",
+      "downstream_propagation"
+    ],
+    "full_build_definition": "implemented source scope fully developed; release and propagation are activation state, not scaffolding"
+  },
+  "canonical_state_source": "management/activation-surface.json",
+  "canonical_handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+  "heartbeat": ".stegverse/repo-heartbeat.json",
   "next_required_steps": [
-    "Run tools/assess_repo.py locally or in CI",
-    "Add schema validation command",
-    "Add task-runner or CI handoff"
+    "verify release evidence against the current release policy",
+    "establish stable tag and formal release only when release authority is satisfied",
+    "after release, inspect destination handoffs before propagation"
   ]
 }
