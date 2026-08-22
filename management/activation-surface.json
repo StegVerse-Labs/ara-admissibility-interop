@@ -18,6 +18,7 @@
     "handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
     "heartbeat": ".stegverse/repo-heartbeat.json",
     "manifest": "management/activation-surface.json",
+    "workflow_governance": "management/workflow-governance.json",
     "runtime_owner": "StegVerse-Labs/StegCore",
     "continuity_owner": "StegVerse-Labs/Continuity",
     "credential_authority": "TV/TVC",
@@ -29,8 +30,15 @@
   ],
   "non_activation_service_workflows": [
     ".github/workflows/docs-pages.yml",
+    ".github/workflows/deployment-notification.yml",
     ".github/workflows/deployment-mailbox-monitor.yml"
   ],
+  "workflow_ceiling": {
+    "baseline_max": 2,
+    "policy": "management/workflow-governance.json",
+    "undeclared_workflows_allowed": false,
+    "discrete_exception_count": 3
+  },
   "historical_evidence_only": [
     "real-boundary/",
     "reports/execution-profile-validation.json",
