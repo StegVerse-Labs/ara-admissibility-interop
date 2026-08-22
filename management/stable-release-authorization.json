@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.stable-release-authorization/v1",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "candidate": "0.2.0-release-candidate",
+  "authorized": true,
+  "authorization_scope": "stable-tag-and-formal-release-after-evidence-gates",
+  "authorization_record": {
+    "type": "explicit-maintainer-instruction",
+    "issue": 121,
+    "issue_comment_id": 5383053369,
+    "recorded_at": "2026-08-22",
+    "instruction_summary": "ARA should be tagged once the governed release evidence gates are satisfied."
+  },
+  "effective_when": [
+    "repo_check_workflow_verified",
+    "pages_workflow_verified",
+    "https_deployment_url_verified",
+    "built_entrypoint_verified",
+    "live_root_page_verified",
+    "deployed_publication_receipt_verified",
+    "deployed_evidence_bundle_verified"
+  ],
+  "does_not_assert": [
+    "release evidence gates are already satisfied",
+    "a stable tag already exists",
+    "a formal release already exists",
+    "canonical publication authority",
+    "runtime execution authority",
+    "standards authority",
+    "clinical or regulatory authority",
+    "credential authority"
+  ]
+}
