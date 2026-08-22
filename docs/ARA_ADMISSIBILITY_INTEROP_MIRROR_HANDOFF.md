@@ -94,6 +94,29 @@ Issue #121 owns live release-evidence verification and stable-tag/formal-release
 
 Merge does not itself create release, publication, deployment, evaluator-replacement, standards, credential, or runtime execution authority.
 
+## Current goal
+
+Complete release activation under issue #121 by consuming the existing hosted release-evidence chain and repairing only defects that prevent the existing release machinery from completing.
+
+## Current publication posture
+
+`public_review`. The documentation surface is publishable and independently verifiable, but canonical status, independent review, clinical validation, regulatory authorization, and stable release remain unclaimed unless their separate gates are satisfied.
+
+## Current release gate
+
+The implementation is merged and validated. Docs Pages run `32593976088` successfully deployed and live-verified commit `9ed565df9eff2d03772b766b7fd53c398efbb0e1`, generated a deployment-bound publication receipt, produced `RELEASE_EVIDENCE_DECISION=ALLOW`, and verified evidence bundle `76b43b4fbd0c9dfb9caac86d1cf7d5d78c624c5f3219b115f50bc1907e06d80d`. Stable release remains separate and explicitly governed.
+
+## Boundary
+
+Neither schema validation, Pages deployment, release-evidence ALLOW, notification delivery, nor merge creates stable-release, canonical-publication, credential, runtime execution, standards, clinical, or regulatory authority. Historical evidence remains replay-only unless admitted by the current activation surface.
+
+## Next tasks
+
+1. Re-run the existing Docs Pages path after this compatibility repair and retain the `deployed-publication-evidence` artifact.
+2. Use issue #121 and the existing release-promotion machinery to reconcile the proven release gates without hand-editing protected authority fields.
+3. Create the stable tag/formal release only after explicit stable-release authorization is recorded.
+4. After release, activate propagation verification for Site, Publisher, admissibility-wiki, and stegguardian-wiki after reading each destination handoff.
+
 ## Remaining activation work
 
 1. Issue #121 verifies the existing release-evidence chain and establishes the stable tag/formal release only when the repository's release policy is satisfied.
