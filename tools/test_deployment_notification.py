@@ -15,6 +15,9 @@ from generate_deployment_notification import (
     sha256_text,
 )
 
+ROOT = Path(__file__).resolve().parents[1]
+CANONICAL_HANDOFF = ROOT / "docs" / "ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
+
 
 def main() -> int:
     failures: list[str] = []
@@ -25,6 +28,21 @@ def main() -> int:
     sections = extract_sections(handoff)
     if set(sections) != set(REQUIRED_SECTIONS):
         failures.append("required-sections")
+
+    # The publication gate must validate the real canonical handoff, not only a
+    # synthetic fixture. This prevents a handoff-heading reconciliation from
+    # passing CI while the deployed notification generator fails later.
+    try:
+        canonical_text = CANONICAL_HANDOFF.read_text(encoding="utf-8")
+        canonical_sections = extract_sections(canonical_text)
+    except (OSError, ValueError) as exc:
+        failures.append(f"canonical-handoff-contract:{exc}")
+    else:
+        if set(canonical_sections) != set(REQUIRED_SECTIONS):
+            failures.append("canonical-handoff-required-sections")
+        for name in REQUIRED_SECTIONS:
+            if not canonical_sections.get(name, "").strip():
+                failures.append(f"canonical-handoff-empty-section:{name}")
 
     try:
         extract_sections("## Current goal\nOnly one section")
@@ -100,6 +118,7 @@ def main() -> int:
         "problem_count": len(failures),
         "problems": failures,
         "required_sections": list(REQUIRED_SECTIONS),
+        "canonical_handoff_checked": str(CANONICAL_HANDOFF.relative_to(ROOT)),
     }
     print(json.dumps(result, indent=2))
     return 0 if not failures else 1
