@@ -179,16 +179,7 @@ jobs:
           python3 tools/generate_evidence_bundle_manifest.py
           python3 tools/verify_evidence_bundle_manifest.py status/deployed-evidence-bundle.json --root .
 
-      - name: Generate handoff-backed deployment notification
-        run: python3 tools/generate_deployment_notification.py
-
-      - name: Publish deployment summary
-        run: |
-          cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
-          echo '' >> "$GITHUB_STEP_SUMMARY"
-          cat status/release-evidence-decision.md >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload deployed publication evidence
+      - name: Retain deployed publication evidence before notification transport
         uses: actions/upload-artifact@v4
         with:
           name: deployed-publication-evidence
@@ -200,7 +191,22 @@ jobs:
             status/deployed-live-root.html
             status/deployed-identity.json
             status/deployed-evidence-bundle.json
-            status/deployment-notification-email.md
-            status/deployment-notification-envelope.json
             docs/publication-status.md
             _site
+
+      - name: Generate handoff-backed deployment notification
+        run: python3 tools/generate_deployment_notification.py
+
+      - name: Retain governed deployment notification
+        uses: actions/upload-artifact@v4
+        with:
+          name: governed-deployment-notification
+          path: |
+            status/deployment-notification-email.md
+            status/deployment-notification-envelope.json
+
+      - name: Publish deployment summary
+        run: |
+          cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          cat status/release-evidence-decision.md >> "$GITHUB_STEP_SUMMARY"
