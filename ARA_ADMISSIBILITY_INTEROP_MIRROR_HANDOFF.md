@@ -5,7 +5,7 @@
 ```text
 repository: StegVerse-Labs/ara-admissibility-interop
 canonical_branch: main
-canonical_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
+steggate_integration_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
 merged_pull_request: #1
 activation_handoff: docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md
 activation_manifest: management/activation-surface.json
@@ -14,7 +14,7 @@ continuity_owner: StegVerse-Labs/Continuity
 state: INTEGRATED_NOT_RELEASED
 ```
 
-`docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` is the heartbeat-target activation handoff. `management/activation-surface.json` is the machine-readable activation state. These two surfaces supersede stale branch-era continuation language for current activation decisions.
+`docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md` is the heartbeat-target activation handoff. `management/activation-surface.json` is the machine-readable activation state. These two surfaces supersede branch-era continuation language for current activation decisions.
 
 Historical feature-branch candidates, receipts, validation reports, and task/session snapshots remain immutable replay/reconstruction evidence. Historical branch identities MUST NOT be interpreted as the current repository branch, merge state, release state, or execution authority.
 
@@ -27,7 +27,7 @@ Repo Check 32280935639: SUCCESS
 StegGate Schema Foundation 32280935596: SUCCESS
 ```
 
-Merge commit: `2a0ada472f7a3cc059961cb9af5baadecb5e0c9b`.
+StegGate integration merge commit: `2a0ada472f7a3cc059961cb9af5baadecb5e0c9b`.
 
 StegCore owns runtime execution and adapter reachability. Continuity owns reconstruction/preservation. ARA owns interoperable schema/profile/semantic evidence. Heartbeat carries state but grants no execution authority. Credential authority remains TV/TVC.
 

@@ -5,7 +5,7 @@
 ```text
 repository: StegVerse-Labs/ara-admissibility-interop
 canonical_branch: main
-canonical_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
+steggate_integration_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
 merged_pull_request: #1
 validated_integration_head: 523868fae5f5f8584547929284ccb98db1c56e05
 activation_manifest: management/activation-surface.json
@@ -24,10 +24,12 @@ PR #1 is merged. The conflict-resolved integration head `523868fae5f5f8584547929
 ```text
 Repo Check run 32280935639: SUCCESS
 StegGate Schema Foundation run 32280935596: SUCCESS
-merge commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
+StegGate integration merge commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
 ```
 
 The merged implementation includes the Audit Kit/schema foundation, deterministic execution profile, complete decision-state reconstruction, governed-transition protocol surfaces, candidate/credential/capability binding, first bounded consequence evidence, and independent conformance evidence.
+
+The post-merge activation-surface reconciliation was separately validated with both activation-authoritative workflows before integration. That reconciliation does not alter the historical StegGate integration identity above.
 
 ## Runtime and continuity convergence
 
@@ -89,9 +91,7 @@ Merge does not itself create release, publication, deployment, evaluator-replace
 
 ## Remaining activation work
 
-1. Validate this reconciliation branch with the two activation-authoritative workflows.
-2. Merge this reconciliation only if both checks remain green.
-3. Establish the correct tag/release state from the applicable release policy; do not infer it from merge completion.
-4. After release authority exists, inspect destination handoffs before propagation to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`.
+1. Establish the correct tag/release state from the applicable release policy; do not infer it from merge completion.
+2. After release authority exists, inspect destination handoffs before propagation to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`.
 
 No stale or divergent historical record is permitted to participate in current activation decisions. No prior chat context is required to reconstruct this state.
