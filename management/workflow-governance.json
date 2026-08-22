@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.workflow-governance/v1",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "baseline_max_workflows": 2,
+  "baseline_workflows": [
+    {
+      "path": ".github/workflows/repo-check.yml",
+      "role": "repository_validation",
+      "activation_authoritative": true
+    },
+    {
+      "path": ".github/workflows/steggate-schema-foundation.yml",
+      "role": "steggate_semantic_validation",
+      "activation_authoritative": true
+    }
+  ],
+  "discrete_exceptions": [
+    {
+      "exception_id": "ARA-WF-EX-001",
+      "path": ".github/workflows/docs-pages.yml",
+      "role": "governed_publication_and_release_evidence",
+      "reason": "GitHub Pages deployment requires Pages/id-token permissions and a deployment environment distinct from repository validation.",
+      "activation_authoritative": false,
+      "release_authority": false,
+      "may_create_additional_workflows": false
+    },
+    {
+      "exception_id": "ARA-WF-EX-002",
+      "path": ".github/workflows/deployment-notification.yml",
+      "role": "post_deployment_notification_transport",
+      "reason": "The workflow_run transport is event-isolated from Pages deployment and may emit only a bounded notification/evidence signal; it is not release authority.",
+      "activation_authoritative": false,
+      "release_authority": false,
+      "may_create_additional_workflows": false
+    },
+    {
+      "exception_id": "ARA-WF-EX-003",
+      "path": ".github/workflows/deployment-mailbox-monitor.yml",
+      "role": "scheduled_deployment_notification_ingestion",
+      "reason": "The established hourly mailbox monitor requires a schedule trigger and durable cross-run replay state independent of validation and deployment events.",
+      "activation_authoritative": false,
+      "release_authority": false,
+      "may_create_additional_workflows": false
+    }
+  ],
+  "invariants": {
+    "undeclared_workflows_allowed": false,
+    "baseline_may_exceed_max_without_exception": false,
+    "exception_requires_unique_id": true,
+    "exception_requires_reason": true,
+    "exception_may_grant_activation_authority": false,
+    "exception_may_grant_release_authority": false,
+    "workflow_count_expected": 5
+  }
+}
