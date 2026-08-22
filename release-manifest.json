@@ -307,7 +307,7 @@
     "live_root_page_verified": false,
     "deployed_publication_receipt_verified": false,
     "deployed_evidence_bundle_verified": false,
-    "stable_release_authorized": false
+    "stable_release_authorized": true
   },
   "next_version_candidates": [
     "make full JSON Schema validation required if dependency policy changes",
