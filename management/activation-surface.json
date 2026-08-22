@@ -44,12 +44,22 @@
   ],
   "historical_evidence_rule": "Historical branch, candidate, receipt, task, and validation identities remain replay evidence and MUST NOT override current main/merge/activation state.",
   "release_state": {
+    "owner_issue": 121,
+    "candidate": "0.2.0-release-candidate",
     "implementation": "MERGED_VALIDATED",
     "runtime_transfer": "COMPLETE_IN_STEGCORE",
     "continuity_consumer": "COMPLETE",
     "stable_tag": "NOT_YET_PROVEN",
     "formal_release": "NOT_YET_PROVEN",
-    "downstream_propagation": "NOT_YET_PROVEN"
+    "downstream_propagation": "NOT_YET_PROVEN",
+    "release_policy": "docs/release-readiness.md",
+    "release_manifest": "release-manifest.json",
+    "propagation_after_release": [
+      "StegVerse-Labs/Site",
+      "GCAT-BCAT-Engine/Publisher",
+      "StegVerse-Labs/admissibility-wiki",
+      "StegVerse-002/stegguardian-wiki"
+    ]
   },
   "activation_state": "INTEGRATED_NOT_RELEASED",
   "stale_or_divergent_live_inputs_allowed": false

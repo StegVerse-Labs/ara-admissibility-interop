@@ -9,6 +9,7 @@ steggate_integration_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
 merged_pull_request: #1
 validated_integration_head: 523868fae5f5f8584547929284ccb98db1c56e05
 activation_manifest: management/activation-surface.json
+release_owner_issue: #121
 runtime_owner: StegVerse-Labs/StegCore
 continuity_owner: StegVerse-Labs/Continuity
 credential_authority: TV/TVC
@@ -79,6 +80,8 @@ Feature-branch identities inside those retained records describe the historical 
 ## Release state
 
 ```text
+candidate: 0.2.0-release-candidate
+release_owner: issue #121
 implementation: MERGED_VALIDATED
 runtime_transfer: COMPLETE_IN_STEGCORE
 continuity_consumer: COMPLETE
@@ -87,11 +90,13 @@ formal_release: NOT_YET_PROVEN
 downstream_propagation: NOT_YET_PROVEN
 ```
 
+Issue #121 owns live release-evidence verification and stable-tag/formal-release activation. It must consume existing Repo Check, Docs Pages, deployed HTTPS receipt, and retained release-evidence surfaces before any stable-release claim. It may not create a duplicate workflow merely to satisfy this gate.
+
 Merge does not itself create release, publication, deployment, evaluator-replacement, standards, credential, or runtime execution authority.
 
 ## Remaining activation work
 
-1. Establish the correct tag/release state from the applicable release policy; do not infer it from merge completion.
-2. After release authority exists, inspect destination handoffs before propagation to `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`.
+1. Issue #121 verifies the existing release-evidence chain and establishes the stable tag/formal release only when the repository's release policy is satisfied.
+2. After release authority exists, issue #121 must activate a distinct propagation-verification task for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki` after reading each destination handoff.
 
 No stale or divergent historical record is permitted to participate in current activation decisions. No prior chat context is required to reconstruct this state.
