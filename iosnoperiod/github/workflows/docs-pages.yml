@@ -18,6 +18,7 @@ on:
       - 'tools/evaluate_release_evidence.py'
       - 'tools/generate_evidence_bundle_manifest.py'
       - 'tools/verify_evidence_bundle_manifest.py'
+      - 'tools/promote_release_gates.py'
       - 'tools/generate_deployment_notification.py'
       - 'tools/test_deployment_notification.py'
       - 'tools/stamp_built_site.py'
@@ -179,6 +180,9 @@ jobs:
           python3 tools/generate_evidence_bundle_manifest.py
           python3 tools/verify_evidence_bundle_manifest.py status/deployed-evidence-bundle.json --root .
 
+      - name: Generate evidence-bounded release gate promotion proposal
+        run: python3 tools/promote_release_gates.py
+
       - name: Retain deployed publication evidence before notification transport
         uses: actions/upload-artifact@v4
         with:
@@ -191,6 +195,8 @@ jobs:
             status/deployed-live-root.html
             status/deployed-identity.json
             status/deployed-evidence-bundle.json
+            status/release-manifest.promoted.json
+            status/release-gate-promotion.json
             docs/publication-status.md
             _site
 
