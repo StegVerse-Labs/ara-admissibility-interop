@@ -15,7 +15,7 @@
     {"repo_id": "stegcore", "required": true},
     {"repo_id": "continuity", "required": true}
   ],
-  "status_source": "repository_and_publication_gate_state",
+  "status_source": "management/activation-surface.json",
   "freshness_seconds": 300,
   "authority": {
     "credential_authority": "TV/TVC",
