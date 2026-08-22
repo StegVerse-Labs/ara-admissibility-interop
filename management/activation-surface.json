@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.activation-surface/v1",
+  "repository": "StegVerse-Labs/ara-admissibility-interop",
+  "canonical_branch": "main",
+  "integration": {
+    "pull_request": 1,
+    "state": "MERGED",
+    "merge_commit": "2a0ada472f7a3cc059961cb9af5baadecb5e0c9b",
+    "validated_integration_head": "523868fae5f5f8584547929284ccb98db1c56e05",
+    "validation": {
+      "repo_check_run": 32280935639,
+      "repo_check_result": "SUCCESS",
+      "steggate_schema_foundation_run": 32280935596,
+      "steggate_schema_foundation_result": "SUCCESS"
+    }
+  },
+  "activation_authority": {
+    "handoff": "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+    "heartbeat": ".stegverse/repo-heartbeat.json",
+    "manifest": "management/activation-surface.json",
+    "runtime_owner": "StegVerse-Labs/StegCore",
+    "continuity_owner": "StegVerse-Labs/Continuity",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false
+  },
+  "activation_workflows": [
+    ".github/workflows/repo-check.yml",
+    ".github/workflows/steggate-schema-foundation.yml"
+  ],
+  "non_activation_service_workflows": [
+    ".github/workflows/docs-pages.yml",
+    ".github/workflows/deployment-mailbox-monitor.yml"
+  ],
+  "historical_evidence_only": [
+    "real-boundary/",
+    "reports/execution-profile-validation.json",
+    "reports/decision-state-reconstruction-validation.json",
+    "management/first-boundary-activation.json",
+    "management/first-boundary-target.json",
+    "management/first-boundary-authority-model.json",
+    "management/steggate-v46-implementation.json",
+    "management/steggate-v46-session-inventory.json",
+    "management/steggate-decision-state-session-inventory.json"
+  ],
+  "historical_evidence_rule": "Historical branch, candidate, receipt, task, and validation identities remain replay evidence and MUST NOT override current main/merge/activation state.",
+  "release_state": {
+    "implementation": "MERGED_VALIDATED",
+    "runtime_transfer": "COMPLETE_IN_STEGCORE",
+    "continuity_consumer": "COMPLETE",
+    "stable_tag": "NOT_YET_PROVEN",
+    "formal_release": "NOT_YET_PROVEN",
+    "downstream_propagation": "NOT_YET_PROVEN"
+  },
+  "activation_state": "INTEGRATED_NOT_RELEASED",
+  "stale_or_divergent_live_inputs_allowed": false
+}

@@ -1,8 +1,18 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "repository": "StegVerse-Labs/ara-admissibility-interop",
   "goal": "self-management-closure",
   "manual_tasks_allowed": false,
+  "activation_surface": "management/activation-surface.json",
+  "activation_workflows": [
+    ".github/workflows/repo-check.yml",
+    ".github/workflows/steggate-schema-foundation.yml"
+  ],
+  "service_workflows": {
+    "docs_publishing": ".github/workflows/docs-pages.yml",
+    "deployment_mailbox_monitor": ".github/workflows/deployment-mailbox-monitor.yml"
+  },
+  "service_workflow_rule": "Service workflows may provide publication or mailbox evidence but MUST NOT grant or determine StegGate activation.",
   "automated_paths": {
     "validation": {
       "command": "python3 tools/generate_validation_report.py",
@@ -11,11 +21,21 @@
       "retains_artifacts": true,
       "publishes_step_summary": true
     },
+    "steggate_validation": {
+      "workflow": ".github/workflows/steggate-schema-foundation.yml",
+      "activation_authoritative": true
+    },
     "docs_publishing": {
       "source": "docs/",
       "workflow": ".github/workflows/docs-pages.yml",
       "ios_safe_workflow": "iosnoperiod/github/workflows/docs-pages.yml",
-      "manual_publish_required": false
+      "manual_publish_required": false,
+      "activation_authoritative": false
+    },
+    "mailbox_monitoring": {
+      "workflow": ".github/workflows/deployment-mailbox-monitor.yml",
+      "ios_safe_workflow": "iosnoperiod/github/workflows/deployment-mailbox-monitor.yml",
+      "activation_authoritative": false
     },
     "dependency_policy": {
       "checker": "tools/check_dependency_policy.py",
