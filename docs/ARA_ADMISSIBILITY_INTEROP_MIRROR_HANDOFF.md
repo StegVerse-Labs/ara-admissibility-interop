@@ -9,6 +9,7 @@ steggate_integration_merge_commit: 2a0ada472f7a3cc059961cb9af5baadecb5e0c9b
 merged_pull_request: #1
 validated_integration_head: 523868fae5f5f8584547929284ccb98db1c56e05
 activation_manifest: management/activation-surface.json
+workflow_governance: management/workflow-governance.json
 release_owner_issue: #121
 runtime_owner: StegVerse-Labs/StegCore
 continuity_owner: StegVerse-Labs/Continuity
@@ -46,19 +47,24 @@ ARA owns interoperable schemas/profiles/semantic fixtures. StegCore owns runtime
 
 ## Activation surface
 
-Only these workflows are activation-authoritative for the merged StegGate implementation:
+The workflow ceiling is enforced by `management/workflow-governance.json` and `tools/check_workflow_governance.py`. The repository baseline is no more than two workflows without discrete exceptions. Repo Check fails if an undeclared workflow appears, an exception disappears, or an exception grants activation/release authority.
+
+The two baseline activation-authoritative workflows are:
 
 ```text
 .github/workflows/repo-check.yml
 .github/workflows/steggate-schema-foundation.yml
 ```
 
-These existing workflows are service surfaces and do not grant or determine StegGate activation:
+The three existing service workflows are admitted only through discrete non-authority exceptions:
 
 ```text
-.github/workflows/docs-pages.yml
-.github/workflows/deployment-mailbox-monitor.yml
+ARA-WF-EX-001  .github/workflows/docs-pages.yml
+ARA-WF-EX-002  .github/workflows/deployment-notification.yml
+ARA-WF-EX-003  .github/workflows/deployment-mailbox-monitor.yml
 ```
+
+These service workflows do not grant or determine StegGate activation or stable-release authority. The working Deployment Mailbox Monitor remains intact; no new workflow surface is introduced by this governance repair.
 
 Heartbeat state is sourced from `management/activation-surface.json`. The heartbeat does not grant execution authority.
 
@@ -108,11 +114,11 @@ The implementation is merged and validated. Docs Pages run `32593976088` success
 
 ## Boundary
 
-Neither schema validation, Pages deployment, release-evidence ALLOW, notification delivery, nor merge creates stable-release, canonical-publication, credential, runtime execution, standards, clinical, or regulatory authority. Historical evidence remains replay-only unless admitted by the current activation surface.
+Neither schema validation, Pages deployment, release-evidence ALLOW, notification delivery, mailbox observation, nor merge creates stable-release, canonical-publication, credential, runtime execution, standards, clinical, or regulatory authority. Historical evidence remains replay-only unless admitted by the current activation surface.
 
 ## Next tasks
 
-1. Re-run the existing Docs Pages path after this compatibility repair and retain the `deployed-publication-evidence` artifact.
+1. Consume the repaired Docs Pages run and retain the `deployed-publication-evidence` artifact.
 2. Use issue #121 and the existing release-promotion machinery to reconcile the proven release gates without hand-editing protected authority fields.
 3. Create the stable tag/formal release only after explicit stable-release authorization is recorded.
 4. After release, activate propagation verification for Site, Publisher, admissibility-wiki, and stegguardian-wiki after reading each destination handoff.

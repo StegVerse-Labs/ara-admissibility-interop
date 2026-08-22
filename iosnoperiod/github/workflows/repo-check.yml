@@ -23,6 +23,8 @@ jobs:
         run: python3 tools/test_publication_gate.py
       - name: Verify workflow mirror parity
         run: python3 tools/check_workflow_parity.py
+      - name: Enforce workflow ceiling and discrete exceptions
+        run: python3 tools/check_workflow_governance.py
       - name: Test governed docs builder
         run: python3 tools/test_governed_docs_builder.py
       - name: Generate publication status
@@ -51,7 +53,7 @@ jobs:
           echo '' >> "$GITHUB_STEP_SUMMARY"
           cat docs/publication-status.md >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Deterministic docs building, publication evidence, bounded promotion, governed notification, replay protection, and mailbox-poller tests passed.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Workflow ceiling/exception governance, deterministic docs building, publication evidence, bounded promotion, governed notification, replay protection, and mailbox-poller tests passed.' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload validation status
         uses: actions/upload-artifact@v4
         with:
