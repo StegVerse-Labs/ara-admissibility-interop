@@ -278,3 +278,36 @@ Lifecycle:
 - stable release effect: NONE
 
 The non-secret mailbox address is intentionally not invented in source. It remains a runtime policy binding and TVC independently enforces that any requested mailbox equals the mailbox in the resident credential package.
+
+
+### ARA TVC mailbox request integration merge — 2026-08-27
+
+The ARA-side mailbox request/result lifecycle is now merged:
+
+```text
+ARA PR #136
+validated head: ccffe9a97036fca208a82699818929ee9160e7de
+Repo Check 33120648262: SUCCESS
+StegGate Schema Foundation 33120648375: SUCCESS
+merge: 61c8d1c627148d6caa54c60e8d9525ab5de48c72
+```
+
+Merged behavior:
+- exact hash-bound `ARA_DEPLOYMENT_MAILBOX_FETCH` request generation;
+- TVC result validation against request hash, operation class, ARA commit SHA, workflow run ID, credential authority, and no-secret/no-token-export predicates;
+- deterministic governed-message filtering, attachment validation, replay ledger, candidate creation and duplicate-noop preservation;
+- separate `ARA_DEPLOYMENT_MAILBOX_MARK_READ` request generation only after `candidate_created` or `duplicate_noop`;
+- blocked/malformed/conflicting messages remain without a mark-read request;
+- ARA mailbox mutation: NONE;
+- ARA Microsoft Graph execution: NONE;
+- scheduled workflow retains non-secret FETCH/MARK_READ request artifacts and maintains iosnoperiod parity.
+
+Lifecycle:
+- mailbox source integration: IMPLEMENTED / VALIDATED / MERGED
+- admitted ARA→TVC request carrier: NOT YET PROVEN
+- TVC provider result consumed in live workflow: NOT OBSERVED
+- Mail.ReadWrite provider permission admission: NOT OBSERVED
+- live mailbox mutation through TVC: NOT OBSERVED
+- stable release effect: NONE
+
+The next integration boundary is the existing TVC provider-operation carrier/lease model. Do not create a second carrier if the canonical broker can admit these operation classes.
