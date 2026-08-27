@@ -209,3 +209,43 @@ RELEASED ARA stable release: NO
 COMPLETE ARA release goal: NO
 
 The remaining provider-operation gap is outside ARA credential authority. Future Microsoft Graph execution must use an admitted TV/TVC operation and return only bounded non-secret results/evidence to ARA.
+
+
+### TVC Graph request producer merge reconciliation — 2026-08-27
+
+The ARA outbound deployment-notification producer now emits the exact bounded TVC provider-operation request contract while remaining credential-neutral and fail-closed for actual provider delivery.
+
+```text
+TVC source admission:
+  PR #176 merge: a03563226740e2e6c7b5ae8ec21b611a15fd5934
+  exact operation classes: SEND / FETCH / MARK_READ
+
+TVC resident CLI:
+  PR #178 merge: 9332ee37f62c67f5ed478fa28b2749ea510eb4aa
+  validation run: 33119425031 SUCCESS
+
+TVC exact request binding:
+  PR #181 merge: 5e5813787b749ef7bb0cf81843cbf7dd908b1625
+  validation run: 33119847552 SUCCESS
+
+ARA outbound request producer:
+  PR #135
+  validated head: 002df426cd993055e18ec3d99c6af64c8e9f27fe
+  Repo Check: 33120158075 SUCCESS
+  merge: a8d5c9c774af9093e90065e6365ce591db68f308
+```
+
+Current exact state:
+- TVC ARA Graph source admission: IMPLEMENTED / VALIDATED / MERGED
+- ARA deployment notification TVC request generation: IMPLEMENTED / VALIDATED / MERGED
+- ARA request includes canonical request hash, ARA commit SHA, workflow run ID, and governed evidence attachments
+- ARA provider credential handling: NONE
+- ARA direct Microsoft Graph execution: NONE
+- ARA delivery state without admitted carrier/runtime: BLOCKED
+- actual Mail.Send through TVC: NOT OBSERVED
+- mailbox fetch through TVC: NOT WIRED IN ARA
+- mailbox mark-read through TVC: NOT WIRED IN ARA
+- Microsoft Graph Mail.Send/Mail.ReadWrite application permission admission: NOT OBSERVED
+- stable release state: unchanged
+
+The next machine-executable provider lane is ARA mailbox request/result integration against the already-merged TVC FETCH and MARK_READ contracts. Transport/runtime admission remains a separate TV/TVC-owned gate.
