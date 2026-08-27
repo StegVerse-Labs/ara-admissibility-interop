@@ -167,10 +167,45 @@ The existing TVC resident mailbox/provider-operation surfaces are the permitted 
 
 State distinction:
 
-source contradiction repair: IMPLEMENTED_ON_BRANCH
-hosted validation: PENDING
-merge: PENDING
+source contradiction repair: IMPLEMENTED
+hosted validation: VALIDATED
+Repo Check: 33070088138 SUCCESS
+StegGate Schema Foundation: 33070088132 SUCCESS
+merge: MERGED
+merge_sha: 53d12e40604f4281688803c485c6fa16f7dcc88b
 TVC Graph send operation admitted: NOT PROVEN
 TVC ARA mailbox read-write operation admitted: NOT PROVEN
 provider runtime activation: NOT OBSERVED
 stable release state: unchanged
+
+### ARA mail boundary merge reconciliation
+
+Live repository inspection confirms PR #133 merged the validated source retirement:
+
+PR: #133
+validated exact head: 6bd94c0634cf8f2924c14e0487407259385ff6bf
+Repo Check 33070088138: SUCCESS
+StegGate Schema Foundation 33070088132: SUCCESS
+merge: 53d12e40604f4281688803c485c6fa16f7dcc88b
+
+Main-tree verification:
+
+GitHub Actions STEGVERSE_MAIL secret interpolation: ABSENT
+STEGVERSE_MAIL_CLIENT_SECRET in active ARA mail source: ABSENT
+OAuth2 client_credentials in active ARA mail source: ABSENT
+direct graph.microsoft.com execution in active ARA mail source: ABSENT
+TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED fail-closed boundary: PRESENT
+
+State:
+
+IMPLEMENTED: YES
+VALIDATED: YES
+MERGED: YES
+DEPLOYED TVC Graph provider operation: NO
+ACTIVATED mail provider runtime: NO
+OBSERVED Mail.Send operation through TVC: NO
+OBSERVED Mail.ReadWrite operation through TVC: NO
+RELEASED ARA stable release: NO
+COMPLETE ARA release goal: NO
+
+The remaining provider-operation gap is outside ARA credential authority. Future Microsoft Graph execution must use an admitted TV/TVC operation and return only bounded non-secret results/evidence to ARA.
