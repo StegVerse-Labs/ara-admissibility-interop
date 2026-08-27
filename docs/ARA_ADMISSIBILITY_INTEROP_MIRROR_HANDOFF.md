@@ -249,3 +249,32 @@ Current exact state:
 - stable release state: unchanged
 
 The next machine-executable provider lane is ARA mailbox request/result integration against the already-merged TVC FETCH and MARK_READ contracts. Transport/runtime admission remains a separate TV/TVC-owned gate.
+
+
+### ARA TVC mailbox request/result integration branch — 2026-08-27
+
+Branch `ara-tvc-mailbox-requests-136` implements the ARA-side source lifecycle for the already-admitted TVC mailbox operations without creating provider transport or runtime authority.
+
+Implemented source behavior:
+- emits exact hash-bound `ARA_DEPLOYMENT_MAILBOX_FETCH` request using non-secret monitor-mailbox runtime policy plus ARA commit/workflow identity;
+- validates a supplied TVC secret-free provider result against request hash, operation class, ARA commit SHA, workflow run ID, TV/TVC credential authority, and no-secret/no-token-export predicates;
+- consumes only normalized governed-message fields returned by TVC;
+- preserves existing deterministic notification validation, replay ledger, candidate creation, and duplicate-noop semantics;
+- emits separate hash-bound `ARA_DEPLOYMENT_MAILBOX_MARK_READ` requests only after `candidate_created` or `duplicate_noop`;
+- blocked, malformed, conflicting, or incomplete messages produce no mark-read request;
+- ARA never mutates the mailbox and performs no Microsoft Graph execution;
+- the existing scheduled mailbox workflow only creates/retains non-secret request artifacts; it does not transport them to TVC.
+
+Lifecycle:
+- source implementation: IMPLEMENTED
+- deterministic regression source: IMPLEMENTED
+- workflow primary/iosnoperiod parity: IMPLEMENTED
+- hosted validation: PENDING
+- merge: NO
+- admitted ARA→TVC carrier: NOT IDENTIFIED
+- TVC provider result observed: NO
+- Mail.ReadWrite permission admission: NOT OBSERVED
+- mailbox mutation through TVC: NOT OBSERVED
+- stable release effect: NONE
+
+The non-secret mailbox address is intentionally not invented in source. It remains a runtime policy binding and TVC independently enforces that any requested mailbox equals the mailbox in the resident credential package.
