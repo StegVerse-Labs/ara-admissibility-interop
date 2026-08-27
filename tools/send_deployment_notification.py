@@ -13,11 +13,14 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from build_tvc_notification_request import build_request
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BODY = ROOT / "status" / "deployment-notification-email.md"
 DEFAULT_ENVELOPE = ROOT / "status" / "deployment-notification-envelope.json"
 DEFAULT_BUNDLE = ROOT / "status" / "deployed-evidence-bundle.json"
 DEFAULT_RECEIPT = ROOT / "status" / "deployment-notification-delivery.json"
+DEFAULT_PROVIDER_REQUEST = ROOT / "status" / "deployment-notification-provider-request.json"
 
 TVC_PROVIDER_ROUTE_REQUIRED = "TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED"
 
@@ -41,6 +44,7 @@ def main() -> int:
     parser.add_argument("--envelope", type=Path, default=DEFAULT_ENVELOPE)
     parser.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--receipt", type=Path, default=DEFAULT_RECEIPT)
+    parser.add_argument("--provider-request", type=Path, default=DEFAULT_PROVIDER_REQUEST)
     parser.add_argument("--require-delivery", action="store_true")
     args = parser.parse_args()
 
@@ -72,6 +76,16 @@ def main() -> int:
         subject = envelope.get("subject")
         if not isinstance(subject, str) or not subject:
             raise ValueError("notification envelope has no subject")
+        provider_request = build_request(
+            body_path=args.body,
+            envelope_path=args.envelope,
+            bundle_path=args.bundle,
+        )
+        args.provider_request.parent.mkdir(parents=True, exist_ok=True)
+        args.provider_request.write_text(
+            json.dumps(provider_request, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
         receipt.update({
             "repository": envelope.get("repository"),
             "commit_sha": envelope.get("commit_sha"),
@@ -80,6 +94,11 @@ def main() -> int:
             "body_sha256": envelope.get("body_sha256"),
             "subject": subject,
             "body_present": bool(body),
+            "provider_request_generated": True,
+            "provider_request_file": args.provider_request.name,
+            "provider_request_hash": provider_request["request_hash"],
+            "provider_request_operation_class": provider_request["operation_class"],
+            "provider_request_contains_protected_material": False,
         })
         write_receipt(args.receipt, receipt)
         print("DEPLOYMENT_NOTIFICATION_DELIVERY=BLOCKED_TVC_PROVIDER_ROUTE_REQUIRED")
