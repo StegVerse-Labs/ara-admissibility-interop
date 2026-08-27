@@ -190,8 +190,8 @@
     "canonical_workflow": ".github/workflows/deployment-notification.yml",
     "ios_safe_workflow": "iosnoperiod/github/workflows/deployment-notification.yml",
     "trigger": "successful Docs Pages workflow_run or explicit source-run dispatch",
-    "transport": "microsoft-graph-sendmail",
-    "credential_type": "microsoft-entra-application",
+    "transport": "tvc-admitted-provider-operation-required",
+    "credential_type": "TV/TVC-owned provider credential",
     "mailbox_password_allowed": false,
     "partial_configuration_behavior": "fail-closed",
     "absent_configuration_behavior": "record-not-configured-without-delivery-claim",
@@ -222,14 +222,15 @@
     "conflicting_replay_behavior": "fail-closed",
     "email_is_authority": false,
     "delivery_verified": false,
-    "mailbox_ingestion_verified": false
+    "mailbox_ingestion_verified": false,
+    "provider_execution_state": "BLOCKED_TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED"
   },
   "mailbox_monitor": {
     "canonical_workflow": ".github/workflows/deployment-mailbox-monitor.yml",
     "ios_safe_workflow": "iosnoperiod/github/workflows/deployment-mailbox-monitor.yml",
     "schedule": "hourly-at-minute-17",
     "explicit_dispatch": true,
-    "required_permission": "Microsoft Graph Mail.ReadWrite application access restricted to the designated mailbox",
+    "required_permission": "Future admitted TVC Microsoft Graph operation must be narrowly scoped to the designated mailbox; ARA itself holds no Graph credential authority",
     "state_artifact": "deployment-mailbox-monitor-state",
     "state_retention_days": 90,
     "restore_strategy": "newest-non-expired-state-artifact",
@@ -240,7 +241,9 @@
     "blocked_messages_remain_unread": true,
     "one_task_per_notification_identity": true,
     "automatic_release_authority": false,
-    "configured_execution_verified": false
+    "configured_execution_verified": false,
+    "provider_execution_state": "BLOCKED_TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED",
+    "ara_credential_authority": "NONE"
   },
   "workflows": {
     "repo_check_canonical_path": ".github/workflows/repo-check.yml",
