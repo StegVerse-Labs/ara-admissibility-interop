@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 from ingest_deployment_notification import REQUIRED_SECTIONS, sha256_bytes, validate
+from build_tvc_notification_request import build_request, canonical_sha256
 from send_deployment_notification import TVC_PROVIDER_ROUTE_REQUIRED
 
 
@@ -24,6 +25,7 @@ def sample() -> tuple[dict, bytes, dict]:
         "included_handoff_sections": sorted(REQUIRED_SECTIONS),
         "subject": "[StegVerse][DEPLOYMENT-EVIDENCE][ARA][ALLOW] aaaaaaaaaaaa",
         "public_review_decision": "ALLOW",
+        "workflow_run_id": 33119847552,
     }
     return envelope, body, bundle
 
@@ -60,10 +62,31 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
-        (root / "envelope.json").write_text(json.dumps(envelope), encoding="utf-8")
-        (root / "body.md").write_bytes(body)
-        (root / "bundle.json").write_text(json.dumps(bundle), encoding="utf-8")
-        assert (root / "envelope.json").is_file()
+        envelope_path = root / "envelope.json"
+        body_path = root / "body.md"
+        bundle_path = root / "bundle.json"
+        envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+        body_path.write_bytes(body)
+        bundle_path.write_text(json.dumps(bundle), encoding="utf-8")
+        provider_request = build_request(
+            body_path=body_path,
+            envelope_path=envelope_path,
+            bundle_path=bundle_path,
+        )
+        declared_hash = provider_request["request_hash"]
+        unhashed = dict(provider_request)
+        del unhashed["request_hash"]
+        assert declared_hash == canonical_sha256(unhashed)
+        assert provider_request["schema"] == "stegverse.tvc.ara_graph_operation_request/v1"
+        assert provider_request["operation_class"] == "ARA_DEPLOYMENT_NOTIFICATION_SEND"
+        assert provider_request["ara_commit_sha"] == bundle["commit_sha"]
+        assert provider_request["workflow_run_id"] == "33119847552"
+        assert {item["name"] for item in provider_request["attachments"]} == {
+            "body.md", "envelope.json", "bundle.json"
+        }
+        encoded = json.dumps(provider_request)
+        for forbidden in ("client_secret", "access_token", "refresh_token", "bearer_token"):
+            assert forbidden not in encoded.lower()
 
     print("DEPLOYMENT_NOTIFICATION_TRANSPORT_TESTS=PASS")
     return 0
