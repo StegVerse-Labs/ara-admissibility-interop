@@ -92,7 +92,8 @@ jobs:
             --body received-evidence/status/deployment-notification-email.md \
             --envelope received-evidence/status/deployment-notification-envelope.json \
             --bundle received-evidence/status/deployed-evidence-bundle.json \
-            --receipt received-evidence/status/deployment-notification-delivery.json
+            --receipt received-evidence/status/deployment-notification-delivery.json \
+            --provider-request received-evidence/status/deployment-notification-provider-request.json
 
       - name: Publish notification summary
         run: |
@@ -111,4 +112,5 @@ jobs:
             received-evidence/status/deployment-notification-email.md
             received-evidence/status/deployment-notification-envelope.json
             received-evidence/status/deployment-notification-delivery.json
+            received-evidence/status/deployment-notification-provider-request.json
             received-evidence/status/deployed-evidence-bundle.json
