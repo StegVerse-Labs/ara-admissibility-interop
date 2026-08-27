@@ -311,3 +311,26 @@ Lifecycle:
 - stable release effect: NONE
 
 The next integration boundary is the existing TVC provider-operation carrier/lease model. Do not create a second carrier if the canonical broker can admit these operation classes.
+
+
+### TVC resident intake and provider-readiness continuation — 2026-08-27
+
+Downstream TVC source progressed after ARA PR #136:
+
+```text
+TVC PR #186 capability lease
+  merge: 4e38b6ab02fdefa3201ea2cf8bd13045b5e8c6cb
+  validation: 33121349131 SUCCESS
+
+TVC PR #187 resident local intake
+  merge: 13f69ac43aa6db073dd8f44cec665a579b4e3777
+  validation: 33121667116 SUCCESS
+
+TVC PR #189 provider permission readiness observer
+  merge: 42f18a2aaff125459de04a2fdb31889cc94ac307
+  validation: 33122004407 SUCCESS
+```
+
+TVC production intake remains fail closed because its admitted carrier list is empty. The resident permission observer can evaluate `Mail.Send` and `Mail.ReadWrite` roles without leaking access material or performing mail actions, but no live permission observation has occurred.
+
+ARA source remains credential-neutral and already emits bounded SEND/FETCH/MARK_READ requests. No ARA source work should recreate Microsoft credential handling, direct Graph execution, or transport authority. The next cross-repository gate is a formally admitted provider-neutral ARA→TVC carrier, followed by live TVC permission/policy/runtime receipts.
