@@ -76,5 +76,17 @@
     ]
   },
   "activation_state": "INTEGRATED_NOT_RELEASED",
-  "stale_or_divergent_live_inputs_allowed": false
+  "stale_or_divergent_live_inputs_allowed": false,
+  "mail_provider_boundary": {
+    "state": "SOURCE_RETIRED_PROVIDER_ROUTE_REQUIRED",
+    "credential_authority": "TV/TVC",
+    "ara_credential_authority": "NONE",
+    "github_actions_provider_secret_authority": "NONE",
+    "direct_microsoft_graph_execution_in_ara": false,
+    "required_provider_state": "TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED",
+    "exact_tvc_mail_send_admission_proven": false,
+    "exact_tvc_mail_readwrite_admission_proven": false,
+    "provider_runtime_activation_observed": false,
+    "authority_effect": false
+  }
 }

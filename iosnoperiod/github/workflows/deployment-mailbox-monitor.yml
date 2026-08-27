@@ -52,12 +52,7 @@ jobs:
       - name: Test mailbox poller helpers
         run: python3 tools/test_deployment_mailbox_poller.py
 
-      - name: Poll governed deployment mailbox
-        env:
-          STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
-          STEGVERSE_MAIL_CLIENT_ID: ${{ secrets.STEGVERSE_MAIL_CLIENT_ID }}
-          STEGVERSE_MAIL_CLIENT_SECRET: ${{ secrets.STEGVERSE_MAIL_CLIENT_SECRET }}
-          STEGVERSE_MONITOR_MAILBOX: ${{ secrets.STEGVERSE_MONITOR_MAILBOX }}
+      - name: Evaluate governed mailbox provider boundary
         run: |
           python3 tools/poll_deployment_notification_mailbox.py \
             --ledger status/deployment-notification-ledger.json \

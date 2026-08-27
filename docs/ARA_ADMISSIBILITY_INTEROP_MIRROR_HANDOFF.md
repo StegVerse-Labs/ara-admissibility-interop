@@ -129,3 +129,48 @@ Neither schema validation, Pages deployment, release-evidence ALLOW, authorizati
 Issue #121 remains the sole release owner. Completion requires the stable tag/formal release to exist and the activation manifest/handoff to record its exact identity and evidence, followed by activation of the downstream propagation-verification task.
 
 No stale or divergent historical record is permitted to participate in current activation decisions. No prior chat context is required to reconstruct this state.
+
+## TV/TVC mail provider authority reconciliation — 2026-08-27
+
+Live source review found that the two admitted non-activation service workflows were still processing Microsoft Entra application credentials directly inside GitHub-hosted runners.
+
+Observed legacy source path:
+
+.github/workflows/deployment-notification.yml
+  -> STEGVERSE_MAIL_CLIENT_SECRET from GitHub Secrets
+  -> tools/send_deployment_notification.py
+  -> OAuth2 client_credentials
+  -> Microsoft Graph sendMail
+
+.github/workflows/deployment-mailbox-monitor.yml
+  -> STEGVERSE_MAIL_CLIENT_SECRET from GitHub Secrets
+  -> tools/poll_deployment_notification_mailbox.py
+  -> OAuth2 client_credentials
+  -> Microsoft Graph Mail.ReadWrite
+
+That source contradicted this handoff's existing credential_authority: TV/TVC boundary. The workflow-governance exceptions grant only non-authoritative service transport roles; they do not grant provider credential authority.
+
+Repair on branch fix/ara-tvc-mail-provider-boundary:
+
+ARA direct Entra client-secret processing: RETIRED
+ARA direct Microsoft Graph network execution: RETIRED
+GitHub Actions mail/provider secrets interpolation: REMOVED
+notification generation/evidence binding: PRESERVED
+notification replay/attachment processing: PRESERVED
+provider execution state: BLOCKED
+required state: TVC_ADMITTED_PROVIDER_ROUTE_REQUIRED
+credential material read by ARA: FALSE
+provider execution performed by ARA: FALSE
+release authority effect: NONE
+
+The existing TVC resident mailbox/provider-operation surfaces are the permitted integration direction. This repair intentionally does not invent an ARA-local OAuth broker or claim that the exact ARA Mail.Send or Mail.ReadWrite operations are already admitted in TVC.
+
+State distinction:
+
+source contradiction repair: IMPLEMENTED_ON_BRANCH
+hosted validation: PENDING
+merge: PENDING
+TVC Graph send operation admitted: NOT PROVEN
+TVC ARA mailbox read-write operation admitted: NOT PROVEN
+provider runtime activation: NOT OBSERVED
+stable release state: unchanged

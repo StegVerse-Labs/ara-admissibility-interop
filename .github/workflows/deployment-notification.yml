@@ -86,13 +86,7 @@ jobs:
             --markdown received-evidence/status/deployment-notification-email.md \
             --json received-evidence/status/deployment-notification-envelope.json
 
-      - name: Send governed Microsoft Graph notification
-        env:
-          STEGVERSE_MAIL_TENANT_ID: ${{ secrets.STEGVERSE_MAIL_TENANT_ID }}
-          STEGVERSE_MAIL_CLIENT_ID: ${{ secrets.STEGVERSE_MAIL_CLIENT_ID }}
-          STEGVERSE_MAIL_CLIENT_SECRET: ${{ secrets.STEGVERSE_MAIL_CLIENT_SECRET }}
-          STEGVERSE_MAIL_SENDER: ${{ secrets.STEGVERSE_MAIL_SENDER }}
-          STEGVERSE_MAIL_RECIPIENT: ${{ secrets.STEGVERSE_MAIL_RECIPIENT }}
+      - name: Evaluate governed notification provider boundary
         run: |
           python3 tools/send_deployment_notification.py \
             --body received-evidence/status/deployment-notification-email.md \
