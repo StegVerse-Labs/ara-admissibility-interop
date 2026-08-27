@@ -53,11 +53,18 @@ jobs:
         run: python3 tools/test_deployment_mailbox_poller.py
 
       - name: Evaluate governed mailbox provider boundary
+        env:
+          STEGVERSE_MONITOR_MAILBOX: ${{ vars.STEGVERSE_MONITOR_MAILBOX }}
         run: |
           python3 tools/poll_deployment_notification_mailbox.py \
             --ledger status/deployment-notification-ledger.json \
             --work-root status/mailbox-notifications \
-            --summary status/mailbox-poll-summary.json
+            --summary status/mailbox-poll-summary.json \
+            --fetch-request status/deployment-mailbox-fetch-request.json \
+            --mark-read-outbox status/mailbox-mark-read-requests \
+            --monitor-mailbox "$STEGVERSE_MONITOR_MAILBOX" \
+            --ara-commit-sha "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID"
 
       - name: Publish mailbox-monitor summary
         if: always()
@@ -84,6 +91,12 @@ jobs:
           fi
           if [ -f status/mailbox-poll-summary.json ]; then
             cp status/mailbox-poll-summary.json monitor-state/
+          fi
+          if [ -f status/deployment-mailbox-fetch-request.json ]; then
+            cp status/deployment-mailbox-fetch-request.json monitor-state/
+          fi
+          if [ -d status/mailbox-mark-read-requests ]; then
+            cp -R status/mailbox-mark-read-requests monitor-state/
           fi
           if [ -d status/mailbox-notifications ]; then
             cp -R status/mailbox-notifications monitor-state/
