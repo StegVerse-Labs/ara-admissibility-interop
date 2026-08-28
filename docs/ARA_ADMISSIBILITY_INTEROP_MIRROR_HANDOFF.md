@@ -385,3 +385,10 @@ Canonical remaining runtime owner/task:
 `StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json`
 
 ARA must not create another carrier, OAuth broker, provider broker, Graph credential path, or runtime. It consumes only bounded non-secret TVC results/receipts. Live SEND/FETCH/MARK_READ evidence remains NOT OBSERVED and must not be inferred from source validation.
+
+
+### ARA Graph sovereign resident request bridge — 2026-08-27
+
+StegVerse-Labs/.github PR #353 merged the intent-only resident execution bridge at `ef85edcea0fa40f91ae80399a587898d42e4f176` after heartbeat validation `33141631865` SUCCESS and organization-control validation `33141631864` SUCCESS.
+
+The next eligible sovereign local-source refresh may submit `SHWP-ARA-GRAPH-RUNTIME-086` to the existing WorkerCoordinator. The request grants no authority and ARA still owns no Microsoft credential/provider runtime. Authentic SEND/FETCH/MARK_READ evidence remains NOT OBSERVED.
