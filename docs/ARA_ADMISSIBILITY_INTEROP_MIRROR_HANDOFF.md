@@ -373,3 +373,15 @@ ARA should not create another provider route or carrier. Remaining gates are liv
 TVC PR #197 merged `tvc.ara_graph.activation_preflight` at `4cee5d5da05b2bbe717d8887a8fdd0b731773517` after validation run `33136427650` SUCCESS.
 
 The preflight requires live provider-role PASS, live policy-binding PASS, and exact verified KV/InTr request delivery before returning `READY_FOR_RESIDENT_INTAKE`. It does not issue the provider-operation lease or invoke Graph. ARA must not treat source validation or preflight source availability as delivery/runtime activation.
+
+
+### ARA Graph source/control complete; runtime authority handoff — 2026-08-27
+
+TVC PR #201 is merged at `e36dc36f697afc27936403db171f23a6cc45edf3` after exact-head validation run `33137678309` SUCCESS.
+
+The final dispatcher source requires explicit `STEGTV_ARA_GRAPH_RUNTIME_AUTHORITY=TV/TVC`, aggregate preflight `READY_FOR_RESIDENT_INTAKE`, and a post-preflight exact request-hash match before the existing TVC resident intake may execute one bounded Graph operation.
+
+Canonical remaining runtime owner/task:
+`StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json`
+
+ARA must not create another carrier, OAuth broker, provider broker, Graph credential path, or runtime. It consumes only bounded non-secret TVC results/receipts. Live SEND/FETCH/MARK_READ evidence remains NOT OBSERVED and must not be inferred from source validation.
