@@ -366,3 +366,10 @@ Validated head `fc29afe38020eb4df8bf80f5d79ffb3a84effc63`; consistency run `3313
 The carrier is a local KV/InTr handoff only. It validates exact ARA request bytes, request/commit/workflow identity, InTr receipt chaining, root custody, no secret plaintext, and no authority transfer, then places the unchanged request plus TVC carrier receipt into the existing resident inbox. It does not create network transport, credential authority, lease authority, Graph execution authority, runtime activation authority, or ARA release authority.
 
 ARA should not create another provider route or carrier. Remaining gates are live TVC observations and actual bounded provider execution receipts.
+
+
+### TVC aggregate ARA Graph activation preflight — 2026-08-27
+
+TVC PR #197 merged `tvc.ara_graph.activation_preflight` at `4cee5d5da05b2bbe717d8887a8fdd0b731773517` after validation run `33136427650` SUCCESS.
+
+The preflight requires live provider-role PASS, live policy-binding PASS, and exact verified KV/InTr request delivery before returning `READY_FOR_RESIDENT_INTAKE`. It does not issue the provider-operation lease or invoke Graph. ARA must not treat source validation or preflight source availability as delivery/runtime activation.
