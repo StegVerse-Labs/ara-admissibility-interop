@@ -346,3 +346,10 @@ TVC PR #192 merged the repository-native dispatcher entrypoints for the existing
 Validated head `edf6c4bde440e28e8f97ab5864284a388c742c9c`; consistency run `33135667400` SUCCESS; merge `eeab8fca523a5c9f745f49f193beb46ffef73f79`.
 
 This does not create the missing ARA→TVC carrier. A missing carrier delivery remains a blocked TVC dispatcher result, not successful execution.
+
+
+### TVC ARA Graph policy-binding readiness — 2026-08-27
+
+TVC PR #193 merged the observation-only mailbox/sender/recipient readiness layer at `45591a24ad39bedb4193e19475f32be5c4a9240b` after consistency run `33135841972` SUCCESS.
+
+The resident task `tvc.ara_graph.policy_bindings.observe` emits only hashes/booleans and performs no Graph action. Actual resident policy values and provider permissions remain unobserved. The unresolved cross-repository gate remains the provider-neutral ARA→TVC carrier.
