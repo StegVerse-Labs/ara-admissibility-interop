@@ -353,3 +353,16 @@ This does not create the missing ARA→TVC carrier. A missing carrier delivery r
 TVC PR #193 merged the observation-only mailbox/sender/recipient readiness layer at `45591a24ad39bedb4193e19475f32be5c4a9240b` after consistency run `33135841972` SUCCESS.
 
 The resident task `tvc.ara_graph.policy_bindings.observe` emits only hashes/booleans and performs no Graph action. Actual resident policy values and provider permissions remain unobserved. The unresolved cross-repository gate remains the provider-neutral ARA→TVC carrier.
+
+
+### TVC provider-neutral KV/InTr carrier — 2026-08-27
+
+TVC PR #195 merged the first admitted ARA→TVC provider-neutral carrier profile:
+
+`tvc-kv-intr-ara-graph-v1`
+
+Validated head `fc29afe38020eb4df8bf80f5d79ffb3a84effc63`; consistency run `33136258675` SUCCESS; merge `1c76cd1f54c53650b160d0929d8c5ec761048d51`.
+
+The carrier is a local KV/InTr handoff only. It validates exact ARA request bytes, request/commit/workflow identity, InTr receipt chaining, root custody, no secret plaintext, and no authority transfer, then places the unchanged request plus TVC carrier receipt into the existing resident inbox. It does not create network transport, credential authority, lease authority, Graph execution authority, runtime activation authority, or ARA release authority.
+
+ARA should not create another provider route or carrier. Remaining gates are live TVC observations and actual bounded provider execution receipts.
