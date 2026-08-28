@@ -334,3 +334,15 @@ TVC PR #189 provider permission readiness observer
 TVC production intake remains fail closed because its admitted carrier list is empty. The resident permission observer can evaluate `Mail.Send` and `Mail.ReadWrite` roles without leaking access material or performing mail actions, but no live permission observation has occurred.
 
 ARA source remains credential-neutral and already emits bounded SEND/FETCH/MARK_READ requests. No ARA source work should recreate Microsoft credential handling, direct Graph execution, or transport authority. The next cross-repository gate is a formally admitted provider-neutral ARA→TVC carrier, followed by live TVC permission/policy/runtime receipts.
+
+
+### TVC repository-native ARA Graph dispatcher — 2026-08-27
+
+TVC PR #192 merged the repository-native dispatcher entrypoints for the existing ARA Graph resident source:
+
+- `tvc.ara_graph.provider_readiness.observe`
+- `tvc.ara_graph.resident_intake.process`
+
+Validated head `edf6c4bde440e28e8f97ab5864284a388c742c9c`; consistency run `33135667400` SUCCESS; merge `eeab8fca523a5c9f745f49f193beb46ffef73f79`.
+
+This does not create the missing ARA→TVC carrier. A missing carrier delivery remains a blocked TVC dispatcher result, not successful execution.
