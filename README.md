@@ -15,10 +15,31 @@ Agent or robot discovery
         ↓
 Commitment Candidate
         ↓
-Standing Determination
+Standing Determination @ (Authority, Time)
         ↓
 ALLOW | DENY | FAIL-CLOSED
 ```
+
+## Governance coordinate
+
+StegVerse governance is located at:
+
+```text
+Governance = Authority × Time
+G = (Authority, Time)
+```
+
+Authority and Time are the coordinates of governance. State, identity, delegation, policy, evidence, scope, recoverability, publication metadata, and artifact state are evaluated at that coordinate; they are not replacement governance coordinates.
+
+Temporal non-causality remains explicit:
+
+```text
+Delta-time -/-> Delta-authority
+```
+
+Elapsed time alone does not create, destroy, transfer, renew, or revoke Authority. Timestamps, freshness, expiry, validity windows, and chronology are observations or policy inputs associated with the Time coordinate; Time itself remains a governance coordinate.
+
+Canonical local binding: [`docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md`](docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md).
 
 ## Why this bridge exists
 
@@ -28,9 +49,9 @@ Machine-readable publication helps software answer:
 
 Commit-time admissibility addresses a separate question:
 
-> May this actor use this artifact for this action, target, scope, and moment?
+> What Authority applies at the Time this actor proposes to use this artifact for this action, target, and scope, and is that transition admissible given the evaluated context?
 
-The second question depends on the first. This repository therefore treats citation metadata, canonical URLs, artifact manifests, evidence links, versions, and content digests as interoperability inputs to a bounded standing decision.
+The second question depends on the first. This repository therefore treats citation metadata, canonical URLs, artifact manifests, evidence links, versions, and content digests as interoperability inputs to a bounded standing decision at the applicable Authority × Time coordinate.
 
 ## Purpose
 
@@ -38,11 +59,11 @@ Agent-native research artifacts improve how research work can be packaged for ag
 
 Machine-readable publication makes those artifacts easier for software to discover, resolve, cite, and inspect.
 
-Commit-time admissibility then evaluates whether a proposed downstream use has valid authority, policy, evidence, scope, timing, and recoverability.
+Commit-time admissibility then evaluates whether a proposed downstream use has the applicable Authority at the governing Time and whether policy, evidence, scope, identity, delegation, recoverability, and other relevant context support the requested transition.
 
 The repository begins with this narrow interoperability hypothesis:
 
-> ARA-style research artifacts and other machine-readable publications can be treated as inputs to a standing and admissibility layer without replacing their publication or artifact models.
+> ARA-style research artifacts and other machine-readable publications can be treated as inputs to a standing and admissibility layer without replacing their publication or artifact models or the Authority × Time governance coordinate.
 
 ## Intended collaboration posture
 
@@ -56,6 +77,8 @@ Critique is especially useful where the mapping omits publication fields, impose
 
 ## Start here
 
+- [Authority × Time governance coordinate](docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md)
+- [State-relative applicability at Authority × Time](docs/state-relative-authority-applicability.md)
 - [Machine-readable publication bridge](docs/machine-readable-publication-bridge.md)
 - [Worked citation commitment candidate](admissibility/examples/machine-readable-publication-citation-candidate.json)
 - [ARA-to-standing map](admissibility/ara-to-standing-map.md)
@@ -65,10 +88,11 @@ Critique is especially useful where the mapping omits publication fields, impose
 
 | Layer | Primary question |
 | --- | --- |
+| Governance coordinate | What Authority applies at what governing Time? |
 | Machine-readable publication | What was published, where is it, and how can software resolve it? |
 | ARA-style artifact | What was built, tested, traced, evidenced, and reconstructed? |
 | Commitment candidate | What action is now being requested based on the artifact? |
-| Standing determination | Does the candidate have authority, valid policy, admissible evidence, scope, and commit-time standing now? |
+| Standing determination | Is the candidate admissible at the applicable Authority × Time coordinate given current evaluated context? |
 
 ## Example interoperability flow
 
@@ -84,7 +108,9 @@ A publication page may expose a canonical URL, BibTeX, JSON-LD, an artifact mani
 - the current execution context and validity window;
 - the recoverability posture.
 
-The evaluator returns `ALLOW`, `DENY`, or `FAIL-CLOSED`. Discoverability alone does not establish truth, authority, or permission to rely on the artifact.
+Those fields are evaluated context. They do not become additional governance coordinates.
+
+The evaluator returns `ALLOW`, `DENY`, or `FAIL-CLOSED`. Discoverability alone does not establish truth, Authority, admissibility, or permission to rely on the artifact.
 
 ## Run validation
 
@@ -134,6 +160,8 @@ admissibility/
     invalid-missing-claim-boundary.json
     invalid-standing-result-decision.json
 docs/
+  AUTHORITY_TIME_GOVERNANCE_COORDINATE.md
+  state-relative-authority-applicability.md
   index.md
   machine-readable-publication-bridge.md
   dependency-policy.md
@@ -188,10 +216,13 @@ This repository may demonstrate machine-readable publication, evidence resolutio
 
 - publication metadata proves scientific correctness;
 - discoverability grants permission to rely on an artifact;
+- verification manufactures Authority;
+- elapsed time manufactures Authority;
+- State replaces either governance coordinate;
 - an upstream ARA project endorses this prototype;
 - a public-review deployment grants execution authority;
 - an automated citation is independently replicated or verified unless evidence establishes that result.
 
 ## Relationship to StegVerse
 
-This repository is part of the StegVerse-Labs exploration of commit-time admissibility, standing proof, and governed transition evaluation. Its intended role is complementary: preserve the machine-readable publication and artifact layer, then make the exact downstream reliance request inspectable before commitment.
+This repository is part of the StegVerse-Labs exploration of commit-time admissibility, standing proof, and governed transition evaluation. Its intended role is complementary: preserve the machine-readable publication and artifact layer, then make the exact downstream reliance request inspectable at the applicable Authority × Time coordinate before commitment.
