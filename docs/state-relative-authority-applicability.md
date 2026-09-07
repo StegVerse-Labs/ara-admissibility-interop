@@ -1,86 +1,109 @@
-# State-Relative Authority Applicability and Temporal Non-Causality
+# State-Relative Applicability at the Authority × Time Governance Coordinate
 
-Status: implementation requirement transferred from the 2026-08-17 Action-First / Human Continuity session
+Status: implementation requirement transferred from the 2026-08-17 Action-First / Human Continuity session and corrected by `StegVerse-Labs/.github#1154` / `ara-admissibility-interop#137`
 Canonical semantic owner: `StegVerse-Labs/ara-admissibility-interop`
 Runtime consumer: `StegVerse-Labs/StegCore` through its existing governed-execution path
 Authority effect: NONE
+Canonical governance coordinate: `G = (Authority, Time)`
 
 ## Primitive correction
 
-Time indexes governance history. Elapsed time is not itself the governance-changing primitive.
+Authority and Time are the coordinates of governance:
 
-A historically valid decision, authorization, refusal, approval, or other governance basis remains attributable to the operative state in which it was established. Applicability to a materially different successor state must be determined anew.
+```text
+G = (A, T)
+```
 
-The governing form is therefore state-relative rather than merely time-relative:
+State is evaluated at a governance coordinate; it is not a replacement coordinate. A historically valid decision, authorization, refusal, approval, or other governance basis remains attributable to the Authority and Time at which it was established. Applicability to a materially different successor state must be determined at the applicable later governance coordinate.
+
+A material state transition is represented as context change:
 
 ```text
 S_i --material transition--> S_j
 ```
 
-not:
+and governance evaluation occurs at:
 
 ```text
-T_i --elapsed time--> T_j
+(A_i, T_i) with S_i
+(A_j, T_j) with S_j
 ```
 
-Timestamps and chronology remain important for ordering, provenance, freshness inputs, and explicitly declared clock conditions. They do not by themselves create the governance question.
+The fact that `S_i != S_j` may require reevaluation. It does not make State a governance coordinate.
+
+Timestamps, clocks, heartbeat cadence, chronology, freshness observations, and durations are representations or inputs associated with the Time coordinate. They do not manufacture Authority.
 
 ## Normative invariants
+
+### Authority × Time governance coordinate
+
+```text
+Governance = Authority × Time
+G = (A, T)
+```
+
+State, context, policy, identity, delegation, evidence, dependencies, scope, recoverability, and other conditions are evaluated at this coordinate.
 
 ### Temporal non-causality
 
 ```text
-Delta-time -/-> Delta-governance
+Delta-time -/-> Delta-authority
 ```
 
-Elapsed time alone must not be treated as proof that authority, applicability, or legitimacy changed.
+Elapsed time alone must not be treated as proof that Authority, applicability, or legitimacy changed. This is a non-causality rule, not a claim that Time lies outside governance.
 
 ### State-relative applicability
 
 ```text
-Valid(R_i, S_i) -/-> Applicable(R_i, S_j)
+Valid(R_i, S_i, A_i, T_i) -/-> Applicable(R_i, S_j, A_j, T_j)
 ```
 
-A record may remain historically valid while its applicability to a materially different state requires reassessment.
+A record may remain historically valid while its applicability at a later governance coordinate with materially different state requires reassessment.
 
 ### No implicit authority inheritance
 
 ```text
-Authority(S_i) -/-> Authority(S_j)
+Authority-at-(A_i,T_i,S_i) -/-> Authority-at-(A_j,T_j,S_j)
 ```
 
-across a governance-material transition.
+across a governance-material transition without an applicability determination.
 
-Continued execution in `S_j` requires either:
+Continued execution with `S_j` requires either:
 
-1. action-specific governance equivalence between the relevant portions of `S_i` and `S_j`; or
-2. renewed or reconstructed authority applicable to `S_j`.
+1. action-specific governance equivalence between the relevant portions of `S_i` and `S_j`, with the applicable Authority resolved at `T_j`; or
+2. renewed or reconstructed Authority applicable at `T_j`.
 
 Otherwise the governing profile must resolve to its applicable non-authorizing state such as REVIEW, DENY, or FAIL_CLOSED.
 
 ### Current authorization determination
 
 ```text
-Applicable(R_i, S_j) -/-> Authorized(Action, S_j)
+Applicable(R_i, S_j, A_j, T_j) -/-> Authorized(Action, A_j, T_j)
 ```
 
-without a current authority determination for the requested action.
+without a current authority determination for the requested action at the applicable Time.
 
-### Explicit clock-derived state
+### Explicit clock-derived conditions
 
-Expiration, freshness, lease age, review intervals, or other clock-derived conditions may trigger governance reassessment only where the governing policy declares that condition as part of operative state. This prevents elapsed time from being silently reintroduced as the primitive.
+Expiration, freshness, lease age, review intervals, or other clock-derived conditions may affect governance evaluation where the governing policy declares those conditions relevant. The clock observation is an input associated with Time; it is not itself Authority and does not replace the Time coordinate.
 
 ## Operative governance fingerprint
 
-A machine implementation should bind the applicability determination to at least:
+A machine implementation should bind the applicability determination to the governance coordinate plus evaluated context:
 
-- state;
-- context;
-- authority;
-- authorization basis;
-- evidence;
-- policy;
-- dependencies.
+```text
+governance_coordinate:
+  authority
+  time
+
+evaluated_context:
+  state
+  context
+  authorization_basis
+  evidence
+  policy
+  dependencies
+```
 
 Governance equivalence must be action-specific. Global state equality is neither required nor sufficient.
 
@@ -100,25 +123,28 @@ record continuity != authority continuity
 authority continuity != consequence continuity
 ```
 
+None of these relations creates an additional governance coordinate.
+
 ## Deterministic acceptance cases
 
 The canonical invariant/schema/profile implementation must include machine-verifiable cases proving:
 
-1. a governance-material state change requires applicability reassessment;
-2. an irrelevant state change does not invalidate otherwise applicable authority;
-3. passage of time alone, with no declared clock-state transition, does not invalidate authority merely because time elapsed;
-4. declared freshness or expiry conditions become explicit operative-state transitions and are enforced;
-5. an alternate execution path cannot inherit a prior governance basis after a material transition without governance-equivalence or renewed/reconstructed authority;
-6. refusal/choice evidence distinguishes recorded participation from consequential agency;
-7. multiple authenticated human inputs that all produce the same material consequence cannot be represented as evidence of consequential choice over that consequence.
+1. governance is evaluated at an explicit `(Authority, Time)` coordinate;
+2. a governance-material state change requires applicability reassessment without promoting State into a governance coordinate;
+3. an irrelevant state change does not invalidate otherwise applicable Authority;
+4. passage of time alone does not create, destroy, transfer, or renew Authority merely because time elapsed;
+5. declared freshness or expiry conditions are evaluated at the relevant Time coordinate and enforced when governing policy requires them;
+6. an alternate execution path cannot inherit a prior governance basis after a material transition without governance-equivalence or renewed/reconstructed Authority at the applicable Time;
+7. refusal/choice evidence distinguishes recorded participation from consequential agency;
+8. multiple authenticated human inputs that all produce the same material consequence cannot be represented as evidence of consequential choice over that consequence.
 
 ## Collision and ownership rule
 
 This document does not create a competing schema/runtime lane.
 
-Active draft `ara-admissibility-interop` PR #1 remains the existing StegGate schema-foundation/invariant integration candidate. Before implementation, its owner must reconcile this requirement against current PR #1, current `main`, and `docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md`.
+`docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md` is the local binding for the corrected primitive. Existing StegGate schema/invariant integration must consume this correction rather than restoring the superseded state-as-coordinate interpretation.
 
-Where runtime enforcement is required, `StegVerse-Labs/StegCore` must consume the canonical ara semantic contract through its existing governed-execution path rather than independently redefining the invariant.
+Where runtime enforcement is required, `StegVerse-Labs/StegCore` must consume the canonical ARA semantic contract through its existing governed-execution path rather than independently redefining the invariant.
 
 ## Completion evidence required
 
@@ -131,4 +157,4 @@ This requirement is not COMPLETE merely because this document exists. Completion
 - applicable mirror handoff updated with commits, tests, integration state, and propagation obligations;
 - no live activation inferred from source merge, CI success, publication, or archival state.
 
-Until those conditions are met, this document is a durable transferred requirement, not implementation-complete evidence.
+Until those conditions are met, this document is a durable implementation requirement. The prior statement that governance is state-relative rather than time-relative is superseded.
