@@ -365,7 +365,7 @@ Runtime adapters, HTTP/API transport, runtime decision-state producer, receipt-c
 
 Continuity minting/verification: StegID / Continuity contracts. StegGate must not silently mint continuity receipts.
 
-Custody: Master Records only under its own live contracts.
+Custody: the Organization. Organization records/reconstruction: Master Records only under its own live contracts.
 
 Public propagation: Site, Publisher, admissibility-wiki, stegguardian-wiki only after release/publication gates authorize it.
 

@@ -130,7 +130,7 @@ empirical Reconstruction Singularity convergence thresholds
 StegVerse-Labs/StegCore -> bounded runtime observation producer COMPLETE
 StegVerse-Labs/Continuity -> continuity consumer/minting authority under its own handoff
 StegVerse-Labs/Governance -> authority/evidence threshold for promoted reconstructed constraints
-master-records -> future custody policy for historical matrices and residual lineage
+master-records -> future organization record policy for historical matrices and residual lineage
 StegVerse-Labs/Site -> propagation only after stable release/publication authorization
 GCAT-BCAT-Engine/Publisher -> propagation only after stable release/publication authorization
 StegVerse-Labs/admissibility-wiki -> propagation only after stable release/publication authorization
