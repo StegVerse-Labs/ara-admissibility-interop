@@ -52,7 +52,7 @@ Baseline activation-authoritative workflows:
 
 ```text
 .github/workflows/repo-check.yml
-.github/workflows/steggate-schema-foundation.yml
+tools/tasks/folded/steggate-schema-foundation.yml
 ```
 
 Existing service workflows admitted only through discrete non-authority exceptions:

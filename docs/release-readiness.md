@@ -47,7 +47,7 @@ The repository workflow ceiling is enforced by `management/workflow-governance.j
 The baseline is two activation-authoritative workflows:
 
 - `.github/workflows/repo-check.yml`
-- `.github/workflows/steggate-schema-foundation.yml`
+- `.github/workflows/repo-check.yml` job `steggate-schema-foundation` (folded record `tools/tasks/folded/steggate-schema-foundation.yml`)
 
 Three service workflows exist only under explicit non-authority exceptions:
 

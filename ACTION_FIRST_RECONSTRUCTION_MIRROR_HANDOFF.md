@@ -29,7 +29,7 @@ tools/validate_action_first_reconstruction.py
 reports/action-first-reconstruction-validation.json
 management/action-first-reconstruction-session-inventory.json
 ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md
-.github/workflows/steggate-schema-foundation.yml
+tools/tasks/folded/steggate-schema-foundation.yml
 ```
 
 ## Implemented v1 semantics

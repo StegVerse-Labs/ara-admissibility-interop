@@ -37,7 +37,7 @@ Activation-authoritative workflows:
 
 ```text
 .github/workflows/repo-check.yml
-.github/workflows/steggate-schema-foundation.yml
+tools/tasks/folded/steggate-schema-foundation.yml
 ```
 
 Existing docs-publication and deployment-mailbox-monitor workflows are service surfaces, not StegGate activation authority.

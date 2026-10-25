@@ -35,7 +35,7 @@ StegGate activation-authoritative workflows are limited to:
 
 ```text
 .github/workflows/repo-check.yml
-.github/workflows/steggate-schema-foundation.yml
+tools/tasks/folded/steggate-schema-foundation.yml
 ```
 
 Docs publication and deployment mailbox monitoring are service surfaces and do not grant StegGate activation or release authority.
