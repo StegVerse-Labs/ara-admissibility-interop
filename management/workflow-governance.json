@@ -6,12 +6,14 @@
     {
       "path": ".github/workflows/repo-check.yml",
       "role": "repository_validation",
-      "activation_authoritative": true
-    },
-    {
-      "path": ".github/workflows/steggate-schema-foundation.yml",
-      "role": "steggate_semantic_validation",
-      "activation_authoritative": true
+      "activation_authoritative": true,
+      "carried_jobs": [
+        {
+          "job": "steggate-schema-foundation",
+          "role": "steggate_semantic_validation",
+          "activation_authoritative": true
+        }
+      ]
     }
   ],
   "discrete_exceptions": [
@@ -50,6 +52,15 @@
     "exception_requires_reason": true,
     "exception_may_grant_activation_authority": false,
     "exception_may_grant_release_authority": false,
-    "workflow_count_expected": 5
-  }
+    "workflow_count_expected": 4
+  },
+  "folded": [
+    {
+      "path": ".github/workflows/steggate-schema-foundation.yml",
+      "record": "tools/tasks/folded/steggate-schema-foundation.yml",
+      "verbatim_sha256": "2e3aa01811ca4d84eb983ef36c0505b7976c5e530c1708c1f3abe907c113d550",
+      "carried_as": ".github/workflows/repo-check.yml job steggate-schema-foundation",
+      "goal": "StegVerse-org/.github#166 (G17-WORKFLOW-SURFACE-MINIMIZATION)"
+    }
+  ]
 }

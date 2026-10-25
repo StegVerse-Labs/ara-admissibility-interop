@@ -26,8 +26,7 @@
     "heartbeat_grants_execution_authority": false
   },
   "activation_workflows": [
-    ".github/workflows/repo-check.yml",
-    ".github/workflows/steggate-schema-foundation.yml"
+    ".github/workflows/repo-check.yml"
   ],
   "non_activation_service_workflows": [
     ".github/workflows/docs-pages.yml",
@@ -88,5 +87,9 @@
     "exact_tvc_mail_readwrite_admission_proven": false,
     "provider_runtime_activation_observed": false,
     "authority_effect": false
-  }
+  },
+  "activation_jobs": [
+    ".github/workflows/repo-check.yml#repo-check",
+    ".github/workflows/repo-check.yml#steggate-schema-foundation"
+  ]
 }

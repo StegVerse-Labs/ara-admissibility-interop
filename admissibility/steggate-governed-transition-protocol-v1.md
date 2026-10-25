@@ -323,7 +323,7 @@ Independent conformance does not authorize the claim "industry standard".
 
 ## Current executable protocol validation
 
-`tools/validate_governed_transition_protocol.py` validates the additive v1 delta and is wired into `.github/workflows/steggate-schema-foundation.yml`.
+`tools/validate_governed_transition_protocol.py` validates the additive v1 delta and is wired into `.github/workflows/repo-check.yml` job `steggate-schema-foundation` (folded record `tools/tasks/folded/steggate-schema-foundation.yml`).
 
 Hosted evidence at head `5ebeac84bda82b88df7beaa5f3ba680de9d0ebba`:
 

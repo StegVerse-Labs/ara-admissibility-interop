@@ -48,7 +48,7 @@ fixtures/protocol/governed-transition-cases.json
 tools/validate_trust_levels.py
 tools/validate_governed_transition_protocol.py
 tools/validate_governed_transition_protocol_node.mjs
-.github/workflows/steggate-schema-foundation.yml
+tools/tasks/folded/steggate-schema-foundation.yml
 management/steggate-protocol-session-inventory.json
 ```
 
