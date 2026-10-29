@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.original-path-selection/v1",
+  "goal": "G17-WORKFLOW-SURFACE-MINIMIZATION (StegVerse-org/.github#166)",
+  "purpose": "Restores the original pull_request path filter of the folded steggate-schema-foundation.yml (job validate), which the fold had widened to every pull_request and push. The job carries activation-authoritative StegGate validation (automation-policy.json steggate_validation).",
+  "rule": "A folded job always runs and ends in success. Its original on: events and paths are recorded here, copied verbatim from the archived original; tools/tasks/select_original_paths.py computes SELECTED or NOT_SELECTED and the job's remaining steps carry a step-level if on it. A job-level if is not used because a false one reports the job as skipped.",
+  "jobs": {
+    "steggate-schema-foundation": {
+      "record": "tools/tasks/folded/steggate-schema-foundation.yml",
+      "own_workflow_path": ".github/workflows/steggate-schema-foundation.yml",
+      "host_paths": [
+        ".github/workflows/repo-check.yml"
+      ],
+      "original_events": [
+        "pull_request"
+      ],
+      "original_paths": {
+        "pull_request": [
+          "invariants/**",
+          "profiles/**",
+          "schemas/**",
+          "algebra/**",
+          "fixtures/**",
+          "claims/**",
+          "canonicalization/**",
+          "assurance/**",
+          "reasons/**",
+          "audit-kit/**",
+          "real-boundary/**",
+          "tools/lint_invariants.py",
+          "tools/canonicalize_steggate.py",
+          "tools/canonicalize_steggate_node.mjs",
+          "tools/validate_canonicalization_vectors.py",
+          "tools/validate_assurance_fixtures.py",
+          "tools/validate_trust_levels.py",
+          "tools/build_evidence_pack.py",
+          "tools/verify_evidence_pack.py",
+          "tools/verify_audit_kit.py",
+          "tools/verify_audit_kit_node.mjs",
+          "tools/validate_track1b_parity.mjs",
+          "tools/build_audit_package.py",
+          "tools/verify_audit_package.py",
+          "tools/validate_first_boundary_activation.py",
+          "tools/validate_review_consequence.py",
+          "tools/validate_real_boundary_pilot.py",
+          "tools/validate_execution_profile.py",
+          "tools/validate_decision_state_reconstruction.py",
+          "tools/validate_governed_transition_protocol.py",
+          "tools/validate_governed_transition_protocol_node.mjs",
+          "tools/validate_action_first_reconstruction.py",
+          "management/steggate-v46-*.json",
+          "management/steggate-protocol-session-inventory.json",
+          "management/action-first-reconstruction-session-inventory.json",
+          "management/first-boundary-*.json",
+          "docs/ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+          "STEGGATE_PROTOCOL_MIRROR_HANDOFF.md",
+          "ACTION_FIRST_RECONSTRUCTION_MIRROR_HANDOFF.md",
+          "admissibility/steggate-governed-transition-protocol-v1.md",
+          ".github/workflows/steggate-schema-foundation.yml"
+        ]
+      }
+    }
+  }
+}

@@ -25,6 +25,8 @@ jobs:
         run: python3 tools/check_workflow_parity.py
       - name: Enforce workflow ceiling and discrete exceptions
         run: python3 tools/check_workflow_governance.py
+      - name: Test original-path selection of the folded steggate job
+        run: python3 tools/test_original_path_selection.py
       - name: Test governed docs builder
         run: python3 tools/test_governed_docs_builder.py
       - name: Generate publication status
@@ -82,57 +84,94 @@ jobs:
   # G17 (StegVerse-org/.github#166): folded from .github/workflows/steggate-schema-foundation.yml
   # job validate, steps carried byte for byte (verbatim record:
   # tools/tasks/folded/steggate-schema-foundation.yml, sha256 2e3aa01811ca4d84eb983ef36c0505b7976c5e530c1708c1f3abe907c113d550).
+  # The original ran only on pull_request, and only when one of its `paths` changed. That filter
+  # is restored without a job-level `if` (a false one reports the job as skipped): the job always
+  # runs, the `selection` step computes SELECTED or NOT_SELECTED from
+  # tools/tasks/original_path_selection.json, every later step carries a step-level `if`, and a
+  # NOT_SELECTED job ends in success with that record.
   steggate-schema-foundation:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    env:
+      CATALOG_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      CATALOG_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      CATALOG_EVENT_BEFORE: ${{ github.event.before }}
+      CATALOG_EVENT_AFTER: ${{ github.event.after }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (full history for the changed-files diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select by the original workflow's events and paths (NOT_SELECTED is a success)
+        id: selection
+        run: python3 tools/tasks/select_original_paths.py select --job steggate-schema-foundation --event "$GITHUB_EVENT_NAME" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: steps.selection.outputs.selected == 'true'
         with:
           python-version: '3.12'
       - uses: actions/setup-node@v4
+        if: steps.selection.outputs.selected == 'true'
         with:
           node-version: '22'
       - name: Validate invariant registry, reasons, fixtures, algebra, and schema foundation
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/lint_invariants.py
       - name: Validate stegverse.jcs.v1 canonical bytes and hashes
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_canonicalization_vectors.py
       - name: Validate achieved assurance ordering and overclaim refusal
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_assurance_fixtures.py
       - name: Validate L0-L3 external-anchor trust semantics
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_trust_levels.py
       - name: Validate content-bounded Audit Kit evidence pack
+        if: steps.selection.outputs.selected == 'true'
         run: |
           python tools/build_evidence_pack.py --check
           python tools/verify_evidence_pack.py --self-test
       - name: Validate first-language offline Audit Kit reconstruction
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/verify_audit_kit.py
       - name: Validate independent Node Audit Kit reconstruction
+        if: steps.selection.outputs.selected == 'true'
         run: node tools/verify_audit_kit_node.mjs
       - name: Validate Track 1B cross-language canonicalizer and verifier parity
+        if: steps.selection.outputs.selected == 'true'
         run: node tools/validate_track1b_parity.mjs
       - name: Build deterministic fixture Audit Kit package
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/build_audit_package.py
       - name: Verify fixture Audit Kit package and refusal paths
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/verify_audit_package.py --self-test
       - name: Validate first real-boundary activation state
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_first_boundary_activation.py
       - name: Prove REVIEW cannot directly authorize consequence
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_review_consequence.py
       - name: Validate bounded real-boundary candidate before consequence
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_real_boundary_pilot.py
       - name: Validate deterministic execution profile and StegCore ownership boundary
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_execution_profile.py
       - name: Validate complete decision-state reconstruction semantics
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_decision_state_reconstruction.py
       - name: Validate governed-transition protocol in Python
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_governed_transition_protocol.py
       - name: Validate governed-transition protocol independently in Node
+        if: steps.selection.outputs.selected == 'true'
         run: node tools/validate_governed_transition_protocol_node.mjs
       - name: Validate Action-First reconstruction, observation, residual, and identifiability semantics
+        if: steps.selection.outputs.selected == 'true'
         run: python tools/validate_action_first_reconstruction.py
       - name: Compile and parse-check StegGate tooling
+        if: steps.selection.outputs.selected == 'true'
         run: |
           python -m py_compile tools/lint_invariants.py tools/canonicalize_steggate.py tools/validate_canonicalization_vectors.py tools/validate_assurance_fixtures.py tools/validate_trust_levels.py tools/build_evidence_pack.py tools/verify_evidence_pack.py tools/verify_audit_kit.py tools/build_audit_package.py tools/verify_audit_package.py tools/validate_first_boundary_activation.py tools/validate_review_consequence.py tools/validate_real_boundary_pilot.py tools/validate_execution_profile.py tools/validate_decision_state_reconstruction.py tools/validate_governed_transition_protocol.py tools/validate_action_first_reconstruction.py
           node --check tools/canonicalize_steggate_node.mjs
@@ -140,6 +179,7 @@ jobs:
           node --check tools/validate_track1b_parity.mjs
           node --check tools/validate_governed_transition_protocol_node.mjs
       - name: Upload fixture Audit Kit package
+        if: steps.selection.outputs.selected == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: steggate-audit-kit-fixture-001
