@@ -117,6 +117,8 @@ def decide(manifest, job, event, files):
     """(selected, reason) for one job on one event with the given changed files."""
     entry = manifest["jobs"][job]
     original_events = entry["original_events"]
+    if event in entry.get("always_selected_events", []):
+        return True, f"{event} stays selected by ruling: {entry.get('always_selected_reason', 'no reason recorded')}"
     if event not in original_events:
         return False, f"the original workflow did not trigger on {event} (it ran on: {', '.join(original_events)})"
     if files is None:

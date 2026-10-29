@@ -2,8 +2,9 @@
 """tools/tasks/select_original_paths.py: a folded job keeps its original events and paths.
 
 G17 (StegVerse-org/.github#166): the steggate-schema-foundation job in repo-check.yml runs on every
-pull request and push but records NOT_SELECTED (a successful job, never a skipped one) unless a
-path of the original steggate-schema-foundation.yml changed on a pull request. Stdlib only; nothing
+pull request and push. On a pull request it records NOT_SELECTED (a successful job, never a skipped
+one) unless a path of the original steggate-schema-foundation.yml changed; push stays SELECTED by
+ruling because the job is activation_authoritative. Stdlib only; nothing
 here reaches the network. Run: python3 tools/test_original_path_selection.py
 """
 from __future__ import annotations
@@ -53,8 +54,13 @@ class SelectionTests(unittest.TestCase):
     def test_the_host_workflow_that_now_carries_the_job_selects_it(self):
         self.assertTrue(decide("pull_request", [".github/workflows/repo-check.yml"]))
 
-    def test_an_event_the_original_did_not_have_is_not_selected(self):
-        self.assertFalse(decide("push", ["tools/lint_invariants.py"]))
+    def test_push_stays_selected_for_the_activation_authoritative_job(self):
+        self.assertEqual(ENTRY["always_selected_events"], ["push"])
+        self.assertTrue(decide("push", ["README.md"]))
+        self.assertTrue(decide("push", ["tools/lint_invariants.py"]))
+
+    def test_an_event_the_original_did_not_have_and_is_not_ruled_selected_is_not_selected(self):
+        self.assertFalse(decide("schedule", ["tools/lint_invariants.py"]))
 
     def test_an_undeterminable_diff_selects_the_job(self):
         self.assertTrue(decide("pull_request", None))

@@ -88,7 +88,8 @@ jobs:
   # is restored without a job-level `if` (a false one reports the job as skipped): the job always
   # runs, the `selection` step computes SELECTED or NOT_SELECTED from
   # tools/tasks/original_path_selection.json, every later step carries a step-level `if`, and a
-  # NOT_SELECTED job ends in success with that record.
+  # NOT_SELECTED job ends in success with that record. A push stays SELECTED (the job is
+  # activation_authoritative), by ruling on StegVerse-Labs/ara-admissibility-interop#142.
   steggate-schema-foundation:
     permissions:
       contents: read

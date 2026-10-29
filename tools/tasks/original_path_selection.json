@@ -57,7 +57,11 @@
           "admissibility/steggate-governed-transition-protocol-v1.md",
           ".github/workflows/steggate-schema-foundation.yml"
         ]
-      }
+      },
+      "always_selected_events": [
+        "push"
+      ],
+      "always_selected_reason": "The job is activation_authoritative (automation-policy.json steggate_validation), so a push to main stays SELECTED even though the original workflow had no push trigger (P4 ruling on StegVerse-Labs/ara-admissibility-interop#142)."
     }
   }
 }
